@@ -196,3 +196,9 @@ $RECYCLE.BIN/
 
 # Mac crap
 .DS_Store
+
+# Test User Data
+out.jpg
+out.png
+in.jpg
+in.png
