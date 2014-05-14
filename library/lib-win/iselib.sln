@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iselib", "iselib\iselib.vcxproj", "{5870E33E-5FAC-4B1F-9515-377BDEB09A80}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libjpeg", "libjpeg\libjpeg.vcxproj", "{6333ACDF-3190-4D94-9714-A780DFBF33A7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libpng", "libpng\libpng.vcxproj", "{3967944E-572A-4FA3-BDBB-3FC49F555735}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "polarssl", "polarssl\polarssl.vcxproj", "{817618D1-62AB-4A1F-B563-DA7BB1275DD0}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "zlib\zlib.vcxproj", "{B50BA984-6974-4B5B-8AEE-4B36FDDEDFA4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5870E33E-5FAC-4B1F-9515-377BDEB09A80}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5870E33E-5FAC-4B1F-9515-377BDEB09A80}.Debug|Win32.Build.0 = Debug|Win32
+		{5870E33E-5FAC-4B1F-9515-377BDEB09A80}.Release|Win32.ActiveCfg = Release|Win32
+		{5870E33E-5FAC-4B1F-9515-377BDEB09A80}.Release|Win32.Build.0 = Release|Win32
+		{6333ACDF-3190-4D94-9714-A780DFBF33A7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6333ACDF-3190-4D94-9714-A780DFBF33A7}.Debug|Win32.Build.0 = Debug|Win32
+		{6333ACDF-3190-4D94-9714-A780DFBF33A7}.Release|Win32.ActiveCfg = Release|Win32
+		{6333ACDF-3190-4D94-9714-A780DFBF33A7}.Release|Win32.Build.0 = Release|Win32
+		{3967944E-572A-4FA3-BDBB-3FC49F555735}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3967944E-572A-4FA3-BDBB-3FC49F555735}.Debug|Win32.Build.0 = Debug|Win32
+		{3967944E-572A-4FA3-BDBB-3FC49F555735}.Release|Win32.ActiveCfg = Release|Win32
+		{3967944E-572A-4FA3-BDBB-3FC49F555735}.Release|Win32.Build.0 = Release|Win32
+		{817618D1-62AB-4A1F-B563-DA7BB1275DD0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{817618D1-62AB-4A1F-B563-DA7BB1275DD0}.Debug|Win32.Build.0 = Debug|Win32
+		{817618D1-62AB-4A1F-B563-DA7BB1275DD0}.Release|Win32.ActiveCfg = Release|Win32
+		{817618D1-62AB-4A1F-B563-DA7BB1275DD0}.Release|Win32.Build.0 = Release|Win32
+		{B50BA984-6974-4B5B-8AEE-4B36FDDEDFA4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B50BA984-6974-4B5B-8AEE-4B36FDDEDFA4}.Debug|Win32.Build.0 = Debug|Win32
+		{B50BA984-6974-4B5B-8AEE-4B36FDDEDFA4}.Release|Win32.ActiveCfg = Release|Win32
+		{B50BA984-6974-4B5B-8AEE-4B36FDDEDFA4}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

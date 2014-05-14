@@ -81,7 +81,15 @@ local int gz_comp(state, flush)
 
     /* write directly if requested */
     if (state->direct) {
-        got = write(state->fd, strm->next_in, strm->avail_in);
+#ifdef WIN32
+        got = _write(state->fd, strm->next_in, strm->avail_in);
+#endif
+#ifndef WIN32
+		got = write(state->fd, strm->next_in, strm->avail_in);
+#endif
+		
+
+		
         if (got < 0 || (unsigned)got != strm->avail_in) {
             gz_error(state, Z_ERRNO, zstrerror());
             return -1;
@@ -98,11 +106,23 @@ local int gz_comp(state, flush)
         if (strm->avail_out == 0 || (flush != Z_NO_FLUSH &&
             (flush != Z_FINISH || ret == Z_STREAM_END))) {
             have = (unsigned)(strm->next_out - state->x.next);
-            if (have && ((got = write(state->fd, state->x.next, have)) < 0 ||
-                         (unsigned)got != have)) {
-                gz_error(state, Z_ERRNO, zstrerror());
-                return -1;
-            }
+
+#ifdef WIN32
+			if (have && ((got = _write(state->fd, state->x.next, have)) < 0 ||
+				(unsigned)got != have)) {
+				gz_error(state, Z_ERRNO, zstrerror());
+				return -1;
+			}
+#endif
+#ifndef WIN32
+			if (have && ((got = write(state->fd, state->x.next, have)) < 0 ||
+				(unsigned)got != have)) {
+				gz_error(state, Z_ERRNO, zstrerror());
+				return -1;
+			}
+#endif
+
+            
             if (strm->avail_out == 0) {
                 strm->avail_out = state->size;
                 strm->next_out = state->out;
@@ -570,8 +590,17 @@ int ZEXPORT gzclose_w(file)
     }
     gz_error(state, Z_OK, NULL);
     free(state->path);
-    if (close(state->fd) == -1)
-        ret = Z_ERRNO;
+
+#ifdef WIN32
+	if (_close(state->fd) == -1)
+		ret = Z_ERRNO;
+#endif
+#ifndef WIN32
+	if (close(state->fd) == -1)
+		ret = Z_ERRNO;
+#endif
+
+   
     free(state);
     return ret;
 }

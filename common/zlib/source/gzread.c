@@ -25,20 +25,40 @@ local int gz_load(state, buf, len, have)
 {
     int ret;
 
-    *have = 0;
-    do {
-        ret = read(state->fd, buf + *have, len - *have);
-        if (ret <= 0)
-            break;
-        *have += ret;
-    } while (*have < len);
-    if (ret < 0) {
-        gz_error(state, Z_ERRNO, zstrerror());
-        return -1;
-    }
-    if (ret == 0)
-        state->eof = 1;
-    return 0;
+#ifdef WIN32
+	*have = 0;
+	do {
+		ret = _read(state->fd, buf + *have, len - *have);
+		if (ret <= 0)
+			break;
+		*have += ret;
+	} while (*have < len);
+	if (ret < 0) {
+		gz_error(state, Z_ERRNO, zstrerror());
+		return -1;
+	}
+	if (ret == 0)
+		state->eof = 1;
+	return 0;
+#endif
+#ifndef WIN32
+	*have = 0;
+	do {
+		ret = read(state->fd, buf + *have, len - *have);
+		if (ret <= 0)
+			break;
+		*have += ret;
+	} while (*have < len);
+	if (ret < 0) {
+		gz_error(state, Z_ERRNO, zstrerror());
+		return -1;
+	}
+	if (ret == 0)
+		state->eof = 1;
+	return 0;
+#endif
+
+    
 }
 
 /* Load up input buffer and set eof flag if last data loaded -- return -1 on
@@ -588,7 +608,15 @@ int ZEXPORT gzclose_r(file)
     err = state->err == Z_BUF_ERROR ? Z_BUF_ERROR : Z_OK;
     gz_error(state, Z_OK, NULL);
     free(state->path);
-    ret = close(state->fd);
+
+#ifdef WIN32
+	ret = _close(state->fd);
+#endif
+#ifndef WIN32
+	ret = close(state->fd);
+#endif
+
+   
     free(state);
     return ret ? Z_ERRNO : err;
 }
