@@ -53,7 +53,7 @@ dist/
 *.pidb
 *.svclog
 *.scc
-
+*.bak
 
 
 # Visual C++ cache files
