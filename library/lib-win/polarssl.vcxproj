@@ -1,0 +1,215 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\common\polarssl\source\aes.c" />
+    <ClCompile Include="..\..\common\polarssl\source\aesni.c" />
+    <ClCompile Include="..\..\common\polarssl\source\arc4.c" />
+    <ClCompile Include="..\..\common\polarssl\source\asn1parse.c" />
+    <ClCompile Include="..\..\common\polarssl\source\asn1write.c" />
+    <ClCompile Include="..\..\common\polarssl\source\base64.c" />
+    <ClCompile Include="..\..\common\polarssl\source\bignum.c" />
+    <ClCompile Include="..\..\common\polarssl\source\blowfish.c" />
+    <ClCompile Include="..\..\common\polarssl\source\camellia.c" />
+    <ClCompile Include="..\..\common\polarssl\source\certs.c" />
+    <ClCompile Include="..\..\common\polarssl\source\cipher.c" />
+    <ClCompile Include="..\..\common\polarssl\source\cipher_wrap.c" />
+    <ClCompile Include="..\..\common\polarssl\source\ctr_drbg.c" />
+    <ClCompile Include="..\..\common\polarssl\source\debug.c" />
+    <ClCompile Include="..\..\common\polarssl\source\des.c" />
+    <ClCompile Include="..\..\common\polarssl\source\dhm.c" />
+    <ClCompile Include="..\..\common\polarssl\source\ecdh.c" />
+    <ClCompile Include="..\..\common\polarssl\source\ecdsa.c" />
+    <ClCompile Include="..\..\common\polarssl\source\ecp.c" />
+    <ClCompile Include="..\..\common\polarssl\source\ecp_curves.c" />
+    <ClCompile Include="..\..\common\polarssl\source\entropy.c" />
+    <ClCompile Include="..\..\common\polarssl\source\entropy_poll.c" />
+    <ClCompile Include="..\..\common\polarssl\source\error.c" />
+    <ClCompile Include="..\..\common\polarssl\source\gcm.c" />
+    <ClCompile Include="..\..\common\polarssl\source\havege.c" />
+    <ClCompile Include="..\..\common\polarssl\source\hmac_drbg.c" />
+    <ClCompile Include="..\..\common\polarssl\source\md.c" />
+    <ClCompile Include="..\..\common\polarssl\source\md2.c" />
+    <ClCompile Include="..\..\common\polarssl\source\md4.c" />
+    <ClCompile Include="..\..\common\polarssl\source\md5.c" />
+    <ClCompile Include="..\..\common\polarssl\source\md_wrap.c" />
+    <ClCompile Include="..\..\common\polarssl\source\memory_buffer_alloc.c" />
+    <ClCompile Include="..\..\common\polarssl\source\net.c" />
+    <ClCompile Include="..\..\common\polarssl\source\oid.c" />
+    <ClCompile Include="..\..\common\polarssl\source\padlock.c" />
+    <ClCompile Include="..\..\common\polarssl\source\pbkdf2.c" />
+    <ClCompile Include="..\..\common\polarssl\source\pem.c" />
+    <ClCompile Include="..\..\common\polarssl\source\pk.c" />
+    <ClCompile Include="..\..\common\polarssl\source\pkcs11.c" />
+    <ClCompile Include="..\..\common\polarssl\source\pkcs12.c" />
+    <ClCompile Include="..\..\common\polarssl\source\pkcs5.c" />
+    <ClCompile Include="..\..\common\polarssl\source\pkparse.c" />
+    <ClCompile Include="..\..\common\polarssl\source\pkwrite.c" />
+    <ClCompile Include="..\..\common\polarssl\source\pk_wrap.c" />
+    <ClCompile Include="..\..\common\polarssl\source\platform.c" />
+    <ClCompile Include="..\..\common\polarssl\source\ripemd160.c" />
+    <ClCompile Include="..\..\common\polarssl\source\rsa.c" />
+    <ClCompile Include="..\..\common\polarssl\source\sha1.c" />
+    <ClCompile Include="..\..\common\polarssl\source\sha256.c" />
+    <ClCompile Include="..\..\common\polarssl\source\sha512.c" />
+    <ClCompile Include="..\..\common\polarssl\source\ssl_cache.c" />
+    <ClCompile Include="..\..\common\polarssl\source\ssl_ciphersuites.c" />
+    <ClCompile Include="..\..\common\polarssl\source\ssl_cli.c" />
+    <ClCompile Include="..\..\common\polarssl\source\ssl_srv.c" />
+    <ClCompile Include="..\..\common\polarssl\source\ssl_tls.c" />
+    <ClCompile Include="..\..\common\polarssl\source\threading.c" />
+    <ClCompile Include="..\..\common\polarssl\source\timing.c" />
+    <ClCompile Include="..\..\common\polarssl\source\version.c" />
+    <ClCompile Include="..\..\common\polarssl\source\version_features.c" />
+    <ClCompile Include="..\..\common\polarssl\source\x509.c" />
+    <ClCompile Include="..\..\common\polarssl\source\x509write_crt.c" />
+    <ClCompile Include="..\..\common\polarssl\source\x509write_csr.c" />
+    <ClCompile Include="..\..\common\polarssl\source\x509_create.c" />
+    <ClCompile Include="..\..\common\polarssl\source\x509_crl.c" />
+    <ClCompile Include="..\..\common\polarssl\source\x509_crt.c" />
+    <ClCompile Include="..\..\common\polarssl\source\x509_csr.c" />
+    <ClCompile Include="..\..\common\polarssl\source\xtea.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\common\polarssl\include\aes.h" />
+    <ClInclude Include="..\..\common\polarssl\include\aesni.h" />
+    <ClInclude Include="..\..\common\polarssl\include\arc4.h" />
+    <ClInclude Include="..\..\common\polarssl\include\asn1.h" />
+    <ClInclude Include="..\..\common\polarssl\include\asn1write.h" />
+    <ClInclude Include="..\..\common\polarssl\include\base64.h" />
+    <ClInclude Include="..\..\common\polarssl\include\bignum.h" />
+    <ClInclude Include="..\..\common\polarssl\include\blowfish.h" />
+    <ClInclude Include="..\..\common\polarssl\include\bn_mul.h" />
+    <ClInclude Include="..\..\common\polarssl\include\camellia.h" />
+    <ClInclude Include="..\..\common\polarssl\include\certs.h" />
+    <ClInclude Include="..\..\common\polarssl\include\check_config.h" />
+    <ClInclude Include="..\..\common\polarssl\include\cipher.h" />
+    <ClInclude Include="..\..\common\polarssl\include\cipher_wrap.h" />
+    <ClInclude Include="..\..\common\polarssl\include\compat-1.2.h" />
+    <ClInclude Include="..\..\common\polarssl\include\config.h" />
+    <ClInclude Include="..\..\common\polarssl\include\ctr_drbg.h" />
+    <ClInclude Include="..\..\common\polarssl\include\debug.h" />
+    <ClInclude Include="..\..\common\polarssl\include\des.h" />
+    <ClInclude Include="..\..\common\polarssl\include\dhm.h" />
+    <ClInclude Include="..\..\common\polarssl\include\ecdh.h" />
+    <ClInclude Include="..\..\common\polarssl\include\ecdsa.h" />
+    <ClInclude Include="..\..\common\polarssl\include\ecp.h" />
+    <ClInclude Include="..\..\common\polarssl\include\entropy.h" />
+    <ClInclude Include="..\..\common\polarssl\include\entropy_poll.h" />
+    <ClInclude Include="..\..\common\polarssl\include\error.h" />
+    <ClInclude Include="..\..\common\polarssl\include\gcm.h" />
+    <ClInclude Include="..\..\common\polarssl\include\havege.h" />
+    <ClInclude Include="..\..\common\polarssl\include\hmac_drbg.h" />
+    <ClInclude Include="..\..\common\polarssl\include\md.h" />
+    <ClInclude Include="..\..\common\polarssl\include\md2.h" />
+    <ClInclude Include="..\..\common\polarssl\include\md4.h" />
+    <ClInclude Include="..\..\common\polarssl\include\md5.h" />
+    <ClInclude Include="..\..\common\polarssl\include\md_wrap.h" />
+    <ClInclude Include="..\..\common\polarssl\include\memory.h" />
+    <ClInclude Include="..\..\common\polarssl\include\memory_buffer_alloc.h" />
+    <ClInclude Include="..\..\common\polarssl\include\net.h" />
+    <ClInclude Include="..\..\common\polarssl\include\oid.h" />
+    <ClInclude Include="..\..\common\polarssl\include\openssl.h" />
+    <ClInclude Include="..\..\common\polarssl\include\padlock.h" />
+    <ClInclude Include="..\..\common\polarssl\include\pbkdf2.h" />
+    <ClInclude Include="..\..\common\polarssl\include\pem.h" />
+    <ClInclude Include="..\..\common\polarssl\include\pk.h" />
+    <ClInclude Include="..\..\common\polarssl\include\pkcs11.h" />
+    <ClInclude Include="..\..\common\polarssl\include\pkcs12.h" />
+    <ClInclude Include="..\..\common\polarssl\include\pkcs5.h" />
+    <ClInclude Include="..\..\common\polarssl\include\pk_wrap.h" />
+    <ClInclude Include="..\..\common\polarssl\include\platform.h" />
+    <ClInclude Include="..\..\common\polarssl\include\ripemd160.h" />
+    <ClInclude Include="..\..\common\polarssl\include\rsa.h" />
+    <ClInclude Include="..\..\common\polarssl\include\sha1.h" />
+    <ClInclude Include="..\..\common\polarssl\include\sha256.h" />
+    <ClInclude Include="..\..\common\polarssl\include\sha512.h" />
+    <ClInclude Include="..\..\common\polarssl\include\ssl.h" />
+    <ClInclude Include="..\..\common\polarssl\include\ssl_cache.h" />
+    <ClInclude Include="..\..\common\polarssl\include\ssl_ciphersuites.h" />
+    <ClInclude Include="..\..\common\polarssl\include\threading.h" />
+    <ClInclude Include="..\..\common\polarssl\include\timing.h" />
+    <ClInclude Include="..\..\common\polarssl\include\version.h" />
+    <ClInclude Include="..\..\common\polarssl\include\x509.h" />
+    <ClInclude Include="..\..\common\polarssl\include\x509_crl.h" />
+    <ClInclude Include="..\..\common\polarssl\include\x509_crt.h" />
+    <ClInclude Include="..\..\common\polarssl\include\x509_csr.h" />
+    <ClInclude Include="..\..\common\polarssl\include\xtea.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{817618D1-62AB-4A1F-B563-DA7BB1275DD0}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>polarssl</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(VCInstallDir)include;$(VC_IncludePath);$(WindowsSDK_IncludePath);../../common/polarssl/include/</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
