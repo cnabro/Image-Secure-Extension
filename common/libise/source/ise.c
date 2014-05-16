@@ -1,14 +1,21 @@
 #include "ise.h"
-unsigned char *raw_image = NULL;
 
-int width = 2400;
-int height = 3200;
-int bytes_per_pixel = 3;   /* or 1 for GRACYSCALE images */
-int color_space = JCS_RGB; /* or JCS_GRAYSCALE for grayscale images */
-
-
-int read_jpeg_file(char *filename)
+int main()
 {
+	char *infilename = "./test/test.jpg";
+	char *outfilename = "./test/out.jpg";
+	char *compress = "./test/out.jpg";
+	char *test = "./test/test.txt";
+
+	//jpeg_container container = readjpeg(infilename);
+	//writejpeg(outfilename, container);
+	compressJPGX(infilename, "./test/out.jpgx");
+	return 0;
+}
+
+jpeg_container readjpeg(char *filename)
+{
+	jpeg_container info;
 	struct jpeg_decompress_struct cinfo;
 	struct jpeg_error_mgr jerr;
 
@@ -21,9 +28,8 @@ int read_jpeg_file(char *filename)
 	if (!infile)
 	{
 		printf("Error opening jpeg file %s\n!", filename);
-		return -1;
+		return;
 	}
-
 
 	cinfo.err = jpeg_std_error(&jerr);
 
@@ -32,40 +38,38 @@ int read_jpeg_file(char *filename)
 	jpeg_read_header(&cinfo, TRUE);
 
 	jpeg_start_decompress(&cinfo);
-	printf("components = %d\n", cinfo.num_components);
 
-	raw_image = (unsigned char*)malloc(cinfo.output_width*cinfo.output_height*cinfo.num_components);
-
+	info.image = (unsigned char*)malloc(cinfo.output_width*cinfo.output_height*cinfo.num_components);
+	info.dcinfo = cinfo;
 
 	row_pointer[0] = (unsigned char *)malloc(cinfo.output_width*cinfo.num_components);
-
 
 	while (cinfo.output_scanline < cinfo.image_height)
 	{
 		jpeg_read_scanlines(&cinfo, row_pointer, 1);
-		for (i = 0; i<cinfo.image_width*cinfo.num_components; i++)
-			raw_image[location++] = row_pointer[0][i];
+		for (i = 0; i  <cinfo.image_width*cinfo.num_components; i++)
+		{
+			info.image[location++] = row_pointer[0][i];
+		}
 	}
-
 
 	jpeg_finish_decompress(&cinfo);
 	jpeg_destroy_decompress(&cinfo);
 	free(row_pointer[0]);
 	fclose(infile);
 
-
-	return 1;
+	return info;
 }
 
-
-int write_jpeg_file(char *filename)
+int writejpeg(char *filename, jpeg_container container)
 {
 	struct jpeg_compress_struct cinfo;
 	struct jpeg_error_mgr jerr;
-
+	secure_container scarr[2];
+	int i,j =0;
 
 	JSAMPROW row_pointer[1];
-	FILE *outfile = fopen(filename, "wb");
+	FILE *outfile = fopen(filename, "rb");
 
 
 	if (!outfile)
@@ -73,52 +77,113 @@ int write_jpeg_file(char *filename)
 		printf("Error opening output jpeg file %s\n!", filename);
 		return -1;
 	}
+
 	cinfo.err = jpeg_std_error(&jerr);
 	jpeg_create_compress(&cinfo);
 	jpeg_stdio_dest(&cinfo, outfile);
 
+	cinfo.image_width = container.dcinfo.image_width;
+	cinfo.image_height = container.dcinfo.image_height;
+	cinfo.input_components = container.dcinfo.num_components;
+	cinfo.in_color_space = container.dcinfo.out_color_space;
 
+	//1. set secure container
+	scarr[0].height = 400;
+	scarr[0].width = 400;
+	scarr[0].type = ST_NORMAL;
+	scarr[0].pos_x = 500;
+	scarr[0].pos_y = 500;
 
-
-	cinfo.image_width = width;
-	cinfo.image_height = height;
-	cinfo.input_components = bytes_per_pixel;
-	cinfo.in_color_space = (J_COLOR_SPACE) color_space;
-
+	scarr[1].height = 400;
+	scarr[1].width = 700;
+	scarr[1].type = ST_NORMAL;
+	scarr[1].pos_x = 1500;
+	scarr[1].pos_y = 1400;
 
 	jpeg_set_defaults(&cinfo);
 
-
 	jpeg_start_compress(&cinfo, TRUE);
 
+	//2. sampling image from secure container
+
+
+	//3. encode sampling images
+
+
+	//4. write sampling info on xml file
+
+
+	//5. compress images with jpgx
 
 	while (cinfo.next_scanline < cinfo.image_height)
 	{
-		row_pointer[0] = &raw_image[cinfo.next_scanline * cinfo.image_width *  cinfo.input_components];
+		row_pointer[0] = &container.image[cinfo.next_scanline * cinfo.image_width *  cinfo.input_components];
+
+		//여기서 pos_x, pos_y겹치는곳 찾음
+		for( j = 0 ; j < 2 ; j++)
+		{
+			secure_container sc = scarr[j];
+			if(sc.pos_y < cinfo.next_scanline && sc.pos_y + sc.height > cinfo.next_scanline)
+			{
+				for(i = sc.pos_y * cinfo.input_components ; i < (sc.pos_y + sc.width) * cinfo.input_components ; i++)
+				{
+					row_pointer[0][i] = 0;
+					//write 
+				}
+			}
+		}
+
 		jpeg_write_scanlines(&cinfo, row_pointer, 1);
 	}
-
 
 	jpeg_finish_compress(&cinfo);
 	jpeg_destroy_compress(&cinfo);
 	fclose(outfile);
 
-
 	return 1;
 }
 
-
-int main()
+void compressJPGX(char *frompath, char *topath)
 {
-	char *infilename = "C:/opensource/ise/library/lib-win/Debug/test.jpg", *outfilename = "C:/opensource/ise/library/lib-win/Debug/out.jpg";
+    char    *filename   = NULL;
+    char    *gzfilename = NULL;
 
-	if (read_jpeg_file(infilename) > 0)
+    gzFile  zfp;
+    FILE    *fd;
+    int     n;
+    void*   buf;
+    int     lerrno;
+
+    filename = frompath;
+    gzfilename = (char *)malloc(strlen(topath)*sizeof(char));
+	buf = (void *)malloc(255);
+
+    //sprintf(gzfilename, "%s.jpgx", filename);
+	gzfilename = topath;
+
+	if ((fd = fopen(filename, "rb")) < 0)
 	{
-		if (write_jpeg_file(outfilename) < 0) return -1;
-	}
-	else {
-		return -1;
-	}
+        printf("file open error\n");
+        return;  
+    }
+    
+    if ((zfp = gzopen(gzfilename, "wb")) == NULL)
+    {
+		printf("jpgx open error\n");
+        return;
+    }
 
-	return 0;
+	while(0 < (n = fread((void*)buf, 1, 255, fd)))
+    {
+		printf("read cnt : %d\n" , n);
+		
+		printf("%s\n",gzerror(zfp, &lerrno));
+        if (gzwrite(zfp, buf, n) < 0)
+        {
+            printf("%s\n",gzerror(zfp, &lerrno));
+        }
+    }
+    gzclose(zfp);
+	fclose(fd);
+    printf("success");
 }
