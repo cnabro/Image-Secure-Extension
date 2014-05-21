@@ -23,20 +23,33 @@
     <ClCompile Include="..\..\common\zlib\source\inffast.c" />
     <ClCompile Include="..\..\common\zlib\source\inflate.c" />
     <ClCompile Include="..\..\common\zlib\source\inftrees.c" />
+    <ClCompile Include="..\..\common\zlib\source\ioapi.c" />
+    <ClCompile Include="..\..\common\zlib\source\iowin32.c" />
+    <ClCompile Include="..\..\common\zlib\source\miniunz.c" />
+    <ClCompile Include="..\..\common\zlib\source\minizip.c" />
+    <ClCompile Include="..\..\common\zlib\source\mztools.c" />
     <ClCompile Include="..\..\common\zlib\source\trees.c" />
     <ClCompile Include="..\..\common\zlib\source\uncompr.c" />
+    <ClCompile Include="..\..\common\zlib\source\unzip.c" />
+    <ClCompile Include="..\..\common\zlib\source\zip.c" />
     <ClCompile Include="..\..\common\zlib\source\zutil.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\common\zlib\include\crc32.h" />
+    <ClInclude Include="..\..\common\zlib\include\crypt.h" />
     <ClInclude Include="..\..\common\zlib\include\deflate.h" />
     <ClInclude Include="..\..\common\zlib\include\gzguts.h" />
     <ClInclude Include="..\..\common\zlib\include\inffast.h" />
     <ClInclude Include="..\..\common\zlib\include\inffixed.h" />
     <ClInclude Include="..\..\common\zlib\include\inflate.h" />
     <ClInclude Include="..\..\common\zlib\include\inftrees.h" />
+    <ClInclude Include="..\..\common\zlib\include\ioapi.h" />
+    <ClInclude Include="..\..\common\zlib\include\iowin32.h" />
+    <ClInclude Include="..\..\common\zlib\include\mztools.h" />
     <ClInclude Include="..\..\common\zlib\include\trees.h" />
+    <ClInclude Include="..\..\common\zlib\include\unzip.h" />
     <ClInclude Include="..\..\common\zlib\include\zconf.h" />
+    <ClInclude Include="..\..\common\zlib\include\zip.h" />
     <ClInclude Include="..\..\common\zlib\include\zlib.h" />
     <ClInclude Include="..\..\common\zlib\include\zutil.h" />
   </ItemGroup>
@@ -49,7 +62,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -80,6 +93,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

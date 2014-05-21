@@ -14,7 +14,8 @@
 
 #include "jpeglib.h"
 #include "zlib.h"
-
+#include "zip.h"
+//#include "unzip.h"
 
 
 typedef enum SECURE_TYPE{
@@ -36,5 +37,7 @@ typedef struct secure_container{
 } secure_container;
 
 jpeg_container readjpeg(char *filename);
-int writejpeg(char *filename, jpeg_container container);
-void compressJPGX(char *frompath, char *topath);
+int writejpeg(char *filename, jpeg_container container, secure_container scarr[]);
+//void compressJPGX(char *frompath, char *topath);
+void compressFiles(char *infiles[], int file_count, char *out_zip);
+char * getFileName(char* path);

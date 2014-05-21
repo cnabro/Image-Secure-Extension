@@ -15,84 +15,123 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\common\zlib\source\adler32.c">
+    <ClCompile Include="..\..\common\zlib\source\adler32.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\common\zlib\source\compress.c">
+    <ClCompile Include="..\..\common\zlib\source\compress.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\common\zlib\source\crc32.c">
+    <ClCompile Include="..\..\common\zlib\source\crc32.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\common\zlib\source\deflate.c">
+    <ClCompile Include="..\..\common\zlib\source\deflate.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\common\zlib\source\gzclose.c">
+    <ClCompile Include="..\..\common\zlib\source\gzclose.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\common\zlib\source\gzlib.c">
+    <ClCompile Include="..\..\common\zlib\source\gzlib.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\common\zlib\source\gzread.c">
+    <ClCompile Include="..\..\common\zlib\source\gzread.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\common\zlib\source\gzwrite.c">
+    <ClCompile Include="..\..\common\zlib\source\gzwrite.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\common\zlib\source\infback.c">
+    <ClCompile Include="..\..\common\zlib\source\infback.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\common\zlib\source\inffast.c">
+    <ClCompile Include="..\..\common\zlib\source\inffast.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\common\zlib\source\inflate.c">
+    <ClCompile Include="..\..\common\zlib\source\inflate.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\common\zlib\source\inftrees.c">
+    <ClCompile Include="..\..\common\zlib\source\inftrees.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\common\zlib\source\trees.c">
+    <ClCompile Include="..\..\common\zlib\source\trees.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\common\zlib\source\uncompr.c">
+    <ClCompile Include="..\..\common\zlib\source\uncompr.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\common\zlib\source\zutil.c">
+    <ClCompile Include="..\..\common\zlib\source\zutil.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\zlib\source\miniunz.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\zlib\source\minizip.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\zlib\source\ioapi.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\zlib\source\mztools.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\zlib\source\iowin32.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\zlib\source\unzip.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\zlib\source\zip.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\common\zlib\include\crc32.h">
+    <ClInclude Include="..\..\common\zlib\include\crc32.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\common\zlib\include\deflate.h">
+    <ClInclude Include="..\..\common\zlib\include\deflate.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\common\zlib\include\gzguts.h">
+    <ClInclude Include="..\..\common\zlib\include\gzguts.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\common\zlib\include\inffast.h">
+    <ClInclude Include="..\..\common\zlib\include\inffast.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\common\zlib\include\inffixed.h">
+    <ClInclude Include="..\..\common\zlib\include\inffixed.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\common\zlib\include\inflate.h">
+    <ClInclude Include="..\..\common\zlib\include\inflate.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\common\zlib\include\inftrees.h">
+    <ClInclude Include="..\..\common\zlib\include\inftrees.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\common\zlib\include\trees.h">
+    <ClInclude Include="..\..\common\zlib\include\trees.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\common\zlib\include\zconf.h">
+    <ClInclude Include="..\..\common\zlib\include\zconf.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\common\zlib\include\zlib.h">
+    <ClInclude Include="..\..\common\zlib\include\zlib.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\common\zlib\include\zutil.h">
+    <ClInclude Include="..\..\common\zlib\include\zutil.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\zlib\include\ioapi.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\zlib\include\mztools.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\zlib\include\iowin32.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\zlib\include\unzip.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\zlib\include\zip.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\zlib\include\crypt.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
