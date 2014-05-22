@@ -1,17 +1,39 @@
 #include "ise.h"
+static const unsigned char des3_test_buf[8] = "abcdefg\0";
+
+static const unsigned char des3_test_keys[24] =
+{
+	0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF,
+	0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF, 0x01,
+	0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF, 0x01, 0x23
+};
+
+static const unsigned char des3_test_ecb_enc[3][8] =
+{
+	{ 0x6A, 0x2A, 0x19, 0xF4, 0x1E, 0xCA, 0x85, 0x4B },
+	{ 0x03, 0xE6, 0x9F, 0x5B, 0xFA, 0x58, 0xEB, 0x42 },
+	{ 0xDD, 0x17, 0xE8, 0xB8, 0xB4, 0x37, 0xD2, 0x32 }
+};
 
 int main()
 {
+	int i, j = 0;
+
 	char *infilename = "./test/test.jpg";
 	char *outfilename = "./test/.abcd/out.jpg";
 	char *compress = "./test/out.jpg";
 	char *test = "./test/test.jpg";
 	secure_container scarr[2];
-
 	jpeg_container container = readjpeg(infilename);
-	jpeg_container crop_container = readjpeg(infilename);
+
+	/*des*/
+	des3_context ctx3;
+	unsigned char key[24];
+	unsigned char buf[8];
+
 	//test
 
+	/*jpeg croping test*/
 	char *infiles[] = { "./test/newsy.jpg", "./test/out.jpg" };
 
 	scarr[0].height = 500;
@@ -29,10 +51,28 @@ int main()
 	_mkdir("./test/.abcd/");
 	writejpeg(outfilename, container, scarr, 2);
 
-	//compressJPGX(outfilename, "./test/abcd.jpgx");
+	/*des test*/
+	memcpy(buf, des3_test_buf, 8);
 
-	//test code
-	//compressFiles(infiles, 2, "./test/test1.zip");
+	des3_set3key_enc(&ctx3, des3_test_keys);
+
+	printf("ori : %s\n\n\n", buf);
+
+	des3_crypt_ecb(&ctx3, buf, buf);
+
+	printf("enc : %s\n\n\n",buf);
+
+	des3_set3key_dec(&ctx3, des3_test_keys);
+	
+	des3_crypt_ecb(&ctx3, buf, buf);
+
+	printf("dec : %s\n\n\n", buf);
+	/*for (j = 0; j < 10000; j++)
+	{
+		
+	}*/
+
+	//memcmp(buf, des3_test_ecb_enc[u], 8) != 0 );
 
 	return 0;
 }
@@ -40,7 +80,7 @@ int main()
 int compressFiles(char *infiles[], int file_count, char *out_zip)
 {
 	zip_fileinfo zfi;
-	int size_read, i,err , ret = ZIP_OK;
+	int size_read, i, err, ret = ZIP_OK;
 	char buf[4086];
 
 	const char* filenameinzip = out_zip;
@@ -57,7 +97,7 @@ int compressFiles(char *infiles[], int file_count, char *out_zip)
 		printf("%s\n", filename);
 		filepath = infiles[i];
 
-		ret = zipOpenNewFileInZip(zf,filename,&zfi,NULL, 0,NULL, 0,"my comment for this interior file",Z_DEFLATED,Z_DEFAULT_COMPRESSION);
+		ret = zipOpenNewFileInZip(zf, filename, &zfi, NULL, 0, NULL, 0, "my comment for this interior file", Z_DEFLATED, Z_DEFAULT_COMPRESSION);
 
 		fin = fopen(filepath, "rb");
 		if (fin == NULL)
@@ -71,7 +111,6 @@ int compressFiles(char *infiles[], int file_count, char *out_zip)
 		{
 			err = ZIP_OK;
 			size_read = (int)fread(buf, 1, sizeof(buf), fin);
-			//printf("gogo : %d\n", size_read);
 
 			if (size_read < sizeof(buf))
 			{
@@ -178,16 +217,16 @@ int writejpeg(char *filename, jpeg_container container, secure_container sc_arra
 {
 	struct jpeg_compress_struct cinfo;
 	struct jpeg_error_mgr jerr;
-	int i , j , k = 0;
+	int i, j, k = 0;
 
 	JSAMPROW row_pointer = NULL;
-	JSAMPROW *secure_rp = NULL;
+	JSAMPROW secure_rp = NULL;
 
 	FILE *outfile = fopen(filename, "wb");
 
-	FILE **secureFile = NULL;
-	char **secureFilePath = NULL;
-	
+	FILE **sc_file = NULL;
+	char **sc_file_path = NULL;
+
 	struct jpeg_compress_struct **secure_item_info;
 
 	if (!outfile)
@@ -205,40 +244,32 @@ int writejpeg(char *filename, jpeg_container container, secure_container sc_arra
 	cinfo.input_components = container.dcinfo.num_components;
 	cinfo.in_color_space = container.dcinfo.out_color_space;
 
-
 	jpeg_set_defaults(&cinfo);
 	jpeg_start_compress(&cinfo, TRUE);
 
-
-	/*secureFilePath = (char *)malloc(strlen(filename) + 4);
-	sprintf(*secureFilePath,"%s.jpg",filename);
-	secureFile = fopen(secureFilePath,"wb");
-	printf("secureFilePath : %s\n", secureFilePath);*/
-
 	//secure container 갯수 만큼 jpeg dcinfo 생성함
 	secure_item_info = (struct jpeg_compress_struct**)malloc(sizeof(struct jpeg_compress_struct*) * sc_arr_count);
-	secureFile = (FILE**)malloc(sizeof(FILE*) * sc_arr_count);
-	secureFilePath = (char **)malloc(sizeof(char*)*sc_arr_count);
-	
+	sc_file = (FILE**)malloc(sizeof(FILE*) * sc_arr_count);
+	sc_file_path = (char **)malloc(sizeof(char*)*sc_arr_count);
 
-	for(i = 0 ; i < sc_arr_count ; i ++)
+
+	for (i = 0; i < sc_arr_count; i++)
 	{
 		secure_container sc = sc_array[i];
 
-		secureFilePath[i] = (char *)malloc(strlen(filename) + 30);
+		sc_file_path[i] = (char *)malloc(strlen(filename) + 30);
 		secure_item_info[i] = (struct jpeg_compress_struct*)malloc(sizeof(struct jpeg_compress_struct));
 
-		sprintf(secureFilePath[i],"%s%d", filename , i);
-		printf("secureFilePath : %s\n" , secureFilePath[i]);
 
-		secureFile[i] = fopen(secureFilePath[i], "wb");
+		sprintf(sc_file_path[i], "%s%d", filename, i);
+		printf("sc_file_path : %s\n", sc_file_path[i]);
 
-
+		sc_file[i] = fopen(sc_file_path[i], "wb");
 
 		secure_item_info[i]->err = jpeg_std_error(&jerr);
 
 		jpeg_create_compress(secure_item_info[i]);
-		jpeg_stdio_dest(secure_item_info[i], secureFile[i]);
+		jpeg_stdio_dest(secure_item_info[i], sc_file[i]);
 
 		secure_item_info[i]->image_width = sc.width;
 		secure_item_info[i]->image_height = sc.height;
@@ -247,9 +278,6 @@ int writejpeg(char *filename, jpeg_container container, secure_container sc_arra
 
 		jpeg_set_defaults(secure_item_info[i]);
 		jpeg_start_compress(secure_item_info[i], TRUE);
-		//secure_item_info[i].
-
-
 	}
 
 
@@ -258,7 +286,6 @@ int writejpeg(char *filename, jpeg_container container, secure_container sc_arra
 	while (cinfo.next_scanline < cinfo.image_height) //한줄씩 읽음
 	{
 		row_pointer = &container.image[cinfo.next_scanline * cinfo.image_width * cinfo.input_components];
-		
 
 		//여기서 pos_x, pos_y겹치는곳 찾음
 		for (j = 0; j < sc_arr_count; j++)
@@ -267,34 +294,34 @@ int writejpeg(char *filename, jpeg_container container, secure_container sc_arra
 
 			if (sc.pos_y < cinfo.next_scanline && sc.pos_y + sc.height >= cinfo.next_scanline)
 			{
-				secure_rp = (JSAMPROW *)malloc(secure_item_info[j]->image_width * secure_item_info[j]->input_components);
-				//sprintf(secureFilePath,"secure_%d.ise",cinfo.next_scanline);
-				//printf("secureFilePath : %s\n", secureFilePath);
+				secure_rp = &container.image[cinfo.next_scanline * cinfo.image_width * cinfo.input_components + sc.pos_y * cinfo.input_components];
+				jpeg_write_scanlines(secure_item_info[j], &secure_rp, 1);
 
-				for (i = sc.pos_y * cinfo.input_components, k = 0 ; i < (sc.pos_y + sc.width) * cinfo.input_components; i++ , k++)
+				for (i = sc.pos_y * cinfo.input_components, k = 0; i < (sc.pos_y + sc.width) * cinfo.input_components; i++, k++)
 				{
-					//secure_rp[k] = &row_pointer[i];
 					row_pointer[i] = 0;
-					//write 
 				}
 			}
 		}
 
-		//jpeg_write_scanlines(secure_item_info[j], secure_rp, 1);
 		jpeg_write_scanlines(&cinfo, &row_pointer, 1);
 	}
 
-	//fclose(secureFile);
+	//fclose(sc_file);
 
-	//TODO : memory 해제
-	/*for(i = 0 ; i < sc_arr_count ; i ++)
+	for (i = 0; i < sc_arr_count; i++)
 	{
-		jpeg_finish_compress(secure_item_info[j]);
-		jpeg_destroy_compress(secure_item_info[j]);
-	}*/
+		jpeg_finish_compress(secure_item_info[i]);
+		jpeg_destroy_compress(secure_item_info[i]);
+		fclose(sc_file[i]);
+	}
 
 	jpeg_finish_compress(&cinfo);
 	jpeg_destroy_compress(&cinfo);
+
+	free(container.image);
+	free(sc_file);
+
 	fclose(outfile);
 
 	return 1;
@@ -369,4 +396,5 @@ void compress_encode_stream(char * path)
 //	fclose(fd);
 //	printf("success");
 //}
+
 

@@ -16,6 +16,8 @@
 #include "jpeglib.h"
 #include "zlib.h"
 #include "zip.h"
+#include "des.h"
+#include "config.h"
 //#include "unzip.h"
 
 typedef enum SECURE_TYPE{
