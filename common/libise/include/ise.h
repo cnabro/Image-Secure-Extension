@@ -5,6 +5,7 @@
 
 #ifdef WIN32
 #include <io.h>
+#include <direct.h>
 #endif
 
 #ifndef WIN32
@@ -16,7 +17,6 @@
 #include "zlib.h"
 #include "zip.h"
 //#include "unzip.h"
-
 
 typedef enum SECURE_TYPE{
 	ST_NORMAL,
@@ -37,7 +37,7 @@ typedef struct secure_container{
 } secure_container;
 
 jpeg_container readjpeg(char *filename);
-int writejpeg(char *filename, jpeg_container container, secure_container scarr[]);
+int writejpeg(char *filename, jpeg_container container, secure_container sc_array[], int arr_count);
 //void compressJPGX(char *frompath, char *topath);
-void compressFiles(char *infiles[], int file_count, char *out_zip);
+int compressFiles(char *infiles[], int file_count, char *out_zip);
 char * getFileName(char* path);
