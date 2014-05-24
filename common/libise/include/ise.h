@@ -39,7 +39,7 @@ typedef struct secure_container{
 } secure_container;
 
 jpeg_container readjpeg(char *filename);
-int writejpeg(char *filename, jpeg_container container, secure_container sc_array[], int arr_count);
+int write_sc_jpg(char *filename, jpeg_container container, secure_container sc_array[], int arr_count);
 //void compressJPGX(char *frompath, char *topath);
 int compressFiles(char *infiles[], int file_count, char *out_zip);
 char * getFileName(char* path);

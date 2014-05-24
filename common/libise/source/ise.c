@@ -8,13 +8,6 @@ static const unsigned char des3_test_keys[24] =
 	0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF, 0x01, 0x23
 };
 
-static const unsigned char des3_test_ecb_enc[3][8] =
-{
-	{ 0x6A, 0x2A, 0x19, 0xF4, 0x1E, 0xCA, 0x85, 0x4B },
-	{ 0x03, 0xE6, 0x9F, 0x5B, 0xFA, 0x58, 0xEB, 0x42 },
-	{ 0xDD, 0x17, 0xE8, 0xB8, 0xB4, 0x37, 0xD2, 0x32 }
-};
-
 int main()
 {
 	int i, j = 0;
@@ -51,7 +44,7 @@ int main()
 	_mkdir("./test/.abcd/");
 	writejpeg(outfilename, container, scarr, 2);
 
-	/*des test*/
+	/*des test
 	memcpy(buf, des3_test_buf, 8);
 
 	des3_set3key_enc(&ctx3, des3_test_keys);
@@ -66,7 +59,7 @@ int main()
 	
 	des3_crypt_ecb(&ctx3, buf, buf);
 
-	printf("dec : %s\n\n\n", buf);
+	printf("dec : %s\n\n\n", buf);*/
 	/*for (j = 0; j < 10000; j++)
 	{
 		
@@ -76,6 +69,18 @@ int main()
 
 	return 0;
 }
+
+//void encode_sc_file(char* in_path, char* out_path)
+//{
+//	FILE *in = fopen(in_path, "rb");
+//	FILE *out = fopen(out_path, "wb");
+//	char int_buf[8];
+//}
+//
+//void make_sc_info_xml()
+//{
+//
+//}
 
 int compressFiles(char *infiles[], int file_count, char *out_zip)
 {
@@ -213,11 +218,12 @@ jpeg_container readjpeg(char *filename)
 	return info;
 }
 
-int writejpeg(char *filename, jpeg_container container, secure_container sc_array[], int sc_arr_count)
+int write_sc_jpg(char *filename, jpeg_container container, secure_container sc_array[], int sc_arr_count)
 {
 	struct jpeg_compress_struct cinfo;
 	struct jpeg_error_mgr jerr;
 	int i, j, k = 0;
+	des3_context ctx3;
 
 	JSAMPROW row_pointer = NULL;
 	JSAMPROW secure_rp = NULL;
@@ -251,7 +257,7 @@ int writejpeg(char *filename, jpeg_container container, secure_container sc_arra
 	secure_item_info = (struct jpeg_compress_struct**)malloc(sizeof(struct jpeg_compress_struct*) * sc_arr_count);
 	sc_file = (FILE**)malloc(sizeof(FILE*) * sc_arr_count);
 	sc_file_path = (char **)malloc(sizeof(char*)*sc_arr_count);
-
+	des3_set3key_enc(&ctx3, des3_test_keys);
 
 	for (i = 0; i < sc_arr_count; i++)
 	{
