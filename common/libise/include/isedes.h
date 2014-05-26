@@ -3,5 +3,5 @@
 #include "des.h"
 #include "config.h"
 
-void des_encode_file(char *in_file_path, char *out_file_path, char * key);
-void des_decode_file(char *in_file_path, char *out_file_path, char * key);
+void encode_file_des(char *in_file_path, char *out_file_path, char * key);
+void decode_file_des(char *in_file_path, char *out_file_path, char * key);

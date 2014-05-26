@@ -1,6 +1,6 @@
 #include "isedes.h"
 
-void des_encode_file(char *in_file_path, char *out_file_path , char * key)
+void encode_file_des(char *in_file_path, char *out_file_path, char * key)
 {
 	FILE    *in_file;
 	FILE    *out_file;
@@ -25,7 +25,6 @@ void des_encode_file(char *in_file_path, char *out_file_path , char * key)
 
 	while (0 < (n = fread((void*)buf, 1, 8, in_file)))
 	{
-		printf("read cnt : %d\n", n);
 		des3_crypt_ecb(&ctx3, buf, buf);
 		//printf("enc cnt : %d\n", sizeof(buf));
 		fwrite(buf, 1, 8, out_file);
@@ -36,7 +35,7 @@ void des_encode_file(char *in_file_path, char *out_file_path , char * key)
 	printf("success");
 }
 
-void des_decode_file(char *in_file_path, char *out_file_path, char * key)
+void decode_file_des(char *in_file_path, char *out_file_path, char * key)
 {
 	FILE    *in_file;
 	FILE    *out_file;
@@ -61,7 +60,6 @@ void des_decode_file(char *in_file_path, char *out_file_path, char * key)
 
 	while (0 < (n = fread((void*)buf, 1, 8, in_file)))
 	{
-		//printf("read cnt : %d\n", n);
 		des3_crypt_ecb(&ctx3, buf, buf);
 		fwrite(buf, 1, 8, out_file);
 	}

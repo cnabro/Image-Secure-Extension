@@ -1,3 +1,4 @@
+#include "isejpgx.h"
 
 static const unsigned char des3_test_keys[24] =
 {
@@ -15,7 +16,7 @@ int main()
 	char *compress = "./test/out.jpg";
 	char *test = "./test/test.jpg";
 	secure_container scarr[2];
-	jpeg_container container = readjpeg(infilename);
+	jpeg_container container = read_jpeg_container(infilename);
 
 	/*des*/
 	des3_context ctx3;
@@ -40,9 +41,9 @@ int main()
 	scarr[1].pos_y = 50;
 
 	_mkdir("./test/.abcd/");
-	write_sc_jpg(outfilename, container, scarr, 2);
-	encode_buffer("./test/.abcd/out.jpg0", "./test/.abcd/out_sec.jpg");
-	decode_buffer("./test/.abcd/out_sec.jpg", "./test/.abcd/out_dec.jpg");
+	write_jpeg_with_secure_container(outfilename, container, scarr, 2);
+	encode_file_des("./test/.abcd/out.jpg0", "./test/.abcd/out_sec.jpg", des3_test_keys);
+	decode_file_des("./test/.abcd/out_sec.jpg", "./test/.abcd/out_dec.jpg", des3_test_keys);
 
 	return 0;
 }

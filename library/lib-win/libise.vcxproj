@@ -81,20 +81,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\common\libise\source\ise.c" />
+    <ClCompile Include="..\..\common\libise\source\isecore.c" />
     <ClCompile Include="..\..\common\libise\source\isedes.c" />
     <ClCompile Include="..\..\common\libise\source\isejpgx.c" />
     <ClCompile Include="..\..\common\libise\source\isepack.c" />
     <ClCompile Include="..\..\common\libise\source\isepngx.c" />
-    <ClCompile Include="..\..\common\libise\source\iseunpack.c" />
+    <ClCompile Include="..\..\common\libise\source\isetest.c" />
+    <ClCompile Include="..\..\common\libise\source\iseutil.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\common\libise\include\ise.h" />
+    <ClInclude Include="..\..\common\libise\include\isecore.h" />
     <ClInclude Include="..\..\common\libise\include\isedes.h" />
     <ClInclude Include="..\..\common\libise\include\isejpgx.h" />
     <ClInclude Include="..\..\common\libise\include\isepack.h" />
     <ClInclude Include="..\..\common\libise\include\isepngx.h" />
-    <ClInclude Include="..\..\common\libise\include\iseunpack.h" />
+    <ClInclude Include="..\..\common\libise\include\iseutil.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="libjpeg.vcxproj">

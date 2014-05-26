@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\common\libise\source\ise.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\common\libise\source\isedes.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -30,14 +27,17 @@
     <ClCompile Include="..\..\common\libise\source\isepngx.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\libise\source\iseunpack.c">
+    <ClCompile Include="..\..\common\libise\source\iseutil.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\libise\source\isecore.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\libise\source\isetest.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\common\libise\include\ise.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\common\libise\include\isedes.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -50,7 +50,10 @@
     <ClInclude Include="..\..\common\libise\include\isepngx.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\libise\include\iseunpack.h">
+    <ClInclude Include="..\..\common\libise\include\iseutil.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\common\libise\include\isecore.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

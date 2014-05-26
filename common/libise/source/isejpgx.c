@@ -1,5 +1,6 @@
+#include "isejpgx.h"
 
-jpeg_container read_jpeg(char *filename)
+jpeg_container read_jpeg_container(char *filename)
 {
 	jpeg_container info;
 	struct jpeg_decompress_struct cinfo;
@@ -48,7 +49,7 @@ jpeg_container read_jpeg(char *filename)
 }
 
 
-int write_sc_jpg(char *filename, jpeg_container container, secure_container sc_array[], int sc_arr_count)
+int write_jpeg_with_secure_container(char *filename, jpeg_container container, secure_container sc_array[], int sc_arr_count)
 {
 	struct jpeg_compress_struct cinfo;
 	struct jpeg_error_mgr jerr;
@@ -87,7 +88,6 @@ int write_sc_jpg(char *filename, jpeg_container container, secure_container sc_a
 	secure_item_info = (struct jpeg_compress_struct**)malloc(sizeof(struct jpeg_compress_struct*) * sc_arr_count);
 	sc_file = (FILE**)malloc(sizeof(FILE*)* sc_arr_count);
 	sc_file_path = (char **)malloc(sizeof(char*)*sc_arr_count);
-	des3_set3key_enc(&ctx3, des3_test_keys);
 
 	for (i = 0; i < sc_arr_count; i++)
 	{

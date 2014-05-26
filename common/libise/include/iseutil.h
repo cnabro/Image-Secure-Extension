@@ -13,35 +13,6 @@
 #endif
 
 
-#include "jpeglib.h"
+
 #include "zlib.h"
 #include "zip.h"
-#include "isedes.h"
-
-//#include "unzip.h"
-
-typedef enum SECURE_TYPE{
-	ST_NORMAL,
-	ST_FACE
-} SECURE_TYPE;
-
-typedef struct jpeg_container{
-	struct jpeg_decompress_struct dcinfo;
-	unsigned char *image;
-} jpeg_container;
-
-typedef struct secure_container{
-	int width;
-	int height;
-	int pos_x;
-	int pos_y;
-	SECURE_TYPE type;
-} secure_container;
-
-jpeg_container readjpeg(char *filename);
-int write_sc_jpg(char *filename, jpeg_container container, secure_container sc_array[], int sc_arr_count);
-//void compressJPGX(char *frompath, char *topath);
-int compressFiles(char *infiles[], int file_count, char *out_zip);
-char * getFileName(char* path);
-void encode_buffer(char *in_file_path, char *out_file_path);
-void decode_buffer(char *in_file_path, char *out_file_path);
