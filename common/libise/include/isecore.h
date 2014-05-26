@@ -12,6 +12,11 @@
 #include <unistd.h>
 #endif
 
+#include "des.h"
+#include "jpeglib.h"
+#include "zlib.h"
+#include "zip.h"
+#include "mxml.h"
 
 typedef enum SECURE_TYPE{
 	ST_NORMAL,

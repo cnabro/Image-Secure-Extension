@@ -1,7 +1,4 @@
-#include "isedes.h"
 #include "isecore.h"
-#include "jpeglib.h"
-
 
 typedef struct jpeg_container{
 	struct jpeg_decompress_struct dcinfo;

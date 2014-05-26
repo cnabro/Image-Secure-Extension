@@ -41,7 +41,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(VCInstallDir)include;$(VC_IncludePath);$(WindowsSDK_IncludePath);../../common/libjpeg/include/;../../common/libise/include/;../../common/libpng/include/;../../common/zlib/include/;../../common/polarssl/include/</IncludePath>
+    <IncludePath>$(VCInstallDir)include;$(VC_IncludePath);$(WindowsSDK_IncludePath);../../common/libjpeg/include/;../../common/libise/include/;../../common/libpng/include/;../../common/zlib/include/;../../common/polarssl/include/;../../common/mxml/include/</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -54,12 +54,14 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;ISELIB_EXPORTS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../../common/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
       <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>oldnames.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -83,6 +85,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\common\libise\source\isecore.c" />
     <ClCompile Include="..\..\common\libise\source\isedes.c" />
+    <ClCompile Include="..\..\common\libise\source\iseprop.c" />
     <ClCompile Include="..\..\common\libise\source\isejpgx.c" />
     <ClCompile Include="..\..\common\libise\source\isepack.c" />
     <ClCompile Include="..\..\common\libise\source\isepngx.c" />
@@ -95,6 +98,7 @@
     <ClInclude Include="..\..\common\libise\include\isejpgx.h" />
     <ClInclude Include="..\..\common\libise\include\isepack.h" />
     <ClInclude Include="..\..\common\libise\include\isepngx.h" />
+    <ClInclude Include="..\..\common\libise\include\iseprop.h" />
     <ClInclude Include="..\..\common\libise\include\iseutil.h" />
   </ItemGroup>
   <ItemGroup>
@@ -113,6 +117,9 @@
       <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
       <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
+    <ProjectReference Include="mxml.vcxproj">
+      <Project>{27f48bde-12fe-436d-b182-ce20b9546087}</Project>
     </ProjectReference>
     <ProjectReference Include="polarssl.vcxproj">
       <Project>{817618d1-62ab-4a1f-b563-da7bb1275dd0}</Project>

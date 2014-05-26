@@ -45,5 +45,8 @@ int main()
 	encode_file_des("./test/.abcd/out.jpg0", "./test/.abcd/out_sec.jpg", des3_test_keys);
 	decode_file_des("./test/.abcd/out_sec.jpg", "./test/.abcd/out_dec.jpg", des3_test_keys);
 
+
+	make_prop_xml(scarr, "./test/.abcd/out.xml", 0); //for test
+
 	return 0;
 }

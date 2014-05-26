@@ -1,12 +1,12 @@
 #include "isepack.h"
 
-int make_compress(char *infiles[], int file_count, char *out_zip)
+int make_compress(char *in_file_arr[], int file_count, char *out_file_name, char* file_tag)
 {
 	zip_fileinfo zfi;
 	int size_read, i, err, ret = ZIP_OK;
 	char buf[4086];
 
-	const char* filenameinzip = out_zip;
+	const char* filenameinzip = out_file_name;
 	char* filepath = NULL;
 	char* filename = NULL;
 	FILE * fin;
@@ -16,11 +16,11 @@ int make_compress(char *infiles[], int file_count, char *out_zip)
 
 	for (i = 0; i < file_count; i++)
 	{
-		filename = getFileName(infiles[i]);
+		filename = getFileName(in_file_arr[i]);
 		printf("%s\n", filename);
-		filepath = infiles[i];
+		filepath = in_file_arr[i];
 
-		ret = zipOpenNewFileInZip(zf, filename, &zfi, NULL, 0, NULL, 0, "my comment for this interior file", Z_DEFLATED, Z_DEFAULT_COMPRESSION);
+		ret = zipOpenNewFileInZip(zf, filename, &zfi, NULL, 0, NULL, 0, file_tag, Z_DEFLATED, Z_DEFAULT_COMPRESSION);
 
 		fin = fopen(filepath, "rb");
 		if (fin == NULL)
@@ -60,7 +60,7 @@ int make_compress(char *infiles[], int file_count, char *out_zip)
 	}
 
 
-	zipClose(zf, "my comment for exterior file");
+	zipClose(zf, file_tag);
 
 	return ZIP_OK;
 }

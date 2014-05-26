@@ -143,8 +143,6 @@ int write_jpeg_with_secure_container(char *filename, jpeg_container container, s
 		jpeg_write_scanlines(&cinfo, &row_pointer, 1);
 	}
 
-	//fclose(sc_file);
-
 	for (i = 0; i < sc_arr_count; i++)
 	{
 		jpeg_finish_compress(secure_item_info[i]);
