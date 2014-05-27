@@ -40,7 +40,7 @@ void decode_file_des(char *in_file_path, char *out_file_path, char * key)
 	FILE    *in_file;
 	FILE    *out_file;
 	int     n;
-	void*   buf = (void *)malloc(8);;
+	void*   buf = (void *)malloc(8);
 	int     lerrno;
 	des3_context ctx3;
 

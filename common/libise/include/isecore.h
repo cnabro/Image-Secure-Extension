@@ -30,3 +30,21 @@ typedef struct secure_container{
 	int pos_y;
 	SECURE_TYPE type;
 } secure_container;
+
+
+typedef struct jpeg_container{
+	struct jpeg_decompress_struct dcinfo;
+	unsigned char *image;
+} jpeg_container;
+
+
+typedef struct png_container{
+	//struct jpeg_decompress_struct dcinfo; TODO : set png struct
+	unsigned char *image;
+} png_container;
+
+unsigned char* get_secure_jpeg_buffer(char *filename);
+unsigned char* get_secure_png_buffer(char *filename);
+
+int make_secure_jpeg(char *filename, jpeg_container container, secure_container sc_array[], int sc_arr_count);
+int make_secure_png(char *filename, png_container container, secure_container sc_array[], int sc_arr_count);

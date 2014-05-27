@@ -48,7 +48,6 @@ jpeg_container read_jpeg_container(char *filename)
 	return info;
 }
 
-
 int write_jpeg_with_secure_container(char *filename, jpeg_container container, secure_container sc_array[], int sc_arr_count)
 {
 	struct jpeg_compress_struct cinfo;
