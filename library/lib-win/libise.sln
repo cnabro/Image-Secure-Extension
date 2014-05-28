@@ -18,6 +18,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "zlib.vcxproj", "{B5
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mxml", "mxml.vcxproj", "{27F48BDE-12FE-436D-B182-CE20B9546087}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IseWrapper", "csWrapper\libise_wrapper.vcxproj", "{1F717995-B3C7-43D8-AD0F-96A1BC9DFF54}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -48,6 +50,10 @@ Global
 		{27F48BDE-12FE-436D-B182-CE20B9546087}.Debug|Win32.Build.0 = Debug|Win32
 		{27F48BDE-12FE-436D-B182-CE20B9546087}.Release|Win32.ActiveCfg = Release|Win32
 		{27F48BDE-12FE-436D-B182-CE20B9546087}.Release|Win32.Build.0 = Release|Win32
+		{1F717995-B3C7-43D8-AD0F-96A1BC9DFF54}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1F717995-B3C7-43D8-AD0F-96A1BC9DFF54}.Debug|Win32.Build.0 = Debug|Win32
+		{1F717995-B3C7-43D8-AD0F-96A1BC9DFF54}.Release|Win32.ActiveCfg = Release|Win32
+		{1F717995-B3C7-43D8-AD0F-96A1BC9DFF54}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
