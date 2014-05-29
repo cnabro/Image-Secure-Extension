@@ -1,4 +1,5 @@
 #include "isepack.h"
+#include "iseutil.h"
 
 int make_compress(char *in_file_arr[], int file_count, char *out_file_name, char* file_tag)
 {
@@ -16,7 +17,7 @@ int make_compress(char *in_file_arr[], int file_count, char *out_file_name, char
 
 	for (i = 0; i < file_count; i++)
 	{
-		filename = getFileName(in_file_arr[i]);
+		filename = get_file_name(in_file_arr[i]);
 		printf("%s\n", filename);
 		filepath = in_file_arr[i];
 

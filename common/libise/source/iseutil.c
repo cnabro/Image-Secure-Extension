@@ -1,29 +1,143 @@
 #include "iseutil.h"
 
-char * getFileName(char* path)
+char * get_file_name_ex(char* path)
 {
-	char *filepath;
-	char *pToken = NULL;
-	char *pFilename = NULL;
+	char *file_path;
+	char *token = NULL;
+	char *file_name = NULL;
 
-	char *pSeparator = "/";
-	char *pExtenSeparator = ".";
+	char *seperator = "/";
 
-	filepath = (char*)malloc(strlen(path));
-	strcpy(filepath, path);
+	file_path = (char*)malloc(strlen(path));
+	strcpy(file_path, path);
 
-	pToken = strtok(filepath, pSeparator);
-	pFilename = pToken;
+	token = strtok(file_path, seperator);
+	file_name = token;
 
-	while ((pToken = strtok(NULL, pSeparator)) != NULL)
+	while ((token = strtok(NULL, seperator)) != NULL)
 	{
-		pFilename = pToken;
+		file_name = token;
 	}
 
-	return pFilename;
+	return file_name;
 }
 
+char * get_file_name(char* path)
+{
+	char *file_path;
+	char *token = NULL;
+	char *file_name = NULL;
+	
+	char *path_seperator = "/";
+	char *extention_seperator = ".";
 
+	file_path = (char*)malloc(strlen(path));
+	strcpy(file_path, path);
+
+	token = strtok(file_path, path_seperator);
+	file_name = token;
+
+	while ((token = strtok(NULL, path_seperator)) != NULL)
+	{
+		file_name = token;
+	}
+
+	if ((token = strtok(file_name, extention_seperator)) != NULL)
+	{
+		file_name = token;
+	}
+
+	return file_name;
+}
+
+char * get_current_path(char* path)
+{
+	char *file_path;
+	char *token = NULL;
+	char *file_name = get_file_name_ex(path);
+
+	char *current_path = str_replace_all(path, file_name, "\0");
+	return current_path;
+}
+
+char * str_replace_all(char *s, const char *olds, const char *news)
+{
+	char *result, *sr;
+	size_t i, count = 0;
+	size_t oldlen = strlen(olds); if (oldlen < 1) return s;
+	size_t newlen = strlen(news);
+
+
+	if (newlen != oldlen)
+	{
+		for (i = 0; s[i] != '\0';)
+		{
+			if (memcmp(&s[i], olds, oldlen) == 0)
+			{
+				count++;
+				i += oldlen;
+			}
+			else
+			{
+				i++;
+			}
+		}
+	}
+	else
+	{
+		i = strlen(s);
+	}
+
+	result = (char *)malloc(count * (newlen - oldlen) + i + 1);
+	if (result == NULL) return NULL;
+
+	sr = result;
+	while (*s)
+	{
+		if (memcmp(s, olds, oldlen) == 0) 
+		{
+			memcpy(sr, news, newlen);
+			sr += newlen;
+			s += oldlen;
+		}
+		else
+		{
+			*sr++ = *s++;
+		}
+	}
+	*sr = '\0';
+
+	return result;
+}
+
+char* str_concat(int count, ...)
+{
+	va_list ap;
+	int i;
+
+	// Find required length to store merged string
+	int len = 1; // room for NULL
+	va_start(ap, count);
+	for (i = 0; i<count; i++)
+		len += strlen(va_arg(ap, char*));
+	va_end(ap);
+
+	// Allocate memory to concat strings
+	char *merged = calloc(sizeof(char), len);
+	int null_pos = 0;
+
+	// Actually concatenate strings
+	va_start(ap, count);
+	for (i = 0; i<count; i++)
+	{
+		char *s = va_arg(ap, char*);
+		strcpy(merged + null_pos, s);
+		null_pos += strlen(s);
+	}
+	va_end(ap);
+
+	return merged;
+}
 
 //void compressJPGX(char *folder, char *topath)
 //{

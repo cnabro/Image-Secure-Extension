@@ -1,4 +1,5 @@
 #include "isejpgx.h"
+#include "iseutil.h"
 
 jpeg_container read_jpeg_container(char *filename)
 {
@@ -48,7 +49,7 @@ jpeg_container read_jpeg_container(char *filename)
 	return info;
 }
 
-int write_jpeg_with_secure_container(char *filename, jpeg_container container, secure_container sc_array[], int sc_arr_count)
+int write_jpeg_with_secure_container(char *filename, jpeg_container container, secure_container sc_array[], int sc_arr_count, char *key)
 {
 	struct jpeg_compress_struct cinfo;
 	struct jpeg_error_mgr jerr;
@@ -58,14 +59,17 @@ int write_jpeg_with_secure_container(char *filename, jpeg_container container, s
 	JSAMPROW row_pointer = NULL;
 	JSAMPROW secure_rp = NULL;
 
-	FILE *outfile = fopen(filename, "wb");
+	char *out_temp_folder = str_concat(3, get_current_path(filename), ".", get_file_name(filename));
+	char *core_file_path = str_concat(2, out_temp_folder, "/core.jpg");
+	FILE *core_file = fopen(core_file_path, "wb");
 
 	FILE **sc_file = NULL;
 	char **sc_file_path = NULL;
+	char **sc_enc_file_path = NULL;
 
 	struct jpeg_compress_struct **secure_item_info;
 
-	if (!outfile)
+	if (!core_file)
 	{
 		printf("Error opening output jpeg file %s\n!", filename);
 		return -1;
@@ -73,7 +77,7 @@ int write_jpeg_with_secure_container(char *filename, jpeg_container container, s
 
 	cinfo.err = jpeg_std_error(&jerr);
 	jpeg_create_compress(&cinfo);
-	jpeg_stdio_dest(&cinfo, outfile);
+	jpeg_stdio_dest(&cinfo, core_file);
 
 	cinfo.image_width = container.dcinfo.image_width;
 	cinfo.image_height = container.dcinfo.image_height;
@@ -87,18 +91,23 @@ int write_jpeg_with_secure_container(char *filename, jpeg_container container, s
 	secure_item_info = (struct jpeg_compress_struct**)malloc(sizeof(struct jpeg_compress_struct*) * sc_arr_count);
 	sc_file = (FILE**)malloc(sizeof(FILE*)* sc_arr_count);
 	sc_file_path = (char **)malloc(sizeof(char*)*sc_arr_count);
+	sc_enc_file_path = (char **)malloc(sizeof(char*)*sc_arr_count);
 
 	for (i = 0; i < sc_arr_count; i++)
 	{
 		secure_container sc = sc_array[i];
-
-		sc_file_path[i] = (char *)malloc(strlen(filename) + 30);
+		
+		char *out_file_name = "core.jpg";
+		sc_file_path[i] = (char*)malloc(strlen(out_temp_folder) + 4 + 4);
+		sc_enc_file_path[i] = (char*)malloc(strlen(out_temp_folder) + 4 + 4);
+		sprintf(sc_file_path[i], "%s/item%d.jpg", out_temp_folder, i);
+		sprintf(sc_enc_file_path[i], "%s/item%d.ise", out_temp_folder, i);
+		
 		secure_item_info[i] = (struct jpeg_compress_struct*)malloc(sizeof(struct jpeg_compress_struct));
 
-
-		sprintf(sc_file_path[i], "%s%d", filename, i);
 		printf("sc_file_path : %s\n", sc_file_path[i]);
-
+		printf("sc_enc_file_path : %s\n", sc_enc_file_path[i]);
+		printf("\n");
 		sc_file[i] = fopen(sc_file_path[i], "wb");
 
 		secure_item_info[i]->err = jpeg_std_error(&jerr);
@@ -146,7 +155,19 @@ int write_jpeg_with_secure_container(char *filename, jpeg_container container, s
 	{
 		jpeg_finish_compress(secure_item_info[i]);
 		jpeg_destroy_compress(secure_item_info[i]);
+
 		fclose(sc_file[i]);
+
+		if (encode_file_des(sc_file_path[i], sc_enc_file_path[i], key) > 0 && remove(sc_file_path[i]) >= 0)
+		{
+			printf("remove file success: %s\n", sc_file_path[i]);
+			printf("\n");
+		}
+		else
+		{
+			printf("remove file failed: %s\n", sc_file_path[i]);
+			printf("\n");
+		}
 	}
 
 	jpeg_finish_compress(&cinfo);
@@ -155,7 +176,7 @@ int write_jpeg_with_secure_container(char *filename, jpeg_container container, s
 	free(container.image);
 	free(sc_file);
 
-	fclose(outfile);
+	fclose(core_file);
 
 	return 1;
 }

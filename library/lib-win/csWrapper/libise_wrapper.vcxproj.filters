@@ -21,9 +21,6 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\common\libise\include\isecore.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="IseWrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>

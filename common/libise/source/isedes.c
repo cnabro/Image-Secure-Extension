@@ -1,6 +1,6 @@
 #include "isedes.h"
 
-void encode_file_des(char *in_file_path, char *out_file_path, char * key)
+int encode_file_des(char *in_file_path, char *out_file_path, char * key)
 {
 	FILE    *in_file;
 	FILE    *out_file;
@@ -12,13 +12,13 @@ void encode_file_des(char *in_file_path, char *out_file_path, char * key)
 	if ((in_file = fopen(in_file_path, "rb")) < 0)
 	{
 		printf("file open error\n");
-		return;
+		return -1;
 	}
 
 	if ((out_file = fopen(out_file_path, "wb")) < 0)
 	{
 		printf("file open error\n");
-		return;
+		return -1;
 	}
 
 	des3_set3key_enc(&ctx3, key);
@@ -32,10 +32,12 @@ void encode_file_des(char *in_file_path, char *out_file_path, char * key)
 
 	fclose(in_file);
 	fclose(out_file);
-	printf("success");
+	printf("encode_file_des: success\n");
+
+	return 1;
 }
 
-void decode_file_des(char *in_file_path, char *out_file_path, char * key)
+int decode_file_des(char *in_file_path, char *out_file_path, char * key)
 {
 	FILE    *in_file;
 	FILE    *out_file;
@@ -47,13 +49,13 @@ void decode_file_des(char *in_file_path, char *out_file_path, char * key)
 	if ((in_file = fopen(in_file_path, "rb")) < 0)
 	{
 		printf("file open error\n");
-		return;
+		return -1;
 	}
 
 	if ((out_file = fopen(out_file_path, "wb")) < 0)
 	{
 		printf("file open error\n");
-		return;
+		return -1;
 	}
 
 	des3_set3key_dec(&ctx3, key);
@@ -66,5 +68,7 @@ void decode_file_des(char *in_file_path, char *out_file_path, char * key)
 
 	fclose(in_file);
 	fclose(out_file);
-	printf("success");
+	printf("encode_file_des: success");
+
+	return 1;
 }

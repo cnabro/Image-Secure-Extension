@@ -1,4 +1,5 @@
 #include "isejpgx.h"
+#include "iseutil.h"
 
 static const unsigned char des3_test_keys[24] =
 {
@@ -12,11 +13,11 @@ int main()
 	int i, j = 0;
 
 	char *infilename = "./test/test.jpg";
-	char *outfilename = "./test/.abcd/out.jpg";
-	char *compress = "./test/out.jpg";
-	char *test = "./test/test.jpg";
-	secure_container scarr[2];
 	jpeg_container container = read_jpeg_container(infilename);
+	char *out_temp_folder = str_concat(3, get_current_path(infilename), ".", get_file_name(infilename));
+
+	secure_container scarr[2];
+	
 
 	/*des*/
 	des3_context ctx3;
@@ -26,24 +27,28 @@ int main()
 	//test
 
 	/*jpeg croping test*/
-	char *infiles[] = { "./test/newsy.jpg", "./test/out.jpg" };
 
-	scarr[0].height = 500;
-	scarr[0].width = 500;
+	printf("file name with extention : %s\n", get_file_name_ex(infilename));
+	printf("file name without extention : %s\n", get_file_name(infilename));
+	printf("file working directory : %s\n", get_current_path(infilename));
+	printf("temp directory : %s\n\n", out_temp_folder);
+
+	scarr[0].height = 100;
+	scarr[0].width = 100;
 	scarr[0].type = ST_NORMAL;
-	scarr[0].pos_x = 500;
-	scarr[0].pos_y = 500;
+	scarr[0].pos_x = 200;
+	scarr[0].pos_y = 200;
 
-	scarr[1].height = 400;
-	scarr[1].width = 700;
+	scarr[1].height = 100;
+	scarr[1].width = 300;
 	scarr[1].type = ST_NORMAL;
 	scarr[1].pos_x = 10;
 	scarr[1].pos_y = 50;
 
-	_mkdir("./test/.abcd/");
-	write_jpeg_with_secure_container(outfilename, container, scarr, 2);
-	encode_file_des("./test/.abcd/out.jpg0", "./test/.abcd/out_sec.jpg", des3_test_keys);
-	decode_file_des("./test/.abcd/out_sec.jpg", "./test/.abcd/out_dec.jpg", des3_test_keys);
+	_mkdir(out_temp_folder);
+	write_jpeg_with_secure_container(infilename, container, scarr, 2, des3_test_keys);
+	//encode_file_des("./test/.abcd/out.jpg0", "./test/.abcd/out_sec.jpg", des3_test_keys);
+	//decode_file_des("./test/.abcd/out_sec.jpg", "./test/.abcd/out_dec.jpg", des3_test_keys);
 
 
 	make_prop_xml(scarr, "./test/.abcd/out.xml", 0); //for test

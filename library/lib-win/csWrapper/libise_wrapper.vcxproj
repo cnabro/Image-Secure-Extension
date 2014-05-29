@@ -78,7 +78,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\common\libise\include\isecore.h" />
     <ClInclude Include="IseWrapper.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Stdafx.h" />

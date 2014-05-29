@@ -3,14 +3,14 @@
 #include "IseWrapper.h"
 extern "C"
 {
-	unsigned char* IseWrapper::IseWrapperClass::getSecureJpegBuffer(char *filename)
+	unsigned char* IseWrapper::IseWrapperClass::getSecureJpeg(char *filename, char* key)
 	{
-		return get_secure_jpeg_buffer("E:/opensource/ise/source/library/lib-win/test/test.jpg");
+		return get_secure_jpeg_buffer(filename, key);
 	}
 
-	unsigned char* IseWrapper::IseWrapperClass::getSecurePngBuffer(char *filename)
+	unsigned char* IseWrapper::IseWrapperClass::getSecurePng(char *filename, char* key)
 	{
-		return get_secure_png_buffer("test.jpg");
+		return get_secure_png_buffer(filename, key);
 	}
 
 	int IseWrapper::IseWrapperClass::makeSecureJpeg(char *filename, jpeg_container container, secure_container sc_array[], int sc_arr_count)

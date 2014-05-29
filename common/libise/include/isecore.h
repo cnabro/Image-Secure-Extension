@@ -6,6 +6,8 @@
 #ifdef WIN32
 #include <io.h>
 #include <direct.h>
+#include <stdlib.h> 
+#include <stdarg.h>
 #endif
 
 #ifndef WIN32
@@ -18,6 +20,7 @@
 #include "zip.h"
 #include "mxml.h"
 
+#pragma once
 typedef enum SECURE_TYPE{
 	ST_NORMAL,
 	ST_FACE
@@ -43,8 +46,8 @@ typedef struct png_container{
 	unsigned char *image;
 } png_container;
 
-extern unsigned char* get_secure_jpeg_buffer(char *filename);
-extern unsigned char* get_secure_png_buffer(char *filename);
+extern unsigned char* get_secure_jpeg(char *filename, char* key);
+extern unsigned char* get_secure_png(char *filename, char* key);
 
 extern int make_secure_jpeg(char *filename, jpeg_container container, secure_container sc_array[], int sc_arr_count);
 extern int make_secure_png(char *filename, png_container container, secure_container sc_array[], int sc_arr_count);
