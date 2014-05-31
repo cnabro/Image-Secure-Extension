@@ -1,5 +1,6 @@
 #include "isejpgx.h"
 #include "iseutil.h"
+#include "isepack.h"
 
 jpeg_decompress_container read_jpeg_container(char *filename)
 {
@@ -49,7 +50,7 @@ jpeg_decompress_container read_jpeg_container(char *filename)
 	return info;
 }
 
-int write_jpgx(char *filename, jpeg_decompress_container container, secure_container sc_array[], int sc_arr_count, char *key)
+jpgx_compress_container write_jpgx(char *filename, jpeg_decompress_container container, secure_container sc_array[], int sc_arr_count, char *key)
 {
 	struct jpeg_compress_struct cinfo;
 	struct jpeg_error_mgr jerr;
@@ -67,14 +68,26 @@ int write_jpgx(char *filename, jpeg_decompress_container container, secure_conta
 	char **sc_file_path = NULL;
 	char **sc_enc_file_path = NULL;
 
+	char **pack_file_path = NULL;
+	char *jpgx_file_path = str_concat(3, get_current_path(filename), get_file_name(filename), ".jpgx");
+	char *prop_file_path = str_concat(2, out_temp_folder, "/prop.xml");
+
+	
+	int pack_file_count = 0;
+
+	jpgx_compress_container jpgx_container; /* output jpgx container */
+
 	struct jpeg_compress_struct **secure_item_info;
 
 	if (!core_file)
 	{
 		printf("Error opening output jpeg file %s\n!", filename);
-		return -1;
+		return;
 	}
 
+	/*
+		deep copy decompress info
+	*/
 	cinfo.err = jpeg_std_error(&jerr);
 	jpeg_create_compress(&cinfo);
 	jpeg_stdio_dest(&cinfo, core_file);
@@ -100,18 +113,29 @@ int write_jpgx(char *filename, jpeg_decompress_container container, secure_conta
 		secure_container sc = sc_array[i];
 		
 		char *out_file_name = "core.jpg";
+
+		/*
+			malloc secure item
+		*/
 		sc_file_path[i] = (char*)malloc(strlen(out_temp_folder) + 4 + 4);
 		sc_enc_file_path[i] = (char*)malloc(strlen(out_temp_folder) + 4 + 4);
+		secure_item_info[i] = (struct jpeg_compress_struct*)malloc(sizeof(struct jpeg_compress_struct));
+
+		/*
+			set file path
+		*/
 		sprintf(sc_file_path[i], "%s/item%d.jpg", out_temp_folder, i);
 		sprintf(sc_enc_file_path[i], "%s/item%d.ise", out_temp_folder, i);
 		
-		secure_item_info[i] = (struct jpeg_compress_struct*)malloc(sizeof(struct jpeg_compress_struct));
-
+		/*
+			log
+		*/
 		printf("sc_file_path : %s\n", sc_file_path[i]);
 		printf("sc_enc_file_path : %s\n", sc_enc_file_path[i]);
 		printf("\n");
-		sc_file[i] = fopen(sc_file_path[i], "wb");
 
+
+		sc_file[i] = fopen(sc_file_path[i], "wb");
 		secure_item_info[i]->err = jpeg_std_error(&jerr);
 
 		jpeg_create_compress(secure_item_info[i]);
@@ -125,9 +149,6 @@ int write_jpgx(char *filename, jpeg_decompress_container container, secure_conta
 		jpeg_set_defaults(secure_item_info[i]);
 		jpeg_start_compress(secure_item_info[i], TRUE);
 	}
-
-
-	//secure_rp = (JSAMPROW**)malloc(sizeof(JSAMPROW*) * 2000);
 
 	while (cinfo.next_scanline < cinfo.image_height) 
 	{
@@ -144,7 +165,7 @@ int write_jpgx(char *filename, jpeg_decompress_container container, secure_conta
 			secure_container sc = sc_array[j];
 
 			/*
-				if secure container is matching, then copy to ise files
+				if secure container is matching, then copy to ise
 			*/
 			if (sc.pos_y < cinfo.next_scanline && sc.pos_y + sc.height >= cinfo.next_scanline)
 			{
@@ -168,25 +189,72 @@ int write_jpgx(char *filename, jpeg_decompress_container container, secure_conta
 
 		fclose(sc_file[i]);
 
-		if (encode_file_des(sc_file_path[i], sc_enc_file_path[i], key) > 0 && remove(sc_file_path[i]) >= 0)
+		if (encode_file_des(sc_file_path[i], sc_enc_file_path[i], key) > 0)
 		{
-			printf("remove file success: %s\n", sc_file_path[i]);
+			printf("encode file  : %s\n", sc_file_path[i]);
 			printf("\n");
 		}
 		else
 		{
-			printf("remove file failed: %s\n", sc_file_path[i]);
+			printf("encode file failed: %s\n", sc_file_path[i]);
 			printf("\n");
 		}
 	}
 
 	jpeg_finish_compress(&cinfo);
 	jpeg_destroy_compress(&cinfo);
+	fclose(core_file);
+	
+	/*
+		packing files
+	*/
+	pack_file_count = sc_arr_count + 2;
+	pack_file_path = (char **)malloc(sizeof(char*)*pack_file_count);
+
+	pack_file_path[0] = core_file_path;
+	pack_file_path[1] = prop_file_path; /* prop path */
+
+	for (i = 0; i < sc_arr_count; i++)
+	{
+		pack_file_path[i + 2] = sc_enc_file_path[i];
+		printf("pack_file_path[%d] : %s\n", (i + 2), pack_file_path[i + 2]);
+	}
+
+	//
+	if (make_compress(pack_file_path, pack_file_count, jpgx_file_path, "jpgx") == ZIP_OK)
+	{
+		printf("compress : success\n");
+	}
+	else
+	{
+		printf("compress : fail\n");
+	}
+
+	/*
+		remove temp files
+	*/
+	for (i = 0; i < sc_arr_count; i++)
+	{
+		remove(sc_file_path[i]); /* item files */
+	}
+
+	for (i = 0; i < pack_file_count; i++)
+	{
+		remove(pack_file_path[i]); /* packing files */
+	}
+
+	_rmdir(out_temp_folder);
+
+	/* 
+		return jpgx container
+	*/
 
 	free(container.image);
 	free(sc_file);
 
-	fclose(core_file);
+	jpgx_container.file_path = jpgx_file_path;
+	jpgx_container.sc_arr = &secure_item_info;
+	jpgx_container.sc_cnt = sc_arr_count;
 
-	return 1;
+	return jpgx_container;
 }

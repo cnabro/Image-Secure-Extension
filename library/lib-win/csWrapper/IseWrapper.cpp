@@ -3,23 +3,23 @@
 #include "IseWrapper.h"
 extern "C"
 {
-	unsigned char* IseWrapper::IseWrapperClass::getSecureJpeg(char *filename, char* key)
+	jpgx_decompress_container IseWrapper::IseWrapperClass::getSecureJpegContainer(char *filename, char* key)
 	{
-		return get_secure_jpeg_buffer(filename, key);
+		return get_secure_jpeg_container(filename, key);
 	}
 
-	unsigned char* IseWrapper::IseWrapperClass::getSecurePng(char *filename, char* key)
+	pngx_decompress_container IseWrapper::IseWrapperClass::getSecurePngContainer(char *filename, char* key)
 	{
-		return get_secure_png_buffer(filename, key);
+		return get_secure_png_container(filename, key);
 	}
 
-	int IseWrapper::IseWrapperClass::makeSecureJpeg(char *filename, jpeg_container container, secure_container sc_array[], int sc_arr_count)
+	jpgx_compress_container IseWrapper::IseWrapperClass::makeJPGX(char *filename, secure_container sc_array[], int sc_arr_count)
 	{
-		return 11333;
+		return makeJPGX(filename,sc_array,sc_arr_count);
 	}
 
-	int IseWrapper::IseWrapperClass::makeSecurePng(char *filename, png_container container, secure_container sc_array[], int sc_arr_count)
+	pngx_compress_container IseWrapper::IseWrapperClass::makePNGX(char *filename, secure_container sc_array[], int sc_arr_count)
 	{
-		return 0;
+		return makePNGX(filename, sc_array, sc_arr_count);
 	}
 }

@@ -11,18 +11,18 @@ namespace IseWrapper
 		public ref class IseWrapperClass
 		{
 		public:
-			unsigned char* getSecureJpeg(char *filename, char* key);
-			unsigned char* getSecurePng(char *filename, char* key);
+			jpgx_decompress_container getSecureJpegContainer(char *filename, char* key);
+			pngx_decompress_container getSecurePngContainer(char *filename, char* key);
 
-			int makeSecureJpeg(char *filename, jpeg_container container, secure_container sc_array[], int sc_arr_count);
-			int makeSecurePng(char *filename, png_container container, secure_container sc_array[], int sc_arr_count);
+			jpgx_compress_container makeJPGX(char *filename, secure_container sc_array[], int sc_arr_count);
+			pngx_compress_container makePNGX(char *filename, secure_container sc_array[], int sc_arr_count);
 
 		};
 
-		unsigned char* get_secure_jpeg_buffer(char *filename, char* key);
-		unsigned char* get_secure_png_buffer(char *filename, char* key);
+		jpgx_decompress_container get_secure_jpeg_container(char *filename, char* key);
+		pngx_decompress_container get_secure_png_container(char *filename, char* key);
 
-		int make_secure_jpeg(char *filename, jpeg_container container, secure_container sc_array[], int sc_arr_count);
-		int make_secure_png(char *filename, png_container container, secure_container sc_array[], int sc_arr_count);
+		jpgx_compress_container make_jpgx(char *filename, secure_container sc_array[], int sc_arr_count);
+		pngx_compress_container make_pngx(char *filename, secure_container sc_array[], int sc_arr_count);
 	}
 }

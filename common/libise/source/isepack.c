@@ -1,7 +1,7 @@
 #include "isepack.h"
 #include "iseutil.h"
 
-int make_compress(char *in_file_arr[], int file_count, char *out_file_name, char* file_tag)
+int make_compress(char **in_file_arr, int file_count, char *out_file_name, char* file_tag)
 {
 	zip_fileinfo zfi;
 	int size_read, i, err, ret = ZIP_OK;
@@ -13,12 +13,11 @@ int make_compress(char *in_file_arr[], int file_count, char *out_file_name, char
 	FILE * fin;
 
 	zipFile zf = zipOpen(filenameinzip, APPEND_STATUS_CREATE);
-	//char *test = "./test/test.jpg";
 
 	for (i = 0; i < file_count; i++)
 	{
-		filename = get_file_name(in_file_arr[i]);
-		printf("%s\n", filename);
+		filename = get_file_name_ex(in_file_arr[i]);
+		printf("make_compress : %s\n", filename);
 		filepath = in_file_arr[i];
 
 		ret = zipOpenNewFileInZip(zf, filename, &zfi, NULL, 0, NULL, 0, file_tag, Z_DEFLATED, Z_DEFAULT_COMPRESSION);

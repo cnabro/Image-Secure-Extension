@@ -28,7 +28,7 @@ int main()
 	//test
 
 	/*
-		jpeg croping test
+		jpeg crozping test
 	*/
 
 	printf("file name with extention : %s\n", get_file_name_ex(infilename));

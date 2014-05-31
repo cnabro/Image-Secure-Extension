@@ -21,6 +21,12 @@
 #include "mxml.h"
 
 #pragma once
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 typedef enum SECURE_TYPE
 {
 	ST_NORMAL,
@@ -89,15 +95,12 @@ typedef struct pngx_compress_container
 /*
 	main function
 */
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-jpgx_decompress_container get_secure_jpeg(char *filename, char* key);
-pngx_decompress_container get_secure_png(char *filename, char* key);
 
-jpgx_compress_container make_secure_jpeg(char *filename, secure_container sc_array[], int sc_arr_count);
-pngx_compress_container make_secure_png(char *filename, secure_container sc_array[], int sc_arr_count);
+jpgx_decompress_container get_secure_jpeg_container(char *filename, char* key);
+pngx_decompress_container get_secure_png_container(char *filename, char* key);
+
+jpgx_compress_container make_jpgx(char *filename, secure_container sc_array[], int sc_arr_count);
+pngx_compress_container make_pngx(char *filename, secure_container sc_array[], int sc_arr_count);
 #ifdef __cplusplus
 }
 #endif
