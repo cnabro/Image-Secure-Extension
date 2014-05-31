@@ -21,12 +21,14 @@
 #include "mxml.h"
 
 #pragma once
-typedef enum SECURE_TYPE{
+typedef enum SECURE_TYPE
+{
 	ST_NORMAL,
 	ST_FACE
 } SECURE_TYPE;
 
-typedef struct secure_container{
+typedef struct secure_container
+{
 	int width;
 	int height;
 	int pos_x;
@@ -34,20 +36,68 @@ typedef struct secure_container{
 	SECURE_TYPE type;
 } secure_container;
 
-
-typedef struct jpeg_container{
+/*
+image container
+*/
+typedef struct jpeg_decompress_container
+{
 	struct jpeg_decompress_struct dcinfo;
 	unsigned char *image;
-} jpeg_container;
+} jpeg_decompress_container;
 
-
-typedef struct png_container{
+typedef struct png_decompress_container
+{
 	//struct jpeg_decompress_struct dcinfo; TODO : set png struct
 	unsigned char *image;
-} png_container;
+} png_decompress_container;
 
-extern unsigned char* get_secure_jpeg(char *filename, char* key);
-extern unsigned char* get_secure_png(char *filename, char* key);
 
-extern int make_secure_jpeg(char *filename, jpeg_container container, secure_container sc_array[], int sc_arr_count);
-extern int make_secure_png(char *filename, png_container container, secure_container sc_array[], int sc_arr_count);
+
+/*
+	jpgx container
+*/ 
+typedef struct jpgx_compress_container
+{
+	int sc_cnt;
+	secure_container *sc_arr;
+	char *file_path;
+} jpgx_compress_container;
+
+typedef struct jpgx_decompress_container
+{
+	int sc_cnt;
+	secure_container *sc_arr;
+	jpeg_decompress_container jdcinfo;
+} jpgx_decompress_container;
+
+/*
+	pngx container
+*/
+typedef struct pngx_decompress_container
+{
+	int sc_cnt;
+	secure_container *sc_arr;
+} pngx_decompress_container;
+
+typedef struct pngx_compress_container
+{
+	int sc_cnt;
+	secure_container *sc_arr;
+	char *file_path;
+} pngx_compress_container;
+
+/*
+	main function
+*/
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+jpgx_decompress_container get_secure_jpeg(char *filename, char* key);
+pngx_decompress_container get_secure_png(char *filename, char* key);
+
+jpgx_compress_container make_secure_jpeg(char *filename, secure_container sc_array[], int sc_arr_count);
+pngx_compress_container make_secure_png(char *filename, secure_container sc_array[], int sc_arr_count);
+#ifdef __cplusplus
+}
+#endif

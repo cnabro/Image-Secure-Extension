@@ -13,20 +13,23 @@ int main()
 	int i, j = 0;
 
 	char *infilename = "./test/test.jpg";
-	jpeg_container container = read_jpeg_container(infilename);
+	jpeg_decompress_container container = read_jpeg_container(infilename);
 	char *out_temp_folder = str_concat(3, get_current_path(infilename), ".", get_file_name(infilename));
 
 	secure_container scarr[2];
 	
-
-	/*des*/
+	/*
+		des
+	*/
 	des3_context ctx3;
 	unsigned char key[24];
 	unsigned char buf[8];
 
 	//test
 
-	/*jpeg croping test*/
+	/*
+		jpeg croping test
+	*/
 
 	printf("file name with extention : %s\n", get_file_name_ex(infilename));
 	printf("file name without extention : %s\n", get_file_name(infilename));
@@ -46,10 +49,7 @@ int main()
 	scarr[1].pos_y = 50;
 
 	_mkdir(out_temp_folder);
-	write_jpeg_with_secure_container(infilename, container, scarr, 2, des3_test_keys);
-	//encode_file_des("./test/.abcd/out.jpg0", "./test/.abcd/out_sec.jpg", des3_test_keys);
-	//decode_file_des("./test/.abcd/out_sec.jpg", "./test/.abcd/out_dec.jpg", des3_test_keys);
-
+	write_jpgx(infilename, container, scarr, 2, des3_test_keys);
 
 	make_prop_xml(scarr, "./test/.abcd/out.xml", 0); //for test
 

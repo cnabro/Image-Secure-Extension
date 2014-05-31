@@ -139,6 +139,7 @@ char* str_concat(int count, ...)
 	return merged;
 }
 
+
 //void compressJPGX(char *folder, char *topath)
 //{
 //	zip_fileinfo zfi;

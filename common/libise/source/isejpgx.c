@@ -1,9 +1,9 @@
 #include "isejpgx.h"
 #include "iseutil.h"
 
-jpeg_container read_jpeg_container(char *filename)
+jpeg_decompress_container read_jpeg_container(char *filename)
 {
-	jpeg_container info;
+	jpeg_decompress_container info;
 	struct jpeg_decompress_struct cinfo;
 	struct jpeg_error_mgr jerr;
 
@@ -49,7 +49,7 @@ jpeg_container read_jpeg_container(char *filename)
 	return info;
 }
 
-int write_jpeg_with_secure_container(char *filename, jpeg_container container, secure_container sc_array[], int sc_arr_count, char *key)
+int write_jpgx(char *filename, jpeg_decompress_container container, secure_container sc_array[], int sc_arr_count, char *key)
 {
 	struct jpeg_compress_struct cinfo;
 	struct jpeg_error_mgr jerr;
@@ -87,7 +87,9 @@ int write_jpeg_with_secure_container(char *filename, jpeg_container container, s
 	jpeg_set_defaults(&cinfo);
 	jpeg_start_compress(&cinfo, TRUE);
 
-	//secure container 갯수 만큼 jpeg dcinfo 생성함
+	/*
+		malloc secure item
+	*/
 	secure_item_info = (struct jpeg_compress_struct**)malloc(sizeof(struct jpeg_compress_struct*) * sc_arr_count);
 	sc_file = (FILE**)malloc(sizeof(FILE*)* sc_arr_count);
 	sc_file_path = (char **)malloc(sizeof(char*)*sc_arr_count);
@@ -127,15 +129,23 @@ int write_jpeg_with_secure_container(char *filename, jpeg_container container, s
 
 	//secure_rp = (JSAMPROW**)malloc(sizeof(JSAMPROW*) * 2000);
 
-	while (cinfo.next_scanline < cinfo.image_height) //한줄씩 읽음
+	while (cinfo.next_scanline < cinfo.image_height) 
 	{
+		/*
+			read jpeg row pointer
+		*/
 		row_pointer = &container.image[cinfo.next_scanline * cinfo.image_width * cinfo.input_components];
 
-		//여기서 pos_x, pos_y겹치는곳 찾음
+		/*
+			find each container exists.
+		*/
 		for (j = 0; j < sc_arr_count; j++)
 		{
 			secure_container sc = sc_array[j];
 
+			/*
+				if secure container is matching, then copy to ise files
+			*/
 			if (sc.pos_y < cinfo.next_scanline && sc.pos_y + sc.height >= cinfo.next_scanline)
 			{
 				secure_rp = &container.image[cinfo.next_scanline * cinfo.image_width * cinfo.input_components + sc.pos_y * cinfo.input_components];
