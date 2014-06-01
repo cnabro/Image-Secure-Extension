@@ -57,8 +57,6 @@ typedef struct png_decompress_container
 	unsigned char *image;
 } png_decompress_container;
 
-
-
 /*
 	jpgx container
 */ 
@@ -95,12 +93,11 @@ typedef struct pngx_compress_container
 /*
 	main function
 */
-
 jpgx_decompress_container get_secure_jpeg_container(char *filename, char* key);
 pngx_decompress_container get_secure_png_container(char *filename, char* key);
 
-jpgx_compress_container make_jpgx(char *filename, secure_container sc_array[], int sc_arr_count);
-pngx_compress_container make_pngx(char *filename, secure_container sc_array[], int sc_arr_count);
+jpgx_compress_container make_jpgx(char *filename, secure_container *sc_array, int sc_arr_count, char* key);
+pngx_compress_container make_pngx(char *filename, secure_container *sc_array, int sc_arr_count, char* key);
 #ifdef __cplusplus
 }
 #endif

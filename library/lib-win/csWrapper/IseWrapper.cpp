@@ -13,13 +13,13 @@ extern "C"
 		return get_secure_png_container(filename, key);
 	}
 
-	jpgx_compress_container IseWrapper::IseWrapperClass::makeJPGX(char *filename, secure_container sc_array[], int sc_arr_count)
+	jpgx_compress_container IseWrapper::IseWrapperClass::makeJPGX(char *filename, secure_container *sc_array, int sc_arr_count, char * key)
 	{
-		return makeJPGX(filename,sc_array,sc_arr_count);
+		return make_jpgx(filename, sc_array, sc_arr_count, key);
 	}
 
-	pngx_compress_container IseWrapper::IseWrapperClass::makePNGX(char *filename, secure_container sc_array[], int sc_arr_count)
+	pngx_compress_container IseWrapper::IseWrapperClass::makePNGX(char *filename, secure_container *sc_array, int sc_arr_count, char * key)
 	{
-		return makePNGX(filename, sc_array, sc_arr_count);
+		return make_pngx(filename, sc_array, sc_arr_count, key);
 	}
 }

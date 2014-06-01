@@ -50,7 +50,7 @@ jpeg_decompress_container read_jpeg_container(char *filename)
 	return info;
 }
 
-jpgx_compress_container write_jpgx(char *filename, jpeg_decompress_container container, secure_container sc_array[], int sc_arr_count, char *key)
+jpgx_compress_container write_jpgx(char *filename, jpeg_decompress_container container, secure_container **sc_array, int sc_arr_count, char *key)
 {
 	struct jpeg_compress_struct cinfo;
 	struct jpeg_error_mgr jerr;
@@ -110,7 +110,7 @@ jpgx_compress_container write_jpgx(char *filename, jpeg_decompress_container con
 
 	for (i = 0; i < sc_arr_count; i++)
 	{
-		secure_container sc = sc_array[i];
+		secure_container sc = *sc_array[i];
 		
 		char *out_file_name = "core.jpg";
 
@@ -162,7 +162,7 @@ jpgx_compress_container write_jpgx(char *filename, jpeg_decompress_container con
 		*/
 		for (j = 0; j < sc_arr_count; j++)
 		{
-			secure_container sc = sc_array[j];
+			secure_container sc = *sc_array[j];
 
 			/*
 				if secure container is matching, then copy to ise
