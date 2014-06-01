@@ -33,8 +33,6 @@ int main()
 		jpeg crozping test
 	*/
 
-	
-
 	printf("file name with extention : %s\n", get_file_name_ex(infilename));
 	printf("file name without extention : %s\n", get_file_name(infilename));
 	printf("file working directory : %s\n", get_current_path(infilename));
@@ -53,9 +51,10 @@ int main()
 	scarr[1]->pos_y = 50;
 
 	_mkdir(out_temp_folder);
+	
 	write_jpgx(infilename, container, scarr, 2, des3_test_keys);
 
-	make_prop_xml(scarr, 2 , "./test/.abcd/out.xml", 0); //for test
+	
 
 	return 0;
 }

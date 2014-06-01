@@ -16,7 +16,6 @@ int make_prop_xml(secure_container **sc_arr,int arr_cnt, char* path, int img_typ
 		*/
 	int	i;
 	FILE* fp;
-	int	fd;
 	mxml_node_t	*xml, *prop, *key, *items, *item;
 	mxml_index_t *ind;
 	char buffer[16384];
@@ -46,30 +45,11 @@ int make_prop_xml(secure_container **sc_arr,int arr_cnt, char* path, int img_typ
 		mxmlElementSetAttrf(item, "width", "%d", sc_arr[i]->width);
 		mxmlElementSetAttrf(item, "height", "%d", sc_arr[i]->height);
 		mxmlElementSetAttrf(item, "type", "%d", sc_arr[i]->type);
-		/*switch (sc_arr[i]->type)
-		{
-			case ST_NORMAL:
-				mxmlElementSetAttr(item, "type", "0");
-				break;
-
-			case ST_FACE:
-				mxmlElementSetAttr(item, "type", "1");
-				break;
-
-			default:
-				break;
-		}*/
 	}
-	//mxmlNewInteger(mxmlNewElement(tree, "key"), 123);
 
-	//mxmlAdd(tree);
+	printf("prop xml result ::: %s\n", path);
 
-	printf("prop xml result :::\n");
-	if (mxmlSaveString(xml, buffer, sizeof(buffer), whitespace_cb) > 0)
-	{
-
-		printf("%s", buffer);
-	}
-		
-
+	fp = fopen(path, "wb");
+	mxmlSaveFile(xml, fp, whitespace_cb);
+	fclose(fp);
 }

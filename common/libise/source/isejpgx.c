@@ -69,7 +69,7 @@ jpgx_compress_container write_jpgx(char *filename, jpeg_decompress_container con
 	char **sc_enc_file_path = NULL;
 
 	char **pack_file_path = NULL;
-	char *jpgx_file_path = str_concat(3, get_current_path(filename), get_file_name(filename), ".jpgx");
+	char *jpgx_file_path = str_concat(3, get_current_path(filename), get_file_name(filename), ".zip");
 	char *prop_file_path = str_concat(2, out_temp_folder, "/prop.xml");
 
 	
@@ -204,6 +204,11 @@ jpgx_compress_container write_jpgx(char *filename, jpeg_decompress_container con
 	jpeg_finish_compress(&cinfo);
 	jpeg_destroy_compress(&cinfo);
 	fclose(core_file);
+
+	/*
+		make property file
+	*/
+	make_prop_xml(sc_array, sc_arr_count, prop_file_path, 0); //for test
 	
 	/*
 		packing files
