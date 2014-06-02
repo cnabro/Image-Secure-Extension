@@ -1,5 +1,8 @@
-﻿using System;
+﻿using isetool.Util;
+using IseWrapper;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -26,19 +29,17 @@ namespace isetool
         {
             InitializeComponent();
 
-            String path = "E:/opensource/ise/source/library/lib-win/test/test.jpg";
+            String path = "C:/Users/gyu-il/Desktop/판매/IMG_20140112_2208171.jpg";
             byte[] bytes = Encoding.ASCII.GetBytes(path);
 
             unsafe
             {
-                fixed (byte* p = bytes)
-                {
-                    IseWrapper.IseWrapperClass iseLib = new IseWrapper.IseWrapperClass();
+                List<SecureContainer> scList = new List<SecureContainer>();
 
-                    //E:/opensource/ise/source/library/lib-win/test/test.jpg
-                    byte* imgBuffer = iseLib.getSecureJpegBuffer((sbyte*)p);
-                    
-                }
+                SecureContainer sc = new SecureContainer(100, 100, 300, 300);
+                scList.Add(sc);
+
+                ImageSecureExtention.makeJPGX(path, scList, "keytest");
             }
         }
 
@@ -55,5 +56,6 @@ namespace isetool
             }
             return imageSource;
         }
+        
     }
 }

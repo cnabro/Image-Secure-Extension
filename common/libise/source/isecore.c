@@ -15,7 +15,7 @@ pngx_decompress_container get_secure_png_container(char *filename, char* key)
 	return ;
 }
 
-jpgx_compress_container make_jpgx(char *filename, secure_container *sc_array, int sc_arr_count, char* key)
+jpgx_compress_container make_jpgx(char *filename, secure_container **sc_array, int sc_arr_count, char* key)
 {
 	
 	jpeg_decompress_container container = read_jpeg_container(filename);
@@ -28,7 +28,7 @@ jpgx_compress_container make_jpgx(char *filename, secure_container *sc_array, in
 	return jpgx_container;
 }
 
-pngx_compress_container make_pngx(char *filename, secure_container *sc_array, int sc_arr_count, char* key)
+pngx_compress_container make_pngx(char *filename, secure_container **sc_array, int sc_arr_count, char* key)
 {
 	printf("c# wrapper test : make_secure_png");
 

@@ -13,7 +13,7 @@ int make_prop_xml(secure_container **sc_arr,int arr_cnt, char* path, int img_typ
 		</items>
 
 		</xml>
-		*/
+	*/
 	int	i;
 	FILE* fp;
 	mxml_node_t	*xml, *prop, *key, *items, *item;

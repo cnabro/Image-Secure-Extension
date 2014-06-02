@@ -27,6 +27,13 @@ extern "C"
 {
 #endif
 
+static const unsigned char des3_test_keys[24] =
+{
+	0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF,
+	0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF, 0x01,
+	0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF, 0x01, 0x23
+};
+
 typedef enum SECURE_TYPE
 {
 	ST_NORMAL,
@@ -96,8 +103,8 @@ typedef struct pngx_compress_container
 jpgx_decompress_container get_secure_jpeg_container(char *filename, char* key);
 pngx_decompress_container get_secure_png_container(char *filename, char* key);
 
-jpgx_compress_container make_jpgx(char *filename, secure_container *sc_array, int sc_arr_count, char* key);
-pngx_compress_container make_pngx(char *filename, secure_container *sc_array, int sc_arr_count, char* key);
+jpgx_compress_container make_jpgx(char *filename, secure_container **sc_array, int sc_arr_count, char* key);
+pngx_compress_container make_pngx(char *filename, secure_container **sc_array, int sc_arr_count, char* key);
 #ifdef __cplusplus
 }
 #endif

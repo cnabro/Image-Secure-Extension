@@ -44,7 +44,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(VCInstallDir)include;$(VC_IncludePath);$(WindowsSDK_IncludePath);../../../common/libjpeg/include/;../../../common/libise/include/;../../../common/libpng/include/;../../../common/zlib/include/;../../../common/polarssl/include/;../../../common/mxml/include/;</IncludePath>
+    <IncludePath>$(VCInstallDir)include;$(VC_IncludePath);$(WindowsSDK_IncludePath);../../../common/libjpeg/include/;../../../common/libise/include/;../../../common/libpng/include/;../../../common/zlib/include/;../../../common/polarssl/include/;../../../common/mxml/include/;./include/</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -54,11 +54,17 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <CallingConvention>
+      </CallingConvention>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies />
+      <EntryPointSymbol>DllMain</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -78,19 +84,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="IseWrapper.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="Stdafx.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="AssemblyInfo.cpp" />
-    <ClCompile Include="IseWrapper.cpp" />
-    <ClCompile Include="Stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="app.rc" />
   </ItemGroup>
   <ItemGroup>
@@ -100,6 +93,18 @@
     <ProjectReference Include="..\libise.vcxproj">
       <Project>{5870e33e-5fac-4b1f-9515-377bdeb09a80}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Converter.h" />
+    <ClInclude Include="include\IseContainerWrapper.h" />
+    <ClInclude Include="include\IseWrapper.h" />
+    <ClInclude Include="include\resource.h" />
+    <ClInclude Include="include\Stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\AssemblyInfo.cpp" />
+    <ClCompile Include="source\IseWrapper.cpp" />
+    <ClCompile Include="source\Stdafx.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
