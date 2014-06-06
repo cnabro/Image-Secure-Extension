@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace isetool.Util
 {
@@ -20,6 +22,20 @@ namespace isetool.Util
                     return sp;
                 }
             }
+        }
+
+        public BitmapSource ByteToBitmapSource(byte[] image)
+        {
+            BitmapImage imageSource = new BitmapImage();
+            using (MemoryStream stream = new MemoryStream(image))
+            {
+                stream.Seek(0, SeekOrigin.Begin);
+                imageSource.BeginInit();
+                imageSource.StreamSource = stream;
+                imageSource.CacheOption = BitmapCacheOption.OnLoad;
+                imageSource.EndInit();
+            }
+            return imageSource;
         }
     }
 }

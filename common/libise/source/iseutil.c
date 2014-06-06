@@ -64,9 +64,10 @@ char * str_replace_all(char *s, const char *olds, const char *news)
 {
 	char *result, *sr;
 	size_t i, count = 0;
-	size_t oldlen = strlen(olds); if (oldlen < 1) return s;
+	size_t oldlen = strlen(olds); 
 	size_t newlen = strlen(news);
 
+	if (oldlen < 1) return s;
 
 	if (newlen != oldlen)
 	{

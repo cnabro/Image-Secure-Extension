@@ -1,5 +1,7 @@
 ﻿using isetool.Util;
 using IseWrapper;
+using MahApps.Metro;
+using MahApps.Metro.Controls;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -23,39 +25,28 @@ namespace isetool
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : MetroWindow
     {
         public MainWindow()
         {
             InitializeComponent();
 
-            String path = "C:/Users/gyu-il/Desktop/판매/IMG_20140112_2208171.jpg";
-            byte[] bytes = Encoding.ASCII.GetBytes(path);
+            //ThemeManager.ChangeTheme(this, ThemeManager.DefaultAccents.First(a => a.Name == "Red"), Theme.Light);
 
-            unsafe
-            {
-                List<SecureContainer> scList = new List<SecureContainer>();
+            //String path = "C:/Users/cnabro/Desktop/엄마꺼/IMG_20130626_155207.jpg";
 
-                SecureContainer sc = new SecureContainer(100, 100, 300, 300);
-                scList.Add(sc);
+            //unsafe
+            //{
+            //    List<SecureContainer> scList = new List<SecureContainer>();
 
-                ImageSecureExtention.makeJPGX(path, scList, "keytest");
-            }
+            //    SecureContainer sc = new SecureContainer(100, 100, 300, 300);
+            //    scList.Add(sc);
+
+            //    ImageSecureExtention.makeJPGX(path, scList, "keytest");
+            //}
         }
 
-        public BitmapSource ByteToBitmapSource(byte[] image)
-        {
-            BitmapImage imageSource = new BitmapImage();
-            using (MemoryStream stream = new MemoryStream(image))
-            {
-                stream.Seek(0, SeekOrigin.Begin);
-                imageSource.BeginInit();
-                imageSource.StreamSource = stream;
-                imageSource.CacheOption = BitmapCacheOption.OnLoad;
-                imageSource.EndInit();
-            }
-            return imageSource;
-        }
+        
         
     }
 }
