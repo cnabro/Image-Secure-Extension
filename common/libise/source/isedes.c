@@ -68,7 +68,7 @@ int decode_file_des(char *in_file_path, char *out_file_path, char * key)
 
 	fclose(in_file);
 	fclose(out_file);
-	printf("encode_file_des: success");
+	printf("decode_file_des: success\n");
 
 	return 1;
 }

@@ -108,60 +108,48 @@ int make_decompress(char *filepath)
 		}
 
 		_mkdir(out_temp_folder);
-		// Check if this entry is a directory or file.
-		//const size_t filename_length = strlen(filename);
-		//if (filename[filename_length - 1] == dir_delimter)
-		//{
-		//	// Entry is a directory, so create it.
-		//	printf("dir:%s\n", filename);
-		//	mkdir(filename);
-		//}
-		//else
-		{
-			// Entry is a file, so extract it.
-			printf("file:%s\n", filename);
-			if (unzOpenCurrentFile(zipfile) != UNZ_OK)
-			{
-				printf("could not open file\n");
-				unzClose(zipfile);
-				return -1;
-			}
 
-			// Open a file to write out the data.
-			FILE *out = fopen(str_concat(3, out_temp_folder , "/", filename), "wb");
-			if (out == NULL)
+		// Entry is a file, so extract it.
+		printf("file:%s\n", filename);
+		if (unzOpenCurrentFile(zipfile) != UNZ_OK)
+		{
+			printf("could not open file\n");
+			unzClose(zipfile);
+			return -1;
+		}
+
+		FILE *out = fopen(str_concat(3, out_temp_folder , "/", filename), "wb");
+		if (out == NULL)
+		{
+			printf("could not open destination file\n");
+			unzCloseCurrentFile(zipfile);
+			unzClose(zipfile);
+			return -1;
+		}
+
+		int error = UNZ_OK;
+		do
+		{
+			error = unzReadCurrentFile(zipfile, buf, sizeof(buf));
+			if (error < 0)
 			{
-				printf("could not open destination file\n");
+				printf("error %d\n", error);
 				unzCloseCurrentFile(zipfile);
 				unzClose(zipfile);
 				return -1;
 			}
 
-			int error = UNZ_OK;
-			do
+			// Write data to file.
+			if (error > 0)
 			{
-				error = unzReadCurrentFile(zipfile, buf, sizeof(buf));
-				if (error < 0)
-				{
-					printf("error %d\n", error);
-					unzCloseCurrentFile(zipfile);
-					unzClose(zipfile);
-					return -1;
-				}
+				fwrite(buf, error, 1, out);
+			}
+		} while (error > 0);
 
-				// Write data to file.
-				if (error > 0)
-				{
-					fwrite(buf, error, 1, out);
-				}
-			} while (error > 0);
-
-			fclose(out);
-		}
+		fclose(out);
 
 		unzCloseCurrentFile(zipfile);
 
-		// Go the the next entry listed in the zip file.
 		if ((i + 1) < global_info.number_entry)
 		{
 			if (unzGoToNextFile(zipfile) != UNZ_OK)

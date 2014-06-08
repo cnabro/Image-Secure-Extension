@@ -28,6 +28,11 @@ extern "C"
 {
 #endif
 
+#define ISE_STATUS_ERROR_IVALID_PWD  -1;
+#define ISE_STATUS_ERROR_IVALID_FILE -2;
+#define ISE_STATUS_ERROR_UNPACKING -3;
+#define ISE_STATUS_OK 1;
+
 static const unsigned char des3_test_keys[24] =
 {
 	0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF,
@@ -77,6 +82,7 @@ typedef struct jpgx_compress_container
 
 typedef struct jpgx_decompress_container
 {
+	int status;
 	int sc_cnt;
 	secure_container *sc_arr;
 	jpeg_decompress_container jdcinfo;
@@ -93,10 +99,24 @@ typedef struct pngx_decompress_container
 
 typedef struct pngx_compress_container
 {
+	int status;
 	int sc_cnt;
 	secure_container *sc_arr;
 	char *file_path;
 } pngx_compress_container;
+
+/*
+	prop info
+*/
+typedef struct prop_info_container
+{
+	int status;
+	char * key_hash;
+	int sc_count;
+	secure_container ** sc_arr;
+	char ** file_name;
+} prop_info_container;
+
 
 /*
 	main function

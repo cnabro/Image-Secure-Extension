@@ -54,3 +54,51 @@ int make_prop_xml(secure_container **sc_arr,int arr_cnt, char* path, int img_typ
 	mxmlSaveFile(xml, fp, whitespace_cb);
 	fclose(fp);
 }
+
+prop_info_container parse_prop_xml(char *path)
+{
+	int arr_cnt,i;
+	FILE *fp = fopen(path, "r");
+	mxml_node_t	*xml, *prop, *key, *items, *item;
+	secure_container **sc_array;
+	prop_info_container prop_info;
+	char **file_name;
+
+	if (fp == NULL)
+	{
+		prop_info.status = ISE_STATUS_ERROR_IVALID_FILE;
+		return prop_info;
+	}
+
+	xml = mxmlLoadFile(NULL, fp, MXML_TEXT_CALLBACK);
+	prop = mxmlFindElement(xml, xml, "prop", NULL, NULL, MXML_DESCEND);
+
+	key = mxmlFindElement(prop, prop, "key", NULL, NULL, MXML_DESCEND);
+
+	items = mxmlFindElement(prop, prop, "items", NULL, NULL, MXML_DESCEND);
+	arr_cnt = atoi(mxmlElementGetAttr(items, "count"));
+	//mxmlElementGetAttr(item, "name")
+	sc_array = (secure_container**)malloc(sizeof(secure_container*) * arr_cnt);
+	prop_info.file_name = (char**)malloc(sizeof(char*) * arr_cnt);
+
+	for (item = mxmlFindElement(items, items, "item", NULL, NULL, MXML_DESCEND), i = 0; item != NULL; item = mxmlFindElement(item, items, "item", NULL, NULL, MXML_DESCEND), i++)
+	{
+		sc_array[i] = (secure_container*)malloc(sizeof(secure_container));
+		sc_array[i]->height = atoi(mxmlElementGetAttr(item, "height"));
+		sc_array[i]->width = atoi(mxmlElementGetAttr(item, "width"));
+		sc_array[i]->pos_x = atoi(mxmlElementGetAttr(item, "x"));
+		sc_array[i]->pos_y = atoi(mxmlElementGetAttr(item, "y"));
+		
+		
+		prop_info.file_name[i] = mxmlElementGetAttr(item, "name");
+	}
+
+	prop_info.key_hash = mxmlElementGetAttr(key, "enc");
+	prop_info.sc_arr = sc_array;
+	prop_info.sc_count = arr_cnt;
+	prop_info.status = ISE_STATUS_OK;
+
+	fclose(fp);
+
+	return prop_info;
+}

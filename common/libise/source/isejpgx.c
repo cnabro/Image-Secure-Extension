@@ -1,6 +1,7 @@
 #include "isejpgx.h"
 #include "iseutil.h"
 #include "isepack.h"
+#include "iseprop.h"
 
 jpeg_decompress_container read_jpeg_container(char *filename)
 {
@@ -225,7 +226,6 @@ jpgx_compress_container write_jpgx(char *filename, jpeg_decompress_container con
 		printf("pack_file_path[%d] : %s\n", (i + 2), pack_file_path[i + 2]);
 	}
 
-	//
 	if (make_compress(pack_file_path, pack_file_count, jpgx_file_path, "jpgx") == ZIP_OK)
 	{
 		printf("compress : success\n");
@@ -266,5 +266,106 @@ jpgx_compress_container write_jpgx(char *filename, jpeg_decompress_container con
 
 jpgx_decompress_container read_jpgx_container(char* filename, char* key)
 {
-	//jpeg_decompress_container read_jpeg_container
+	jpgx_decompress_container jpgx_container;
+
+	int i, j = 0;
+	secure_container **sc_array;
+	jpeg_decompress_container container;
+	JSAMPROW row_pointer = NULL;
+	prop_info_container prop;
+
+	/*
+		set file path
+	*/
+	char *out_temp_folder = str_concat(3, get_current_path(filename), ".", get_file_name(filename));
+	char *decode_path = str_concat(2, out_temp_folder, "/.decode");
+
+	if (make_decompress(filename) == UNZ_OK)
+	{
+		/*
+			init struct prop_xml, jpeg_container
+		*/
+		prop = parse_prop_xml(str_concat(2, out_temp_folder, "/prop.xml"));
+		container = read_jpeg_container(str_concat(2, out_temp_folder, "/core.jpg"));
+
+		sc_array = prop.sc_arr;
+
+		for (i = 0; i < prop.sc_count; i++)
+		{
+			int core_pos = 0;
+			int sc_pos = 0;
+
+			printf("file name : %s\n", prop.file_name[i]);
+			decode_file_des(str_concat(3, out_temp_folder, "/", prop.file_name[i]), decode_path, key);
+			jpeg_decompress_container jdc = read_jpeg_container(decode_path);
+			JSAMPROW secure_row_pointer;
+
+			for (core_pos = sc_array[i]->pos_y + 1, sc_pos = 0; core_pos < (int)(sc_array[i]->pos_y + sc_array[i]->height + 1); core_pos++, sc_pos++)
+			{
+				row_pointer = &container.image[core_pos * container.dcinfo.image_width * container.dcinfo.output_components];
+				secure_row_pointer = &jdc.image[sc_pos * jdc.dcinfo.image_width * jdc.dcinfo.output_components];
+
+				for (j = 0; j < jdc.dcinfo.image_width*jdc.dcinfo.output_components; j++)
+				{
+					/*
+						combine buffers uinsg core.jpg and ise files
+					*/
+					row_pointer[j + (sc_array[i]->pos_x)*jdc.dcinfo.output_components] = secure_row_pointer[j];
+				}
+			}
+
+			/*
+				remove temp decode files
+			*/
+			remove(decode_path);
+			remove(str_concat(3, out_temp_folder, "/", prop.file_name[i]));
+		}
+
+		remove(str_concat(2, out_temp_folder, "/core.jpg"));
+		remove(str_concat(2, out_temp_folder, "/prop.xml"));
+		_rmdir(out_temp_folder);
+	
+		/*
+			test code
+		*/
+		char *out = "./test/test1234.jpg";
+		FILE *file = NULL;
+		struct jpeg_compress_struct cinfo;
+		struct jpeg_error_mgr jerr;
+
+		file = fopen(out, "wb");
+
+		cinfo.err = jpeg_std_error(&jerr);
+		jpeg_create_compress(&cinfo);
+		jpeg_stdio_dest(&cinfo, file);
+
+		cinfo.image_width = container.dcinfo.image_width;
+		cinfo.image_height = container.dcinfo.image_height;
+		cinfo.input_components = container.dcinfo.num_components;
+		cinfo.in_color_space = container.dcinfo.out_color_space;
+
+		jpeg_set_defaults(&cinfo);
+		jpeg_start_compress(&cinfo, TRUE);
+
+		while (cinfo.next_scanline < cinfo.image_height)
+		{
+			row_pointer = &container.image[cinfo.next_scanline * cinfo.image_width * cinfo.input_components];
+			jpeg_write_scanlines(&cinfo, &row_pointer, 1);
+		}
+
+		jpeg_finish_compress(&cinfo);
+		jpeg_destroy_compress(&cinfo);
+		fclose(file);
+
+		jpgx_container.jdcinfo = container;
+		jpgx_container.sc_cnt = prop.sc_count;
+		jpgx_container.sc_arr = sc_array;
+		jpgx_container.status = ISE_STATUS_OK;
+
+		return jpgx_container;
+	}
+
+	jpgx_container.status = ISE_STATUS_ERROR_UNPACKING;
+
+	return jpgx_container;
 }
