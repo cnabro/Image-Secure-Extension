@@ -69,7 +69,7 @@ jpgx_compress_container write_jpgx(char *filename, jpeg_decompress_container con
 	char **sc_enc_file_path = NULL;
 
 	char **pack_file_path = NULL;
-	char *jpgx_file_path = str_concat(3, get_current_path(filename), get_file_name(filename), ".zip");
+	char *jpgx_file_path = str_concat(3, get_current_path(filename), get_file_name(filename), ".jpgx");
 	char *prop_file_path = str_concat(2, out_temp_folder, "/prop.xml");
 
 	
@@ -169,10 +169,10 @@ jpgx_compress_container write_jpgx(char *filename, jpeg_decompress_container con
 			*/
 			if (sc.pos_y < cinfo.next_scanline && sc.pos_y + sc.height >= cinfo.next_scanline)
 			{
-				secure_rp = &container.image[cinfo.next_scanline * cinfo.image_width * cinfo.input_components + sc.pos_y * cinfo.input_components];
+				secure_rp = &container.image[cinfo.next_scanline * cinfo.image_width * cinfo.input_components + sc.pos_x * cinfo.input_components];
 				jpeg_write_scanlines(secure_item_info[j], &secure_rp, 1);
 
-				for (i = sc.pos_y * cinfo.input_components, k = 0; i < (sc.pos_y + sc.width) * cinfo.input_components; i++, k++)
+				for (i = sc.pos_x * cinfo.input_components, k = 0; i < (sc.pos_x + sc.width) * cinfo.input_components; i++, k++)
 				{
 					row_pointer[i] = 0;
 				}
@@ -262,4 +262,9 @@ jpgx_compress_container write_jpgx(char *filename, jpeg_decompress_container con
 	jpgx_container.sc_cnt = sc_arr_count;
 
 	return jpgx_container;
+}
+
+jpgx_decompress_container read_jpgx_container(char* filename, char* key)
+{
+	//jpeg_decompress_container read_jpeg_container
 }

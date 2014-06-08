@@ -33,6 +33,7 @@ int make_prop_xml(secure_container **sc_arr,int arr_cnt, char* path, int img_typ
 
 	key = mxmlNewElement(prop, "key");
 	items = mxmlNewElement(prop, "items");
+	mxmlElementSetAttrf(items, "count", "%d", arr_cnt);
 
 	mxmlElementSetAttr(key, "enc", "as89dfas89d7fa8sdf78");
 

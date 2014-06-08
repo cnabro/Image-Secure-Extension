@@ -18,6 +18,7 @@
 #include "jpeglib.h"
 #include "zlib.h"
 #include "zip.h"
+#include "unzip.h"
 #include "mxml.h"
 
 #pragma once
