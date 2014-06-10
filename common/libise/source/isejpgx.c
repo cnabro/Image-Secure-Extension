@@ -327,7 +327,7 @@ jpgx_decompress_container read_jpgx_container(char* filename, char* key)
 	
 		/*
 			test code
-		*/
+		
 		char *out = "./test/test1234.jpg";
 		FILE *file = NULL;
 		struct jpeg_compress_struct cinfo;
@@ -356,7 +356,7 @@ jpgx_decompress_container read_jpgx_container(char* filename, char* key)
 		jpeg_finish_compress(&cinfo);
 		jpeg_destroy_compress(&cinfo);
 		fclose(file);
-
+		*/
 		jpgx_container.jdcinfo = container;
 		jpgx_container.sc_cnt = prop.sc_count;
 		jpgx_container.sc_arr = sc_array;
@@ -366,6 +366,7 @@ jpgx_decompress_container read_jpgx_container(char* filename, char* key)
 	}
 
 	jpgx_container.status = ISE_STATUS_ERROR_UNPACKING;
+	
 
 	return jpgx_container;
 }

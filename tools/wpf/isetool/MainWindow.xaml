@@ -34,8 +34,8 @@
             <MenuItem Header="Help"></MenuItem>
         </Menu>
         <Grid Grid.Row="1" Margin="20">
-            <Image Source="./Asset/temp.png" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"></Image>
-            <IseControls:MultiSelectionControl Background="#55FF0000" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Image x:Name="imageViewer" Source="./Asset/temp.png" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"></Image>
+            <IseControls:MultiSelectionControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 
             </IseControls:MultiSelectionControl>
         </Grid>
