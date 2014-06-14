@@ -33,11 +33,32 @@ namespace isetool
         {
             InitializeComponent();
 
-            //ThemeManager.ChangeTheme(this, ThemeManager.DefaultAccents.First(a => a.Name == "Red"), Theme.Light);
-            
-            
+            setBackgoround();
+        }
 
-            setImageJPGX();
+        public void setBackgoround()
+        {
+            GeometryDrawing drawing = new GeometryDrawing();
+
+            RectangleGeometry rect = new RectangleGeometry();
+            rect.Rect = new Rect(0, 0, 5, 5);
+
+            RectangleGeometry rect2 = new RectangleGeometry();
+            rect2.Rect = new Rect(5, 5, 5, 5);
+
+            GeometryGroup group = new GeometryGroup();
+            group.Children.Add(rect);
+            group.Children.Add(rect2);
+
+            drawing.Geometry = group;
+            drawing.Brush = System.Windows.Media.Brushes.Black;  
+
+            DrawingBrush brush = new DrawingBrush();
+            brush.Drawing = drawing;
+            brush.Viewport = new Rect(0, 0, 0.03, 0.035);
+            brush.TileMode = TileMode.Tile;
+
+            gridBG.Background = brush;  
         }
 
         public void setImageJPGX()
@@ -48,6 +69,7 @@ namespace isetool
 
             SecureContainer sc = new SecureContainer(100, 100, 300, 300);
             SecureContainer s2 = new SecureContainer(200, 200, 400, 400);
+            scList.Add(sc);
             scList.Add(s2);
 
             ImageSecureExtention.makeJPGX(path1, scList, "keytest");
@@ -55,7 +77,7 @@ namespace isetool
             /**/
             String path = "E:/opensource/ise/source/library/lib-win/test/temp.jpgx";
 
-            JpgxDecompressContainer container = ImageSecureExtention.getSecureJpegContainer(path, "test");
+            JpgxDecompressContainer container = ImageSecureExtention.getJpgxContainer(path, "test");
             Bitmap bitmap = container.getImageBitmapRGB24();
 
             MemoryStream ms = new MemoryStream();

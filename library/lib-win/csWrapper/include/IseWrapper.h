@@ -13,8 +13,8 @@ namespace IseWrapper
 	public ref class ImageSecureExtention
 	{
 	public:
-		static JpgxDecompressContainer^ getSecureJpegContainer(System::String^ filename, System::String^ key);
-		static PngxDecompressContainer^ getSecurePngContainer(System::String^ filename, System::String^ key);
+		static JpgxDecompressContainer^ getJpgxContainer(System::String^ filename, System::String^ key);
+		static PngxDecompressContainer^ getPngxContainer(System::String^ filename, System::String^ key);
 
 		static void makeJPGX(System::String^ filename, System::Collections::Generic::List<SecureContainer^>^ scList, System::String^ key);
 		static void makePNGX(System::String^ filename, System::Collections::Generic::List<SecureContainer^>^ scList, System::String^ key);

@@ -34,20 +34,7 @@ namespace isetool.Controls
         public MultiSelectionControl()
         {
             InitializeComponent();
-
-            //<Rectangle x:Name="dragSelectionBorder" Stroke="#555555" StrokeDashArray="2, 2" StrokeThickness="2" Fill="#88555555"/>
-            //Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
-            //dialog.DefaultExt = ".jpg";
-            //dialog.Filter = "Jpeg images (.jpg)|*.jpg";
-
-            //Nullable<bool> result = dialog.ShowDialog();
-            //if (result == true)
-            //{
-            //    string filename = dialog.FileName;
-            //    Debug.WriteLine(filename);
-            //}
         }
-
 
         public void initRectangle()
         {

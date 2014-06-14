@@ -121,8 +121,8 @@ typedef struct prop_info_container
 /*
 	main function
 */
-jpgx_decompress_container get_secure_jpeg_container(char *filename, char* key);
-pngx_decompress_container get_secure_png_container(char *filename, char* key);
+jpgx_decompress_container get_jpgx_container(char *filename, char* key);
+pngx_decompress_container get_pngx_container(char *filename, char* key);
 
 jpgx_compress_container make_jpgx(char *filename, secure_container **sc_array, int sc_arr_count, char* key);
 pngx_compress_container make_pngx(char *filename, secure_container **sc_array, int sc_arr_count, char* key);

@@ -3,14 +3,14 @@
 #include "IseWrapper.h"
 
 
-IseWrapper::JpgxDecompressContainer^ IseWrapper::ImageSecureExtention::getSecureJpegContainer(System::String^ filename, System::String^ key)
+IseWrapper::JpgxDecompressContainer^ IseWrapper::ImageSecureExtention::getJpgxContainer(System::String^ filename, System::String^ key)
 {
 	std::wstring wstr_filename = msclr::interop::marshal_as<std::wstring>(filename);
 	std::wstring wstr_key = msclr::interop::marshal_as<std::wstring>(key);
 
 	char* path = ws2c(wstr_filename);
 	//char* key = ws2c(key);
-	jpgx_decompress_container container = get_secure_jpeg_container(path, (char*)des3_test_keys);
+	jpgx_decompress_container container = get_jpgx_container(path, (char*)des3_test_keys);
 	
 	
 	JpgxDecompressContainer^ containerWrapper = gcnew JpgxDecompressContainer(container.jdcinfo.image, container.jdcinfo.dcinfo.image_width, container.jdcinfo.dcinfo.image_height, container.jdcinfo.dcinfo.out_color_components, container.status);
@@ -19,7 +19,7 @@ IseWrapper::JpgxDecompressContainer^ IseWrapper::ImageSecureExtention::getSecure
 	return containerWrapper;
 }
 
-IseWrapper::PngxDecompressContainer^ IseWrapper::ImageSecureExtention::getSecurePngContainer(System::String^ filename, System::String^ key)
+IseWrapper::PngxDecompressContainer^ IseWrapper::ImageSecureExtention::getPngxContainer(System::String^ filename, System::String^ key)
 {
 	std::wstring wstr_filename = msclr::interop::marshal_as<std::wstring>(filename);
 	std::wstring wstr_key = msclr::interop::marshal_as<std::wstring>(key);

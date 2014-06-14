@@ -4,40 +4,177 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="ISE Studio" Height="600" Width="800"
-    ResizeMode="NoResize">
+    ResizeMode="NoResize"
+    DataContext="{Binding Source={StaticResource Locator}, Path=Main}">
     <Controls:MetroWindow.LeftWindowCommands>
         <Controls:WindowCommands>
             <Image Source="./Asset/icon.png" Margin="5,0,0,0"></Image>
         </Controls:WindowCommands>
     </Controls:MetroWindow.LeftWindowCommands>
-
-    <Grid>
+    
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Icons.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    
+    <Grid Background="#444444">
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="90"></RowDefinition>
         </Grid.RowDefinitions>
-        
-        <Menu HorizontalAlignment="Stretch">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="250"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <!--<Menu HorizontalAlignment="Stretch">
             <MenuItem Header="File">
-                <MenuItem Header="Open"></MenuItem>
-                <MenuItem Header="Save"></MenuItem>
-                <MenuItem Header="Save As"></MenuItem>
-                <MenuItem Header="Exit"></MenuItem>
+                <MenuItem Header="Open" Command="{Binding MenuFileOpenCommand}"></MenuItem>
+                <MenuItem Header="Save" Command="{Binding MenuFileSaveCommand}"></MenuItem>
+                <MenuItem Header="Save As" Command="{Binding MenuFileSaveAsCommand}"></MenuItem>
+                <MenuItem Header="Exit" Command="{Binding MenuFileExitCommand}"></MenuItem>
             </MenuItem>
             <MenuItem Header="Add">
                 <MenuItem Header="Encryption">
-                    <MenuItem Header="Rectangle"></MenuItem>
-                    <MenuItem Header="Face"></MenuItem>
+                    <MenuItem Header="Rectangle" Command="{Binding MenuAddEncryptionRectangleCommand}"></MenuItem>
+                    <MenuItem Header="Face" Command="{Binding MenuAddEncryptionFaceCommand}"></MenuItem>
                 </MenuItem>
                 
             </MenuItem>
             <MenuItem Header="Help"></MenuItem>
-        </Menu>
-        <Grid Grid.Row="1" Margin="20">
-            <Image x:Name="imageViewer" Source="./Asset/temp.png" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"></Image>
-            <IseControls:MultiSelectionControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                
-            </IseControls:MultiSelectionControl>
+        </Menu>-->
+
+        <Grid Grid.Row="0" Background="Black" x:Name="gridBG">
+            <Grid Margin="15">
+                <Image x:Name="imageViewer" Source="./Asset/temp.png" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"></Image>
+                <IseControls:MultiSelectionControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent"/>
+            </Grid>
+        </Grid>
+
+
+
+        <Grid VerticalAlignment="Stretch" Grid.Row="0" Grid.Column="1" Background="#333333">
+            <StackPanel Margin="10" >
+                <Border Padding="10" Background="#555555" Margin="0,0,0,15">
+                    <StackPanel >
+
+                        <TextBlock Text="Encryption" Foreground="White" FontSize="20" Margin="0,0,0,5"></TextBlock>
+                        <Border Height="1" Background="Gray" Margin="0,5,0,10"></Border>
+
+                        <TextBlock Text="Mode" Foreground="White"></TextBlock>
+                        <ComboBox>
+                            <ComboBoxItem Content="DES24"/>
+                        </ComboBox>
+
+                        <TextBlock Text="Password" Foreground="White" Margin="0,10,0,0"></TextBlock>
+                        <PasswordBox PasswordChar="*"></PasswordBox>
+
+                    </StackPanel>
+                </Border>
+
+                <Border Padding="10" Background="#555555">
+                    <StackPanel >
+
+                        <TextBlock Text="Selection" Foreground="White" FontSize="20" Margin="0,0,0,5"></TextBlock>
+                        <Border Height="1" Background="Gray" Margin="0,5,0,10"></Border>
+                        <StackPanel Orientation="Horizontal">
+                            <ToggleButton VerticalAlignment="Top" Margin="10">
+                                <Rectangle Width="20" Height="20">
+                                    <Rectangle.Fill>
+                                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_base_select}"/>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </ToggleButton>
+
+                            <ToggleButton VerticalAlignment="Top" Margin="10">
+                                <Rectangle Width="20" Height="20">
+                                    <Rectangle.Fill>
+                                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_people_status}"/>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </ToggleButton>
+
+                            <ToggleButton VerticalAlignment="Top" Margin="10">
+                                <Rectangle Width="20" Height="20">
+                                    <Rectangle.Fill>
+                                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_border_all}"/>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </ToggleButton>
+
+                            <ToggleButton VerticalAlignment="Top" Margin="10">
+                                <Rectangle Width="20" Height="20">
+                                    <Rectangle.Fill>
+                                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_cancel}"/>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </ToggleButton>
+                        </StackPanel>
+                        
+                        <ListBox Height="170">
+                            <ListBoxItem>
+                                <TextBlock Text=""></TextBlock>
+                            </ListBoxItem>
+                        </ListBox>
+
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Grid>
+
+        <Grid VerticalAlignment="Stretch" Grid.Row="1" Grid.ColumnSpan="2" Background="#3b454f">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" Margin="15,0,0,0" VerticalAlignment="Center" Grid.Column="0">
+                <StackPanel Width="55">
+                    <Button Width="50" Height="50" Style="{DynamicResource MetroCircleButtonStyle}">
+                        <StackPanel Orientation="Vertical">
+                            <Rectangle Width="20" Height="20">
+                                <Rectangle.Fill>
+                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_undo}" />
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </StackPanel>
+                    </Button>
+                    <TextBlock Text="Undo" Foreground="White" HorizontalAlignment="Center"></TextBlock>
+                </StackPanel>
+            
+                <StackPanel Width="55">
+                    <Button Width="50" Height="50" Style="{DynamicResource MetroCircleButtonStyle}">
+                        <StackPanel Orientation="Vertical">
+                            <Rectangle Width="20" Height="20">
+                                <Rectangle.Fill>
+                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_redo}" />
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </StackPanel>
+                    </Button>
+                    <TextBlock Text="Redo" Foreground="White" HorizontalAlignment="Center"></TextBlock>
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="15,0,15,0" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1">
+                <StackPanel Width="55">
+                    <Button Width="50" Height="50" Style="{DynamicResource MetroCircleButtonStyle}">
+                        <StackPanel Orientation="Vertical">
+                            <Rectangle Width="20" Height="20">
+                                <Rectangle.Fill>
+                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_save}" />
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </StackPanel>
+                    </Button>
+                    <TextBlock Text="Save" Foreground="White" HorizontalAlignment="Center"></TextBlock>
+                </StackPanel>
+            </StackPanel>
         </Grid>
     </Grid>
 </Controls:MetroWindow>
+
+    
