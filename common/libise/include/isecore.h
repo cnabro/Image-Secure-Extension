@@ -40,6 +40,13 @@ static const unsigned char des3_test_keys[24] =
 	0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF, 0x01, 0x23
 };
 
+static const unsigned char padding_bit[24] =
+{
+	0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF,
+	0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF, 0x01,
+	0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF, 0x01, 0x23
+};
+
 typedef enum SECURE_TYPE
 {
 	ST_NORMAL,
@@ -62,12 +69,14 @@ typedef struct jpeg_decompress_container
 {
 	struct jpeg_decompress_struct dcinfo;
 	unsigned char *image;
+	int status;
 } jpeg_decompress_container;
 
 typedef struct png_decompress_container
 {
 	//struct jpeg_decompress_struct dcinfo; TODO : set png struct
 	unsigned char *image;
+	int status;
 } png_decompress_container;
 
 /*

@@ -2,6 +2,7 @@
 using IseWrapper;
 using MahApps.Metro;
 using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -29,14 +30,24 @@ namespace isetool
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
+        private BaseMetroDialog dialog; 
+
         public MainWindow()
         {
             InitializeComponent();
 
-            setBackgoround();
+            SetBackgoround();
+
+            this.MetroDialogOptions.ColorScheme = MetroDialogColorScheme.Theme;
+            dialog = (BaseMetroDialog)this.Resources["PasswordDialog"];
         }
 
-        public void setBackgoround()
+        public void setModifyMode()
+        {
+
+        }
+
+        public void SetBackgoround()
         {
             GeometryDrawing drawing = new GeometryDrawing();
 
@@ -61,39 +72,25 @@ namespace isetool
             gridBG.Background = brush;  
         }
 
-        public void setImageJPGX()
+        private async void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            String path1 = "E:/opensource/ise/source/library/lib-win/test/temp.jpg";
-            imageViewer.Source = new BitmapImage(new Uri(path1, UriKind.RelativeOrAbsolute));
-            List<SecureContainer> scList = new List<SecureContainer>();
+            string[] args = Environment.GetCommandLineArgs();
+            if (args.Length > 1)
+            {
+                await this.ShowMetroDialogAsync(dialog);
+                string path = args[1].Replace("\\","/");
+            }
+            else
+            {
 
-            SecureContainer sc = new SecureContainer(100, 100, 300, 300);
-            SecureContainer s2 = new SecureContainer(200, 200, 400, 400);
-            scList.Add(sc);
-            scList.Add(s2);
-
-            ImageSecureExtention.makeJPGX(path1, scList, "keytest");
-            ///////////
-            /**/
-            String path = "E:/opensource/ise/source/library/lib-win/test/temp.jpgx";
-
-            JpgxDecompressContainer container = ImageSecureExtention.getJpgxContainer(path, "test");
-            Bitmap bitmap = container.getImageBitmapRGB24();
-
-            MemoryStream ms = new MemoryStream();
-            bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
-
-            BitmapImage image = new BitmapImage();
-            image.BeginInit();
-            ms.Seek(0, SeekOrigin.Begin);
-            image.StreamSource = ms;
-            image.EndInit();
-
-            imageViewer.Source = image;
+            }
+            
         }
 
-
-
+        private async void Password_Dialog_Button_Click(object sender, RoutedEventArgs e)
+        {
+            await this.HideMetroDialogAsync(dialog);
+        }
         
         
     }

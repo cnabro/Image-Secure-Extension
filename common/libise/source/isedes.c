@@ -1,5 +1,7 @@
 #include "isedes.h"
 
+#define DES3_KEY_LENGTH 24
+
 int encode_file_des(char *in_file_path, char *out_file_path, char * key)
 {
 	FILE    *in_file;
@@ -71,4 +73,16 @@ int decode_file_des(char *in_file_path, char *out_file_path, char * key)
 	printf("decode_file_des: success\n");
 
 	return 1;
+}
+
+char * make_des_key(char * key)
+{
+	char* deskey = malloc(DES3_KEY_LENGTH + 1);
+
+	strncpy(deskey, (char*)padding_bit, DES3_KEY_LENGTH);
+	strncpy(deskey, key, strlen(key));
+
+	printf("key : %s\n\n", deskey);
+
+	return deskey;
 }

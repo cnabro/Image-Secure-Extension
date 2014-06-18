@@ -53,13 +53,13 @@ int main()
 
 	_mkdir(out_temp_folder);
 	
-	write_jpgx(infilename, container, scarr, 3, des3_test_keys);
+	write_jpgx(infilename, container, scarr, 3, "test");
 	
 
 	printf("===============================\n\n", out_temp_folder);
 	
 	//decompress jpgx
-	read_jpgx_container("./test/test.jpgx", des3_test_keys);
+	read_jpgx_container("./test/test.jpgx", "test");
 	return 0;
 }
 

@@ -1,11 +1,18 @@
 ﻿<Controls:MetroWindow x:Class="isetool.MainWindow"
     xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
     xmlns:IseControls="clr-namespace:isetool.Controls"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="ISE Studio" Height="600" Width="800"
-    ResizeMode="NoResize"
-    DataContext="{Binding Source={StaticResource Locator}, Path=Main}">
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+
+    MinWidth="800" MinHeight="600"
+    Title="ISE Studio"
+    Height="800" Width="1200" 
+    ResizeMode="CanResize"
+    GlowBrush="{DynamicResource AccentColorBrush}"
+    DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
+    Loaded="MetroWindow_Loaded">
     <Controls:MetroWindow.LeftWindowCommands>
         <Controls:WindowCommands>
             <Image Source="./Asset/icon.png" Margin="5,0,0,0"></Image>
@@ -17,6 +24,20 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Resources/Icons.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <Dialog:SimpleDialog x:Key="PasswordDialog"
+                                 Title="Password"
+                                 x:Name="SimpleTestDialog"
+                                 DataContext="{Binding Source={StaticResource Locator}, Path=Main}">
+                <StackPanel>
+                    <PasswordBox Height="30" IseControls:BindablePasswordBox.Password="{Binding DialogPassword,Mode=TwoWay}" IseControls:BindablePasswordBox.Attach="True"/>
+                    <StackPanel HorizontalAlignment="Right" Margin="0,10,0,0" Orientation="Horizontal">
+                        <Button Content="Submit" Width="100" Command="{Binding DialogSubmitCommand}" Click="Password_Dialog_Button_Click"></Button>
+                        <Button Content="Cancel" Margin="10,0,0,0" Width="100" Click="Password_Dialog_Button_Click"></Button>
+                    </StackPanel>
+                </StackPanel>
+
+            </Dialog:SimpleDialog>
         </ResourceDictionary>
     </Window.Resources>
     
@@ -49,15 +70,15 @@
         </Menu>-->
 
         <Grid Grid.Row="0" Background="Black" x:Name="gridBG">
-            <Grid Margin="15">
-                <Image x:Name="imageViewer" Source="./Asset/temp.png" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"></Image>
-                <IseControls:MultiSelectionControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent"/>
+            <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">
+            <Grid>
+                <Image x:Name="imageViewer" Source="{Binding Image}" Width="{Binding ImageWidth}" Height="{Binding ImageHeight}" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"></Image>
+                <IseControls:MultiSelectionControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="{Binding ImageWidth}" Height="{Binding ImageHeight}" Background="Transparent"/>
             </Grid>
+            </ScrollViewer>
         </Grid>
 
-
-
-        <Grid VerticalAlignment="Stretch" Grid.Row="0" Grid.Column="1" Background="#333333">
+        <Grid VerticalAlignment="Stretch" Grid.Row="0" Grid.Column="1" Background="#333333" Visibility="Visible">
             <StackPanel Margin="10" >
                 <Border Padding="10" Background="#555555" Margin="0,0,0,15">
                     <StackPanel >
@@ -71,8 +92,7 @@
                         </ComboBox>
 
                         <TextBlock Text="Password" Foreground="White" Margin="0,10,0,0"></TextBlock>
-                        <PasswordBox PasswordChar="*"></PasswordBox>
-
+                        <PasswordBox PasswordChar="*" IseControls:BindablePasswordBox.Password="{Binding Password,Mode=TwoWay}" IseControls:BindablePasswordBox.Attach="True"/>
                     </StackPanel>
                 </Border>
 
@@ -114,11 +134,42 @@
                                 </Rectangle>
                             </ToggleButton>
                         </StackPanel>
-                        
-                        <ListBox Height="170">
-                            <ListBoxItem>
-                                <TextBlock Text=""></TextBlock>
-                            </ListBoxItem>
+                        <StackPanel Background="#222222">
+                            <Grid Margin="5" Height="15">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition ></ColumnDefinition>
+                                    <ColumnDefinition ></ColumnDefinition>
+                                    <ColumnDefinition ></ColumnDefinition>
+                                    <ColumnDefinition ></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Text="pos x" Grid.Column="0" HorizontalAlignment="Center" Foreground="White" FontSize="9"></TextBlock>
+                                <TextBlock Text="pos y" Grid.Column="1" HorizontalAlignment="Center" Foreground="White" FontSize="9"></TextBlock>
+                                <TextBlock Text="width" Grid.Column="2" HorizontalAlignment="Center" Foreground="White" FontSize="9"></TextBlock>
+                                <TextBlock Text="height" Grid.Column="3" HorizontalAlignment="Center" Foreground="White" FontSize="9"></TextBlock>
+                                <Grid Grid.ColumnSpan="4" VerticalAlignment="Bottom" Height="2" Background="#555555"></Grid>
+                            </Grid>
+                        </StackPanel>
+
+                        <ListBox Height="130" DataContext="{Binding Source={StaticResource Locator}, Path=MultiSelectionCanvas}" ItemsSource="{Binding ContainerList}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition ></ColumnDefinition>
+                                            <ColumnDefinition ></ColumnDefinition>
+                                            <ColumnDefinition ></ColumnDefinition>
+                                            <ColumnDefinition ></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <TextBlock Text="{Binding X}" Grid.Column="0" HorizontalAlignment="Center"></TextBlock>
+                                        <TextBlock Text="{Binding Y}" Grid.Column="1" HorizontalAlignment="Center"></TextBlock>
+                                        <TextBlock Text="{Binding Width}" Grid.Column="2" HorizontalAlignment="Center"></TextBlock>
+                                        <TextBlock Text="{Binding Height}" Grid.Column="3" HorizontalAlignment="Center"></TextBlock>
+                                        
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
                         </ListBox>
 
                     </StackPanel>
@@ -132,6 +183,33 @@
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal" Margin="15,0,0,0" VerticalAlignment="Center" Grid.Column="0">
+                <StackPanel Width="55">
+                    <Button Width="50" Height="50" Style="{DynamicResource MetroCircleButtonStyle}" Command="{Binding MenuZoominCommand}">
+                        <StackPanel Orientation="Vertical">
+                            <Rectangle Width="20" Height="20">
+                                <Rectangle.Fill>
+                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_add}" />
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </StackPanel>
+                    </Button>
+                    <TextBlock Text="Zoom in" Foreground="White" HorizontalAlignment="Center"></TextBlock>
+                </StackPanel>
+
+                <StackPanel Width="55">
+                    <Button Width="50" Height="50" Style="{DynamicResource MetroCircleButtonStyle}" Command="{Binding MenuZoomOutCommand}">
+                        <StackPanel Orientation="Vertical">
+                            <Rectangle Width="20" Height="5">
+                                <Rectangle.Fill>
+                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_minus}" />
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </StackPanel>
+                    </Button>
+                    <TextBlock Text="Zoom out" Foreground="White" HorizontalAlignment="Center"></TextBlock>
+                </StackPanel>
+            </StackPanel>
+            <!--<StackPanel Orientation="Horizontal" Margin="15,0,0,0" VerticalAlignment="Center" Grid.Column="0">
                 <StackPanel Width="55">
                     <Button Width="50" Height="50" Style="{DynamicResource MetroCircleButtonStyle}">
                         <StackPanel Orientation="Vertical">
@@ -157,11 +235,23 @@
                     </Button>
                     <TextBlock Text="Redo" Foreground="White" HorizontalAlignment="Center"></TextBlock>
                 </StackPanel>
-            </StackPanel>
-
+            </StackPanel>-->
+            
             <StackPanel Orientation="Horizontal" Margin="15,0,15,0" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1">
                 <StackPanel Width="55">
-                    <Button Width="50" Height="50" Style="{DynamicResource MetroCircleButtonStyle}">
+                    <Button Width="50" Height="50" Style="{DynamicResource MetroCircleButtonStyle}" Command="{Binding MenuFileOpenCommand}">
+                        <StackPanel Orientation="Vertical">
+                            <Rectangle Width="20" Height="20">
+                                <Rectangle.Fill>
+                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_folder_open}" />
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </StackPanel>
+                    </Button>
+                    <TextBlock Text="Open" Foreground="White" HorizontalAlignment="Center"></TextBlock>
+                </StackPanel>
+                <StackPanel Width="55">
+                    <Button Width="50" Height="50" Style="{DynamicResource MetroCircleButtonStyle}" Command="{Binding MenuFileSaveCommand}">
                         <StackPanel Orientation="Vertical">
                             <Rectangle Width="20" Height="20">
                                 <Rectangle.Fill>
@@ -175,6 +265,7 @@
             </StackPanel>
         </Grid>
     </Grid>
+    
 </Controls:MetroWindow>
 
     

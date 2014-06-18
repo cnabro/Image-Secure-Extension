@@ -25,33 +25,41 @@ jpeg_decompress_container read_jpeg_container(char *filename)
 
 	jpeg_create_decompress(&cinfo);
 	jpeg_stdio_src(&cinfo, infile);
-	jpeg_read_header(&cinfo, TRUE);
+	
+	if (jpeg_read_header(&cinfo, TRUE) > 0)
+	{ 
+		jpeg_start_decompress(&cinfo);
 
-	jpeg_start_decompress(&cinfo);
+		info.image = (unsigned char*)malloc(cinfo.output_width*cinfo.output_height*cinfo.num_components);
+		info.dcinfo = cinfo;
+		info.status = ISE_STATUS_OK;
 
-	info.image = (unsigned char*)malloc(cinfo.output_width*cinfo.output_height*cinfo.num_components);
-	info.dcinfo = cinfo;
+		row_pointer[0] = (unsigned char *)malloc(cinfo.output_width*cinfo.num_components);
 
-	row_pointer[0] = (unsigned char *)malloc(cinfo.output_width*cinfo.num_components);
-
-	while (cinfo.output_scanline < cinfo.image_height)
-	{
-		jpeg_read_scanlines(&cinfo, row_pointer, 1);
-		for (i = 0; i < cinfo.image_width*cinfo.num_components; i++)
+		while (cinfo.output_scanline < cinfo.image_height)
 		{
-			info.image[location++] = row_pointer[0][i];
+			jpeg_read_scanlines(&cinfo, row_pointer, 1);
+			for (i = 0; i < cinfo.image_width*cinfo.num_components; i++)
+			{
+				info.image[location++] = row_pointer[0][i];
+			}
 		}
-	}
 
-	jpeg_finish_decompress(&cinfo);
-	jpeg_destroy_decompress(&cinfo);
-	free(row_pointer[0]);
-	fclose(infile);
+		jpeg_finish_decompress(&cinfo);
+		jpeg_destroy_decompress(&cinfo);
+		free(row_pointer[0]);
+		fclose(infile);
+	}
+	else
+	{
+		info.status = ISE_STATUS_ERROR_UNPACKING;
+		fclose(infile);
+	}
 
 	return info;
 }
 
-jpgx_compress_container write_jpgx(char *filename, jpeg_decompress_container container, secure_container **sc_array, int sc_arr_count, char *key)
+jpgx_compress_container write_jpgx(char *filename, jpeg_decompress_container container, secure_container **sc_array, int sc_arr_count, char *user_key)
 {
 	struct jpeg_compress_struct cinfo;
 	struct jpeg_error_mgr jerr;
@@ -73,7 +81,8 @@ jpgx_compress_container write_jpgx(char *filename, jpeg_decompress_container con
 	char *jpgx_file_path = str_concat(3, get_current_path(filename), get_file_name(filename), ".jpgx");
 	char *prop_file_path = str_concat(2, out_temp_folder, "/prop.xml");
 
-	
+	char * key = make_des_key(user_key);
+
 	int pack_file_count = 0;
 
 	jpgx_compress_container jpgx_container; /* output jpgx container */
@@ -264,7 +273,7 @@ jpgx_compress_container write_jpgx(char *filename, jpeg_decompress_container con
 	return jpgx_container;
 }
 
-jpgx_decompress_container read_jpgx_container(char* filename, char* key)
+jpgx_decompress_container read_jpgx_container(char* filename, char* user_key)
 {
 	jpgx_decompress_container jpgx_container;
 
@@ -273,6 +282,8 @@ jpgx_decompress_container read_jpgx_container(char* filename, char* key)
 	jpeg_decompress_container container;
 	JSAMPROW row_pointer = NULL;
 	prop_info_container prop;
+
+	char * key = make_des_key(user_key);
 
 	/*
 		set file path
@@ -300,17 +311,21 @@ jpgx_decompress_container read_jpgx_container(char* filename, char* key)
 			jpeg_decompress_container jdc = read_jpeg_container(decode_path);
 			JSAMPROW secure_row_pointer;
 
-			for (core_pos = sc_array[i]->pos_y + 1, sc_pos = 0; core_pos < (int)(sc_array[i]->pos_y + sc_array[i]->height + 1); core_pos++, sc_pos++)
+			if (jdc.status > 0)
 			{
-				row_pointer = &container.image[core_pos * container.dcinfo.image_width * container.dcinfo.output_components];
-				secure_row_pointer = &jdc.image[sc_pos * jdc.dcinfo.image_width * jdc.dcinfo.output_components];
-
-				for (j = 0; j < jdc.dcinfo.image_width*jdc.dcinfo.output_components; j++)
+				for (core_pos = sc_array[i]->pos_y + 1, sc_pos = 0; core_pos < (int)(sc_array[i]->pos_y + sc_array[i]->height + 1); core_pos++, sc_pos++)
 				{
-					/*
-						combine buffers uinsg core.jpg and ise files
-					*/
-					row_pointer[j + (sc_array[i]->pos_x)*jdc.dcinfo.output_components] = secure_row_pointer[j];
+					row_pointer = &container.image[core_pos * container.dcinfo.image_width * container.dcinfo.output_components];
+
+					secure_row_pointer = &jdc.image[sc_pos * jdc.dcinfo.image_width * jdc.dcinfo.output_components];
+
+					for (j = 0; j < jdc.dcinfo.image_width*jdc.dcinfo.output_components; j++)
+					{
+						/*
+							combine buffers uinsg core.jpg and ise files
+							*/
+						row_pointer[j + (sc_array[i]->pos_x)*jdc.dcinfo.output_components] = secure_row_pointer[j];
+					}
 				}
 			}
 

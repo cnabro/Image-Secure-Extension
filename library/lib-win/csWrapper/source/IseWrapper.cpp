@@ -9,8 +9,9 @@ IseWrapper::JpgxDecompressContainer^ IseWrapper::ImageSecureExtention::getJpgxCo
 	std::wstring wstr_key = msclr::interop::marshal_as<std::wstring>(key);
 
 	char* path = ws2c(wstr_filename);
-	//char* key = ws2c(key);
-	jpgx_decompress_container container = get_jpgx_container(path, (char*)des3_test_keys);
+	char* skey = ws2c(wstr_key);
+
+	jpgx_decompress_container container = get_jpgx_container(path, (char*)skey);
 	
 	
 	JpgxDecompressContainer^ containerWrapper = gcnew JpgxDecompressContainer(container.jdcinfo.image, container.jdcinfo.dcinfo.image_width, container.jdcinfo.dcinfo.image_height, container.jdcinfo.dcinfo.out_color_components, container.status);
@@ -47,8 +48,9 @@ void IseWrapper::ImageSecureExtention::makeJPGX(System::String^ filename, System
 	}
 
 	char* path = ws2c(wstr_filename);
+	char* skey = ws2c(wstr_key);
 
-	make_jpgx(path, sc_array, scList->Count, (char*)des3_test_keys);
+	make_jpgx(path, sc_array, scList->Count, (char*)skey);
 
 	free(sc_array);
 	free(path);
