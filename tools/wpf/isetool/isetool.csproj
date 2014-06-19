@@ -52,6 +52,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="GalaSoft.MvvmLight.Extras.WPF45">
@@ -112,6 +113,7 @@
     <Compile Include="Controls\MultiSelectionCanvas.xaml.cs">
       <DependentUpon>MultiSelectionCanvas.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converter\ValueConverter.cs" />
     <Compile Include="Model\SecureContainerModel.cs" />
     <Compile Include="Util\Converter.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />

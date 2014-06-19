@@ -37,9 +37,6 @@ namespace isetool
             InitializeComponent();
 
             SetBackgoround();
-
-            this.MetroDialogOptions.ColorScheme = MetroDialogColorScheme.Theme;
-            dialog = (BaseMetroDialog)this.Resources["PasswordDialog"];
         }
 
         public void setModifyMode()
@@ -71,27 +68,5 @@ namespace isetool
 
             gridBG.Background = brush;  
         }
-
-        private async void MetroWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            string[] args = Environment.GetCommandLineArgs();
-            if (args.Length > 1)
-            {
-                await this.ShowMetroDialogAsync(dialog);
-                string path = args[1].Replace("\\","/");
-            }
-            else
-            {
-
-            }
-            
-        }
-
-        private async void Password_Dialog_Button_Click(object sender, RoutedEventArgs e)
-        {
-            await this.HideMetroDialogAsync(dialog);
-        }
-        
-        
     }
 }

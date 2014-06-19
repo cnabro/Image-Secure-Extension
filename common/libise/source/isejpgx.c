@@ -173,16 +173,15 @@ jpgx_compress_container write_jpgx(char *filename, jpeg_decompress_container con
 		for (j = 0; j < sc_arr_count; j++)
 		{
 			secure_container sc = *sc_array[j];
-
 			/*
 				if secure container is matching, then copy to ise
 			*/
-			if (sc.pos_y < cinfo.next_scanline && sc.pos_y + sc.height >= cinfo.next_scanline)
+			if (sc.pos_y <= cinfo.next_scanline && sc.pos_y + sc.height >= cinfo.next_scanline)
 			{
 				secure_rp = &container.image[cinfo.next_scanline * cinfo.image_width * cinfo.input_components + sc.pos_x * cinfo.input_components];
 				jpeg_write_scanlines(secure_item_info[j], &secure_rp, 1);
 
-				for (i = sc.pos_x * cinfo.input_components, k = 0; i < (sc.pos_x + sc.width) * cinfo.input_components; i++, k++)
+				for (i = sc.pos_x * cinfo.input_components; i < (sc.pos_x + sc.width) * cinfo.input_components; i++)
 				{
 					row_pointer[i] = 0;
 				}

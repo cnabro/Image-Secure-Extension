@@ -50,7 +50,7 @@ void IseWrapper::ImageSecureExtention::makeJPGX(System::String^ filename, System
 	char* path = ws2c(wstr_filename);
 	char* skey = ws2c(wstr_key);
 
-	make_jpgx(path, sc_array, scList->Count, (char*)skey);
+	make_jpgx(path, sc_array, scList->Count, skey);
 
 	free(sc_array);
 	free(path);

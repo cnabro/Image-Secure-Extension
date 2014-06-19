@@ -33,27 +33,15 @@ int main()
 	printf("file working directory : %s\n", get_current_path(infilename));
 	printf("temp directory : %s\n\n", out_temp_folder);
 
-	scarr[0]->height = 100;
-	scarr[0]->width = 100;
+	scarr[0]->height = 720;
+	scarr[0]->width = 960;
 	scarr[0]->type = ST_NORMAL;
-	scarr[0]->pos_x = 200;
-	scarr[0]->pos_y = 200;
-
-	scarr[1]->height = 100;
-	scarr[1]->width = 300;
-	scarr[1]->type = ST_NORMAL;
-	scarr[1]->pos_x = 10;
-	scarr[1]->pos_y = 50;
-
-	scarr[2]->height = 300;
-	scarr[2]->width = 300;
-	scarr[2]->type = ST_NORMAL;
-	scarr[2]->pos_x = 100;
-	scarr[2]->pos_y = 300;
+	scarr[0]->pos_x = 0;
+	scarr[0]->pos_y = 0;
 
 	_mkdir(out_temp_folder);
 	
-	write_jpgx(infilename, container, scarr, 3, "test");
+	write_jpgx(infilename, container, scarr, 1, "test");
 	
 
 	printf("===============================\n\n", out_temp_folder);
