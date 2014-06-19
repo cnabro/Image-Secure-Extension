@@ -11,7 +11,8 @@
     Height="800" Width="1200" 
     ResizeMode="CanResize"
     GlowBrush="{DynamicResource AccentColorBrush}"
-    DataContext="{Binding Source={StaticResource Locator}, Path=Main}">
+    DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
+    Loaded="MetroWindow_Loaded">
     <Controls:MetroWindow.LeftWindowCommands>
         <Controls:WindowCommands>
             <Image Source="./Asset/icon.png" Margin="5,0,0,0"></Image>

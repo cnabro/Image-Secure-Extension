@@ -1,8 +1,10 @@
 ﻿using isetool.Util;
+using isetool.ViewModel;
 using IseWrapper;
 using MahApps.Metro;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
+using Microsoft.Practices.ServiceLocation;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -67,6 +69,12 @@ namespace isetool
             brush.TileMode = TileMode.Tile;
 
             gridBG.Background = brush;  
+        }
+
+        private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            MainViewModel model = ServiceLocator.Current.GetInstance<MainViewModel>();
+            model.ParseParameter();
         }
     }
 }

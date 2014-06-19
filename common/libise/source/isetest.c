@@ -41,13 +41,17 @@ int main()
 
 	_mkdir(out_temp_folder);
 	
-	write_jpgx(infilename, container, scarr, 1, "test");
-	
+	//while (1)
+	{
+		write_jpgx(infilename, container, scarr, 1, "test");
 
-	printf("===============================\n\n", out_temp_folder);
+
+		printf("===============================\n\n", out_temp_folder);
+
+		//decompress jpgx
+		read_jpgx_container("./test/test.jpgx", "test");
+	}
 	
-	//decompress jpgx
-	read_jpgx_container("./test/test.jpgx", "test");
 	return 0;
 }
 

@@ -40,7 +40,7 @@ void IseWrapper::ImageSecureExtention::makeJPGX(System::String^ filename, System
 	secure_container **sc_array = (secure_container**)malloc(sizeof(secure_container*)*scList->Count);
 	for (int i = 0; i < scList->Count; i++)
 	{
-		sc_array[i] = (secure_container*)malloc(sizeof(sc_array));
+		sc_array[i] = (secure_container*)malloc(sizeof(secure_container));
 		sc_array[i]->height = scList[i]->getHeight();
 		sc_array[i]->width = scList[i]->getWidth();
 		sc_array[i]->pos_x = scList[i]->getPosX();
@@ -64,7 +64,7 @@ void IseWrapper::ImageSecureExtention::makePNGX(System::String^ filename, System
 	secure_container **sc_array = (secure_container**)malloc(sizeof(secure_container*)*scList->Count);
 	for (int i = 0; i < scList->Count; i++)
 	{
-		sc_array[i] = (secure_container*)malloc(sizeof(sc_array));
+		sc_array[i] = (secure_container*)malloc(sizeof(secure_container));
 		sc_array[i]->height = scList[i]->getHeight();
 		sc_array[i]->width = scList[i]->getWidth();
 		sc_array[i]->pos_x = scList[i]->getPosX();

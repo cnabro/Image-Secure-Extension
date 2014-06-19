@@ -23,13 +23,6 @@ namespace isetool.ViewModel
     {
         public MainViewModel()
         {
-            string[] args = Environment.GetCommandLineArgs();
-
-            if (args.Length > 1)
-            {
-                FilePath = args[1];
-                LoadFile();
-            }
 
             MenuFileSaveCommand = new RelayCommand(() => SaveFile());
             MenuFileOpenCommand = new RelayCommand(() => ExcuteFileOpen());
@@ -268,6 +261,17 @@ namespace isetool.ViewModel
             if (result == true)
             {
                 FilePath = dlg.FileName;
+                LoadFile();
+            }
+        }
+
+        public void ParseParameter()
+        {
+            string[] args = Environment.GetCommandLineArgs();
+
+            if (args.Length > 1)
+            {
+                FilePath = args[1];
                 LoadFile();
             }
         }
