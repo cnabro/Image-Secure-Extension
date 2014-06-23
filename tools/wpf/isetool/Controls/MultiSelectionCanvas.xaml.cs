@@ -1,4 +1,6 @@
-﻿using System;
+﻿using isetool.ViewModel;
+using Microsoft.Practices.ServiceLocation;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -27,50 +29,16 @@ namespace isetool.Controls
         private Point origMouseDownPoint;
         private static readonly double DragThreshold = 5;
 
-        private List<Rectangle> rectangleList = new List<Rectangle>();
-
-        private Rectangle dragSelectionBorder;
+        //private Rectangle dragSelectionBorder;
 
         public MultiSelectionControl()
         {
             InitializeComponent();
-
-            //<Rectangle x:Name="dragSelectionBorder" Stroke="#555555" StrokeDashArray="2, 2" StrokeThickness="2" Fill="#88555555"/>
-            //Microsoft.Win32.OpenFileDialog dialog = new Microsoft.Win32.OpenFileDialog();
-            //dialog.DefaultExt = ".jpg";
-            //dialog.Filter = "Jpeg images (.jpg)|*.jpg";
-
-            //Nullable<bool> result = dialog.ShowDialog();
-            //if (result == true)
-            //{
-            //    string filename = dialog.FileName;
-            //    Debug.WriteLine(filename);
-            //}
-        }
-
-
-        public void initRectangle()
-        {
-
-            Debug.WriteLine("initRectangle");
-
-            dragSelectionBorder = new Rectangle();
-            DoubleCollection dc = new DoubleCollection();
-            dc.Add(2);
-            dc.Add(2);
-            dragSelectionBorder.StrokeThickness = 2.0;
-            dragSelectionBorder.Stroke = new SolidColorBrush(Color.FromArgb(0xFF, 0x55, 0x55, 0x55));
-            dragSelectionBorder.StrokeDashArray = dc;
-            dragSelectionBorder.Fill = new SolidColorBrush(Color.FromArgb(0x88, 0x55, 0x55, 0x55));
-
-            selectionCanvas.Children.Add(dragSelectionBorder);
         }
 
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
             base.OnMouseDown(e);
-
-            initRectangle();
 
             Debug.WriteLine("OnMouseDown");
 
@@ -82,7 +50,18 @@ namespace isetool.Controls
                 this.CaptureMouse();
 
                 e.Handled = true;
+
+                resetDragBorder();   
             }
+        }
+
+        private void resetDragBorder()
+        {
+            dragSelectionBorder.Visibility = Visibility.Visible;
+            Canvas.SetLeft(dragSelectionBorder, 0);
+            Canvas.SetTop(dragSelectionBorder, 0);
+            dragSelectionBorder.Width = 0;
+            dragSelectionBorder.Height = 0;
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -91,9 +70,6 @@ namespace isetool.Controls
 
             if (isDraggingSelectionRect)
             {
-                //
-                // Drag selection is in progress.
-                //
                 Point curMouseDownPoint = e.GetPosition(this);
                 UpdateDragSelectionRect(origMouseDownPoint, curMouseDownPoint);
 
@@ -101,11 +77,6 @@ namespace isetool.Controls
             }
             else if (isLeftMouseButtonDownOnWindow)
             {
-                //
-                // The user is left-dragging the mouse,
-                // but don't initiate drag selection until
-                // they have dragged past the threshold value.
-                //
                 Point curMouseDownPoint = e.GetPosition(this);
                 var dragDelta = curMouseDownPoint - origMouseDownPoint;
                 double dragDistance = Math.Abs(dragDelta.Length);
@@ -204,14 +175,11 @@ namespace isetool.Controls
             double y = Canvas.GetTop(dragSelectionBorder);
             double width = dragSelectionBorder.Width;
             double height = dragSelectionBorder.Height;
-            Rect dragRect = new Rect(x, y, width, height);
 
-            //
-            // Inflate the drag selection-rectangle by 1/10 of its size to 
-            // make sure the intended item is selected.
-            //
-            dragRect.Inflate(width / 10, height / 10);
+            MultiSelectionCanvasViewModel vm = ServiceLocator.Current.GetInstance<MultiSelectionCanvasViewModel>();
+            vm.ContainerList.Add(new Model.SecureContainerModel((int)x, (int)y, (int)width, (int)height));
 
+            dragSelectionBorder.Visibility = System.Windows.Visibility.Collapsed;
         }
     }
 }

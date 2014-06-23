@@ -1,11 +1,14 @@
 #include "isepack.h"
 #include "iseutil.h"
 
+#define MAX_FILENAME 512
+#define READ_SIZE 4028
+
 int make_compress(char **in_file_arr, int file_count, char *out_file_name, char* file_tag)
 {
 	zip_fileinfo zfi;
 	int size_read, i, err, ret = ZIP_OK;
-	char buf[4086];
+	char buf[READ_SIZE];
 
 	const char* filenameinzip = out_file_name;
 	char* filepath = NULL;
@@ -63,4 +66,101 @@ int make_compress(char **in_file_arr, int file_count, char *out_file_name, char*
 	zipClose(zf, file_tag);
 
 	return ZIP_OK;
+}
+
+int make_decompress(char *filepath)
+{
+	unzFile *zipfile = unzOpen(filepath);
+	unz_global_info global_info;
+	int i = 0;
+	char buf[4086];
+	char *out_temp_folder = str_concat(3, get_current_path(filepath), ".", get_file_name(filepath));
+
+	if (zipfile == NULL)
+	{
+		printf("%s: not found\n");
+		return -1;
+	}
+	
+	if (unzGetGlobalInfo(zipfile, &global_info) != UNZ_OK)
+	{
+		printf("could not read file global info\n");
+		unzClose(zipfile);
+		return -1;
+	}
+
+	for (i = 0; i < global_info.number_entry; ++i)
+	{
+		// Get info about current file.
+		unz_file_info file_info;
+		char filename[MAX_FILENAME];
+
+		if (unzGetCurrentFileInfo(
+			zipfile,
+			&file_info,
+			filename,
+			MAX_FILENAME,
+			NULL, 0, NULL, 0) != UNZ_OK)
+		{
+			printf("could not read file info\n");
+			unzClose(zipfile);
+			return -1;
+		}
+
+		_mkdir(out_temp_folder);
+
+		// Entry is a file, so extract it.
+		printf("file:%s\n", filename);
+		if (unzOpenCurrentFile(zipfile) != UNZ_OK)
+		{
+			printf("could not open file\n");
+			unzClose(zipfile);
+			return -1;
+		}
+
+		FILE *out = fopen(str_concat(3, out_temp_folder , "/", filename), "wb");
+		if (out == NULL)
+		{
+			printf("could not open destination file\n");
+			unzCloseCurrentFile(zipfile);
+			unzClose(zipfile);
+			return -1;
+		}
+
+		int error = UNZ_OK;
+		do
+		{
+			error = unzReadCurrentFile(zipfile, buf, sizeof(buf));
+			if (error < 0)
+			{
+				printf("error %d\n", error);
+				unzCloseCurrentFile(zipfile);
+				unzClose(zipfile);
+				return -1;
+			}
+
+			// Write data to file.
+			if (error > 0)
+			{
+				fwrite(buf, error, 1, out);
+			}
+		} while (error > 0);
+
+		fclose(out);
+
+		unzCloseCurrentFile(zipfile);
+
+		if ((i + 1) < global_info.number_entry)
+		{
+			if (unzGoToNextFile(zipfile) != UNZ_OK)
+			{
+				printf("cound not read next file\n");
+				unzClose(zipfile);
+				return -1;
+			}
+		}
+	}
+
+	unzClose(zipfile);
+
 }

@@ -5,7 +5,24 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     mc:Ignorable="d" 
     d:DesignHeight="300" d:DesignWidth="300"
-    x:Name="selectionCanvas">
-
-    <!--<Rectangle x:Name="dragSelectionBorder" Stroke="#555555" StrokeDashArray="2, 2" StrokeThickness="2" Fill="#88555555"/>-->
+    DataContext="{Binding Source={StaticResource Locator}, Path=MultiSelectionCanvas}">
+    <ItemsControl ItemsSource="{Binding ContainerList}">
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <Canvas />
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemContainerStyle>
+            <Style>
+                <Setter Property="Canvas.Left" Value="{Binding X}"/>
+                <Setter Property="Canvas.Top" Value="{Binding Y}"/>
+            </Style>
+        </ItemsControl.ItemContainerStyle>
+        <ItemsControl.ItemTemplate>
+            <DataTemplate>
+                <Rectangle Stroke="#555555" StrokeDashArray="2, 2" StrokeThickness="2" Fill="#88555555" Width="{Binding Width}" Height="{Binding Height}" />
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
+    <Rectangle x:Name="dragSelectionBorder" Stroke="#555555" StrokeDashArray="2, 2" StrokeThickness="2" Fill="#88555555" Visibility="Hidden"/>
 </Canvas>

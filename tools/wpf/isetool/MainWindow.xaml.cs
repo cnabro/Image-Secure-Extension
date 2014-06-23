@@ -1,10 +1,15 @@
 ﻿using isetool.Util;
+using isetool.ViewModel;
 using IseWrapper;
 using MahApps.Metro;
 using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
+using Microsoft.Practices.ServiceLocation;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -27,26 +32,49 @@ namespace isetool
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
+        private BaseMetroDialog dialog; 
+
         public MainWindow()
         {
             InitializeComponent();
 
-            //ThemeManager.ChangeTheme(this, ThemeManager.DefaultAccents.First(a => a.Name == "Red"), Theme.Light);
-
-            //String path = "C:/Users/cnabro/Desktop/엄마꺼/IMG_20130626_155207.jpg";
-
-            //unsafe
-            //{
-            //    List<SecureContainer> scList = new List<SecureContainer>();
-
-            //    SecureContainer sc = new SecureContainer(100, 100, 300, 300);
-            //    scList.Add(sc);
-
-            //    ImageSecureExtention.makeJPGX(path, scList, "keytest");
-            //}
+            SetBackgoround();
         }
 
-        
-        
+        public void setModifyMode()
+        {
+
+        }
+
+        public void SetBackgoround()
+        {
+            GeometryDrawing drawing = new GeometryDrawing();
+
+            RectangleGeometry rect = new RectangleGeometry();
+            rect.Rect = new Rect(0, 0, 5, 5);
+
+            RectangleGeometry rect2 = new RectangleGeometry();
+            rect2.Rect = new Rect(5, 5, 5, 5);
+
+            GeometryGroup group = new GeometryGroup();
+            group.Children.Add(rect);
+            group.Children.Add(rect2);
+
+            drawing.Geometry = group;
+            drawing.Brush = System.Windows.Media.Brushes.Black;  
+
+            DrawingBrush brush = new DrawingBrush();
+            brush.Drawing = drawing;
+            brush.Viewport = new Rect(0, 0, 0.03, 0.035);
+            brush.TileMode = TileMode.Tile;
+
+            gridBG.Background = brush;  
+        }
+
+        private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            MainViewModel model = ServiceLocator.Current.GetInstance<MainViewModel>();
+            model.ParseParameter();
+        }
     }
 }
