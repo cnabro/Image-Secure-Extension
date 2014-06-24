@@ -1,0 +1,9 @@
+iselib
+PolarsSSL-1.3.6	  http://polarssl.org : GPLv2 or proprietary
+LibJpeg 	  http://www.ijg.org/ : libjpeg License
+LibPng 		  http://www.libpng.org/pub/png/libpng.html :  libpng License
+Zlib 		  http://www.zlib.net/ : zlib license
+MINI-XML	  http://www.msweet.org/projects.php?Z3
+
+isetool-wpf
+mahapps.metro	  http://mahapps.com/
