@@ -176,7 +176,7 @@ jpgx_compress_container write_jpgx(char *filename, jpeg_decompress_container con
 			/*
 				if secure container is matching, then copy to ise
 			*/
-			if (sc.pos_y < cinfo.next_scanline && sc.pos_y + sc.height >= cinfo.next_scanline)
+			if (sc.pos_y <= cinfo.next_scanline && sc.pos_y + sc.height > cinfo.next_scanline)
 			{
 				secure_rp = &container.image[cinfo.next_scanline * cinfo.image_width * cinfo.input_components + sc.pos_x * cinfo.input_components];
 				jpeg_write_scanlines(secure_item_info[j], &secure_rp, 1);
@@ -312,7 +312,7 @@ jpgx_decompress_container read_jpgx_container(char* filename, char* user_key)
 
 			if (jdc.status > 0)
 			{
-				for (core_pos = sc_array[i]->pos_y + 1, sc_pos = 0; core_pos < (int)(sc_array[i]->pos_y + sc_array[i]->height + 1); core_pos++, sc_pos++)
+				for (core_pos = sc_array[i]->pos_y, sc_pos = 0; core_pos < (int)(sc_array[i]->pos_y + sc_array[i]->height); core_pos++, sc_pos++)
 				{
 					row_pointer = &container.image[core_pos * container.dcinfo.image_width * container.dcinfo.output_components];
 
