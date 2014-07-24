@@ -60,12 +60,6 @@
     <ClCompile Include="..\..\common\zlib\source\zutil.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\common\zlib\source\miniunz.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\common\zlib\source\minizip.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\common\zlib\source\ioapi.c">
       <Filter>소스 파일</Filter>
     </ClCompile>

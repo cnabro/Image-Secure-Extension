@@ -1,5 +1,5 @@
 /*
- * "$Id: config.h 451 2014-01-04 21:50:06Z msweet $"
+ * "$Id: mconfig.h 451 2014-01-04 21:50:06Z msweet $"
  *
  * Configuration file for Mini-XML, a small XML-like file parsing library.
  *
@@ -38,27 +38,30 @@
 #include <string.h>
 #include <stdarg.h>
 #include <ctype.h>
+#ifdef WIN32
 #include <io.h>
-
+#endif
 
 /*
  * Microsoft also renames the POSIX functions to _name, and introduces
  * a broken compatibility layer using the original names.  As a result,
- * random crashes can occur when, for example, strdup() allocates memory
+ * random crashes can occur when, for example, _strdup() allocates memory
  * from a different heap than used by malloc() and free().
  *
  * To avoid moronic problems like this, we #define the POSIX function
  * names to the corresponding non-standard Microsoft names.
  */
 
+
+#ifdef WIN32
 #define close		_close
 #define open		_open
-#define read	        _read
+#define read	    _read
 #define snprintf 	_snprintf
 #define strdup		_strdup
 #define vsnprintf 	_vsnprintf
 #define write		_write
-
+#endif
 
 /*
  * Version number...
@@ -71,8 +74,11 @@
  * Inline function support...
  */
 
+#ifdef WIN32
 #define inline _inline
-
+#else
+#define inline __inline__
+#endif
 
 /*
  * Long long support...
@@ -82,7 +88,7 @@
 
 
 /*
- * Do we have the snprintf() and vsnprintf() functions?
+ * Do we have the _snprintf() and _vsnprintf() functions?
  */
 
 #define HAVE_SNPRINTF 1
@@ -115,9 +121,9 @@ extern int	_mxml_snprintf(char *, size_t, const char *, ...);
 
 #  ifndef HAVE_VSNPRINTF
 extern int	_mxml_vsnprintf(char *, size_t, const char *, va_list);
-#    define vsnprintf _mxml_vsnprintf
+#    define _vsnprintf _mxml_vsnprintf
 #  endif /* !HAVE_VSNPRINTF */
 
 /*
- * End of "$Id: config.h 451 2014-01-04 21:50:06Z msweet $".
+ * End of "$Id: mconfig.h 451 2014-01-04 21:50:06Z msweet $".
  */

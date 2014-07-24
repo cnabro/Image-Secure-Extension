@@ -35,7 +35,7 @@
 #include POLARSSL_CONFIG_FILE
 #endif
 
-#if defined(POLARSSL_DES_C)
+//#if defined(POLARSSL_DES_C)
 
 #include "des.h"
 
@@ -1018,4 +1018,4 @@ int des_self_test( int verbose )
 
 #endif /* POLARSSL_SELF_TEST */
 
-#endif /* POLARSSL_DES_C */
+//#endif /* POLARSSL_DES_C */

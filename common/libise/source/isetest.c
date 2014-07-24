@@ -1,6 +1,7 @@
 #include "isejpgx.h"
 #include "iseutil.h"
 
+#if DEBUG
 int main()
 {
 	int i, j = 0;
@@ -38,9 +39,11 @@ int main()
 	scarr[0]->type = ST_NORMAL;
 	scarr[0]->pos_x = 0;
 	scarr[0]->pos_y = 0;
-
+#if WIN32
 	_mkdir(out_temp_folder);
-	
+#else
+	mkdir(out_temp_folder);
+#endif
 	//while (1)
 	{
 		write_jpgx(infilename, container, scarr, 1, "test");
@@ -55,3 +58,4 @@ int main()
 	return 0;
 }
 
+#endif

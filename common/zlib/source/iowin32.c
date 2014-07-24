@@ -10,6 +10,7 @@
      For more info read MiniZip_info.txt
 
 */
+#if (defined(_WIN32))
 
 #include <stdlib.h>
 
@@ -24,6 +25,7 @@
 #ifndef INVALID_SET_FILE_POINTER
 #define INVALID_SET_FILE_POINTER ((DWORD)-1)
 #endif
+
 
 
 #if defined(WINAPI_FAMILY_PARTITION) && (!(defined(IOWIN32_USING_WINRT_API)))
@@ -459,3 +461,5 @@ void fill_win32_filefunc64W(zlib_filefunc64_def* pzlib_filefunc_def)
     pzlib_filefunc_def->zerror_file = win32_error_file_func;
     pzlib_filefunc_def->opaque = NULL;
 }
+
+#endif

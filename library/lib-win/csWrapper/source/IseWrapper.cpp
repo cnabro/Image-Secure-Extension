@@ -15,7 +15,6 @@ IseWrapper::JpgxDecompressContainer^ IseWrapper::ImageSecureExtention::getJpgxCo
 	
 	
 	JpgxDecompressContainer^ containerWrapper = gcnew JpgxDecompressContainer(container.jdcinfo.image, container.jdcinfo.dcinfo.image_width, container.jdcinfo.dcinfo.image_height, container.jdcinfo.dcinfo.out_color_components, container.status);
-	printf("test getSecureJpegContainer : %d %d", container.jdcinfo.dcinfo.image_width, container.jdcinfo.dcinfo.image_height);
 
 	return containerWrapper;
 }

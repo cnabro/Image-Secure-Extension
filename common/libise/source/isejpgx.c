@@ -256,7 +256,11 @@ jpgx_compress_container write_jpgx(char *filename, jpeg_decompress_container con
 		remove(pack_file_path[i]); /* packing files */
 	}
 
+#if WIN32
 	_rmdir(out_temp_folder);
+#else
+	rmdir(out_temp_folder);
+#endif
 
 	/* 
 		return jpgx container
@@ -337,7 +341,11 @@ jpgx_decompress_container read_jpgx_container(char* filename, char* user_key)
 
 		remove(str_concat(2, out_temp_folder, "/core.jpg"));
 		remove(str_concat(2, out_temp_folder, "/prop.xml"));
+#if WIN32
 		_rmdir(out_temp_folder);
+#else
+		rmdir(out_temp_folder);
+#endif
 	
 		/*
 			test code

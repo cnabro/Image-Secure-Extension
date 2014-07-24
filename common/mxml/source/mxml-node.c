@@ -783,67 +783,6 @@ mxml_new(mxml_node_t *parent,		/* I - Parent node */
 }
 
 
-const char * whitespace_cb(mxml_node_t *node, int where)
-{
-	mxml_node_t	*parent;
-	int		level;
-	const char	*name;
-	static const char *tabs = "\t\t\t\t\t\t\t\t";
-
-	name = node->value.element.name;
-
-	if (!strcmp(name, "html") || !strcmp(name, "head") || !strcmp(name, "body") ||
-		!strcmp(name, "pre") || !strcmp(name, "p") ||
-		!strcmp(name, "h1") || !strcmp(name, "h2") || !strcmp(name, "h3") ||
-		!strcmp(name, "h4") || !strcmp(name, "h5") || !strcmp(name, "h6"))
-	{
-		if (where == MXML_WS_BEFORE_OPEN || where == MXML_WS_AFTER_CLOSE)
-			return ("\n");
-	}
-	else if (!strcmp(name, "dl") || !strcmp(name, "ol") || !strcmp(name, "ul"))
-	{
-		return ("\n");
-	}
-	else if (!strcmp(name, "dd") || !strcmp(name, "dt") || !strcmp(name, "li"))
-	{
-		if (where == MXML_WS_BEFORE_OPEN)
-			return ("\t");
-		else if (where == MXML_WS_AFTER_CLOSE)
-			return ("\n");
-	}
-	else if (!strncmp(name, "?xml", 4))
-	{
-		if (where == MXML_WS_AFTER_OPEN)
-			return ("\n");
-		else
-			return (NULL);
-	}
-	else if (where == MXML_WS_BEFORE_OPEN ||
-		((!strcmp(name, "choice") || !strcmp(name, "option")) &&
-	where == MXML_WS_BEFORE_CLOSE))
-	{
-		for (level = -1, parent = node->parent;
-			parent;
-			level++, parent = parent->parent);
-
-		if (level > 8)
-			level = 8;
-		else if (level < 0)
-			level = 0;
-
-		return (tabs + 8 - level);
-	}
-	else if (where == MXML_WS_AFTER_CLOSE ||
-		((!strcmp(name, "group") || !strcmp(name, "option") ||
-		!strcmp(name, "choice")) &&
-	where == MXML_WS_AFTER_OPEN))
-		return ("\n");
-	else if (where == MXML_WS_AFTER_OPEN && !node->child)
-		return ("\n");
-
-	return (NULL);
-}
-
 /*
  * End of "$Id: mxml-node.c 451 2014-01-04 21:50:06Z msweet $".
  */

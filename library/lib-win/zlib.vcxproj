@@ -25,8 +25,6 @@
     <ClCompile Include="..\..\common\zlib\source\inftrees.c" />
     <ClCompile Include="..\..\common\zlib\source\ioapi.c" />
     <ClCompile Include="..\..\common\zlib\source\iowin32.c" />
-    <ClCompile Include="..\..\common\zlib\source\miniunz.c" />
-    <ClCompile Include="..\..\common\zlib\source\minizip.c" />
     <ClCompile Include="..\..\common\zlib\source\mztools.c" />
     <ClCompile Include="..\..\common\zlib\source\trees.c" />
     <ClCompile Include="..\..\common\zlib\source\uncompr.c" />

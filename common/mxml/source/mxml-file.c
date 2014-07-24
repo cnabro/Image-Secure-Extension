@@ -71,7 +71,12 @@ static int		mxml_file_putc(int ch, void *p);
 static int		mxml_get_entity(mxml_node_t *parent, void *p,
 			                int *encoding,
 					_mxml_getc_cb_t getc_cb);
+
+#if WIN32
 static inline int	mxml_isspace(int ch)
+#else
+static __inline__ int	mxml_isspace(int ch)
+#endif
 			{
 			  return (ch == ' ' || ch == '\t' || ch == '\r' ||
 			          ch == '\n');

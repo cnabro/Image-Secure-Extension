@@ -106,8 +106,11 @@ int make_decompress(char *filepath)
 			unzClose(zipfile);
 			return -1;
 		}
-
+#if WIN32
 		_mkdir(out_temp_folder);
+#else
+		mkdir(out_temp_folder);
+#endif
 
 		// Entry is a file, so extract it.
 		printf("file:%s\n", filename);

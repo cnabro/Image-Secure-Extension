@@ -25,7 +25,12 @@ jpgx_compress_container make_jpgx(char *filename, secure_container **sc_array, i
 	jpeg_decompress_container container = read_jpeg_container(filename);
 	char *out_temp_folder = str_concat(3, get_current_path(filename), ".", get_file_name(filename));
 
+#if WIN32
 	_mkdir(out_temp_folder);
+#else
+	mkdir(out_temp_folder);
+#endif
+	
 	jpgx_compress_container jpgx_container = write_jpgx(filename, container, sc_array, sc_arr_count, key);
 	
 	printf("c# wrapper test : make_secure_jpeg");

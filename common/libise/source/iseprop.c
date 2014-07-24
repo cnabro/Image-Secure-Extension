@@ -1,5 +1,47 @@
 #include "iseprop.h"
 
+const char * whitespace_cb(mxml_node_t *node, int where)
+{
+	const char *name;
+
+	name = mxmlGetElement(node);
+
+	if (!strcmp(name, "html") ||
+		!strcmp(name, "head") ||
+		!strcmp(name, "body") ||
+		!strcmp(name, "pre") ||
+		!strcmp(name, "p") ||
+		!strcmp(name, "h1") ||
+		!strcmp(name, "h2") ||
+		!strcmp(name, "h3") ||
+		!strcmp(name, "h4") ||
+		!strcmp(name, "h5") ||
+		!strcmp(name, "h6"))
+	{
+
+		if (where == MXML_WS_BEFORE_OPEN ||
+		where == MXML_WS_AFTER_CLOSE)
+			return ("\n");
+	}
+	else if (!strcmp(name, "dl") ||
+		!strcmp(name, "ol") ||
+		!strcmp(name, "ul"))
+	{
+		return ("\n");
+	}
+	else if (!strcmp(name, "dd") ||
+		!strcmp(name, "dt") ||
+		!strcmp(name, "li"))
+	{
+		if (where == MXML_WS_BEFORE_OPEN)
+			return ("\t");
+		else if (where == MXML_WS_AFTER_CLOSE)
+			return ("\n");
+	}
+
+	return (NULL);
+}
+
 int make_prop_xml(secure_container **sc_arr,int arr_cnt, char* path, int img_type)
 {
 	/*

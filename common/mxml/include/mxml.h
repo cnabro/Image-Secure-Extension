@@ -315,7 +315,7 @@ extern mxml_type_t	mxml_ignore_cb(mxml_node_t *node);
 extern mxml_type_t	mxml_integer_cb(mxml_node_t *node);
 extern mxml_type_t	mxml_opaque_cb(mxml_node_t *node);
 extern mxml_type_t	mxml_real_cb(mxml_node_t *node);
-extern const char * whitespace_cb(mxml_node_t *node, int where);
+
 
 /*
  * C++ support...
