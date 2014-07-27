@@ -196,3 +196,8 @@ $RECYCLE.BIN/
 
 # Mac crap
 .DS_Store
+
+# Android build folder
+[Bb]in
+[Gg]en
+R.java

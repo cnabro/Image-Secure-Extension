@@ -326,7 +326,7 @@ jpgx_decompress_container read_jpgx_container(char* filename, char* user_key)
 					{
 						/*
 							combine buffers uinsg core.jpg and ise files
-							*/
+						*/
 						row_pointer[j + (sc_array[i]->pos_x)*jdc.dcinfo.output_components] = secure_row_pointer[j];
 					}
 				}
