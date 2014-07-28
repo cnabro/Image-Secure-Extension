@@ -307,13 +307,16 @@ namespace isetool.ViewModel
         {
             JpgxDecompressContainer container = ImageSecureExtention.getJpgxContainer(path, pwd);
             Bitmap bitmap = container.getImageBitmapRGB24();
-
+            
             MemoryStream ms = new MemoryStream();
+            ms.Seek(0, SeekOrigin.Begin);
+
             bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+            bitmap.Save("./test3333.jpg");
 
             BitmapImage image = new BitmapImage();
             image.BeginInit();
-            ms.Seek(0, SeekOrigin.Begin);
+            
             image.StreamSource = ms;
             image.EndInit();
 

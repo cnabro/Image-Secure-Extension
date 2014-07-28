@@ -3,9 +3,10 @@
     package="com.pigtools.isetool"
     android:versionCode="1"
     android:versionName="1.0" >
-	
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
-    
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" >
+    </uses-permission>
+
     <uses-sdk
         android:minSdkVersion="18"
         android:targetSdkVersion="18" />
@@ -14,22 +15,26 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/IseToolActionBarTheme" >
         <activity
-            android:name="com.cnabro.isetool.activity.MainActivity"
-            android:label="@string/app_name" >
+            android:name="com.pigtools.isetool.activity.MainActivity"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
+        <activity
+            android:name="com.pigtools.isetool.activity.ViewerActivity"
+            android:label="@string/app_name" >
+        </activity>
+
         <service
-            android:name="com.cnabro.isetool.service.IseProcessingService"
+            android:name="com.pigtools.isetool.service.IseProcessingService"
             android:label="@string/app_name" >
             <intent-filter>
-                <action android:name="com.cnabro.isetool" />
+                <action android:name="com.pigtools.isetool.service" />
             </intent-filter>
         </service>
     </application>

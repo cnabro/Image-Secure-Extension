@@ -2,7 +2,7 @@
 #include "../../../common/libise/include/isecore.h"
 #define RGB888TO565(r,g,b) ((b>>3 & 0x1f) | ((g>>2 & 0x3f) << 5) | ((r>>3 & 0x1f) << 11))
 
-JNIEXPORT jobject JNICALL Java_com_cnabro_isetool_IseProcessingService_getSecureJpegBuffer(JNIEnv *env,jobject obj, jstring strpath, jstring strkey)
+JNIEXPORT jobject JNICALL Java_com_pigtools_isetool_service_IseProcessingService_nativeGetSecureJpegBuffer(JNIEnv *env,jobject obj, jstring strpath, jstring strkey)
 {
 	char *path = (*env)->GetStringUTFChars(env, strpath, 0);
 	const char *key = (*env)->GetStringUTFChars(env, strkey, 0);
@@ -12,7 +12,7 @@ JNIEXPORT jobject JNICALL Java_com_cnabro_isetool_IseProcessingService_getSecure
 	/**
 	 * convert to java class
 	 */
-	jclass jdc = (*env)->FindClass(env, "com/cnabro/isetool/container/JpgxDecompressContainer");
+	jclass jdc = (*env)->FindClass(env, "com/pigtools/isetool/container/JpgxDecompressContainer");
 	jmethodID constructor = (*env)->GetMethodID(env, jdc, "<init>", "()V");
 	jmethodID set_height = (*env)->GetMethodID(env, jdc, "setHeight", "(I)V");
 	jmethodID set_width = (*env)->GetMethodID(env, jdc, "setWidth", "(I)V");
@@ -63,18 +63,18 @@ JNIEXPORT jobject JNICALL Java_com_cnabro_isetool_IseProcessingService_getSecure
 	return ret;
 }
 
-JNIEXPORT jstring JNICALL Java_com_cnabro_isetool_IseProcessingService_getSecurePngBuffer(JNIEnv *env, jobject obj)
+JNIEXPORT jstring JNICALL Java_com_pigtools_isetool_service_IseProcessingService_nativeGetSecurePngBuffer(JNIEnv *env, jobject obj)
 {
     return (*env)->NewStringUTF(env, "Hello JNI!!!!!");
 }
 
-JNIEXPORT jstring JNICALL Java_com_cnabro_isetool_IseProcessingService_makeJPGX(JNIEnv *env, jobject obj)
+JNIEXPORT jstring JNICALL Java_com_pigtools_isetool_service_IseProcessingService_nativeMakeJPGX(JNIEnv *env, jobject obj)
 {
 
     return (*env)->NewStringUTF(env, "Hello JNI!!!!!");
 }
 
-JNIEXPORT jstring JNICALL Java_com_cnabro_isetool_IseProcessingService_makePNGX(JNIEnv *env, jobject obj)
+JNIEXPORT jstring JNICALL Java_com_pigtools_isetool_service_IseProcessingService_nativeMakePNGX(JNIEnv *env, jobject obj)
 {
     return (*env)->NewStringUTF(env, "Hello JNI!!!!!");
 }

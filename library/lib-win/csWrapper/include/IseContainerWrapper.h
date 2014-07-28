@@ -106,11 +106,7 @@ namespace IseWrapper
 				}
 			}
 
-			array<unsigned char>^ values = gcnew array<unsigned char>(image_width*image_height*color_space);
-			System::Runtime::InteropServices::Marshal::Copy(System::IntPtr((void *)image), values, 0, image_width*image_height*color_space);
-
 			System::Drawing::Bitmap^ systemBitmap = gcnew System::Drawing::Bitmap(image_width, image_height, System::Drawing::Imaging::PixelFormat::Format24bppRgb);
-
 			System::Drawing::Rectangle rect;// = new System::Drawing::Rectangle(0, 0, image_width, image_height);
 			rect.X = 0;
 			rect.Y = 0;
@@ -118,7 +114,15 @@ namespace IseWrapper
 			rect.Height = image_height;
 
 			System::Drawing::Imaging::BitmapData^ bitmapData = systemBitmap->LockBits(rect, System::Drawing::Imaging::ImageLockMode::WriteOnly, systemBitmap->PixelFormat);
-			System::Runtime::InteropServices::Marshal::Copy(values, 0, bitmapData->Scan0, image_width*image_height*color_space);
+
+			array<unsigned char>^ values = gcnew array<unsigned char>(image_height*bitmapData->Stride);
+			for (int i = 0; i < image_height; i++)
+			{
+				System::Runtime::InteropServices::Marshal::Copy(System::IntPtr((void *)(image + i*image_width*color_space)), values, bitmapData->Stride*i, image_width*color_space);
+			}
+			
+
+			System::Runtime::InteropServices::Marshal::Copy(values, 0, bitmapData->Scan0, image_height*bitmapData->Stride);
 			systemBitmap->UnlockBits(bitmapData);
 
 			return systemBitmap;
