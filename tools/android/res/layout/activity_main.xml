@@ -21,7 +21,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
+                android:contentDescription="preview"
                 android:scaleType="fitCenter" />
+
+            <com.pigtools.isetool.view.SelectionCanvas
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
         </RelativeLayout>
 
         <LinearLayout

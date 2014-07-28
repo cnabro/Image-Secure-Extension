@@ -50,7 +50,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mSlidingDrawer = (LinearLayout) findViewById(R.id.left_drawer);
 		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-		
+
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
 
@@ -65,11 +65,11 @@ public class MainActivity extends Activity implements OnClickListener {
 				invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
 			}
 		};
-		
+
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
-		
+
 		bindService(new Intent("com.pigtools.isetool.service"), mServiceConnection, Service.BIND_AUTO_CREATE);
-		
+
 	}
 
 	private ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -84,16 +84,16 @@ public class MainActivity extends Activity implements OnClickListener {
 			mProcessingService = IseProcessingInterface.Stub.asInterface(service);
 		}
 	};
-	
+
 	@Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-         // The action bar home/up action should open or close the drawer.
-         // ActionBarDrawerToggle will take care of this.
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        
-        return super.onOptionsItemSelected(item);
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// The action bar home/up action should open or close the drawer.
+		// ActionBarDrawerToggle will take care of this.
+		if (mDrawerToggle.onOptionsItemSelected(item)) {
+			return true;
+		}
+
+		return super.onOptionsItemSelected(item);
 	}
 
 	@Override
@@ -115,7 +115,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		case R.id.open_btn:
 			try {
 				JpgxDecompressContainer container = mProcessingService.getSecureJpegBuffer(Environment.getExternalStorageDirectory() + "/test2.jpgx",
-						"12345");
+						"1234");
 				mPreviewImage.setImageBitmap(ImageUtil.byteArrayToBitmap(container.getImage(), container.getWidth(), container.getHeight()));
 			} catch (RemoteException e) {
 				e.printStackTrace();
@@ -127,18 +127,18 @@ public class MainActivity extends Activity implements OnClickListener {
 			break;
 		}
 	}
-	
-	@Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        mDrawerToggle.syncState();
-    }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        // Pass any configuration change to the drawer toggls
-        mDrawerToggle.onConfigurationChanged(newConfig);
-    }
+	@Override
+	protected void onPostCreate(Bundle savedInstanceState) {
+		super.onPostCreate(savedInstanceState);
+		// Sync the toggle state after onRestoreInstanceState has occurred.
+		mDrawerToggle.syncState();
+	}
+
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		// Pass any configuration change to the drawer toggls
+		mDrawerToggle.onConfigurationChanged(newConfig);
+	}
 }
