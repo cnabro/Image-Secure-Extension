@@ -1,10 +1,10 @@
-package com.pigtools.isetool.container;
+package com.pigtools.isetool.service.container;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-public class JpgxDecompressContainer implements Parcelable{
+public class PngxDecompressContainer implements Parcelable{
 
 	private int mHeight = 0;
 	private int mWidth = 0;
@@ -14,11 +14,11 @@ public class JpgxDecompressContainer implements Parcelable{
 
 	private byte[] mImage;
 
-	public JpgxDecompressContainer() {
+	public PngxDecompressContainer() {
 		
 	}
 	
-	public JpgxDecompressContainer(Parcel in) {
+	public PngxDecompressContainer(Parcel in) {
 		mHeight = in.readInt();
 		mWidth = in.readInt();
 		mColorSpace = in.readInt();
@@ -82,15 +82,13 @@ public class JpgxDecompressContainer implements Parcelable{
 		dest.writeByteArray(mImage);
 	}
 	
-	public static final Parcelable.Creator<JpgxDecompressContainer> CREATOR = new Parcelable.Creator() {
-        public JpgxDecompressContainer createFromParcel(Parcel in) {
-             return new JpgxDecompressContainer(in);
+	public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public PngxDecompressContainer createFromParcel(Parcel in) {
+             return new PngxDecompressContainer(in);
        }
 
-       public JpgxDecompressContainer[] newArray(int size) {
-            return new JpgxDecompressContainer[size];
+       public PngxDecompressContainer[] newArray(int size) {
+            return new PngxDecompressContainer[size];
        }
    };
-
-
 }

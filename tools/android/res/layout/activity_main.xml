@@ -22,61 +22,101 @@
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
                 android:contentDescription="preview"
-                android:scaleType="fitCenter" />
+                android:scaleType="fitXY" />
 
             <com.pigtools.isetool.view.SelectionCanvas
+                android:id="@+id/selection_canvas"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="55dp"
             android:layout_alignParentBottom="true"
             android:background="#576573"
-            android:gravity="right|center_vertical"
+            android:gravity="center_vertical"
             android:orientation="horizontal" >
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:id="@+id/open_btn"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:gravity="center"
                 android:orientation="vertical" >
 
-                <Button
-                    android:id="@+id/open_btn"
+                <ImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:background="@drawable/btn_save_n" >
-                </Button>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="open"
-                    android:textColor="@android:color/white" />
+                    android:background="@drawable/btn_selection_n" >
+                </ImageView>
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:id="@+id/open_btn"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#cc555555"
+                android:orientation="horizontal" />
+
+            <LinearLayout
+                android:id="@+id/open_btn"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:gravity="center"
                 android:orientation="vertical" >
 
-                <Button
-                    android:id="@+id/open_btn"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/btn_open_n" >
-                </Button>
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:background="@drawable/btn_people_n" >
+                </ImageView>
+            </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="save"
-                    android:textColor="@android:color/white" />
+            <LinearLayout
+                android:id="@+id/open_btn"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#cc555555"
+                android:orientation="horizontal" />
+
+            <LinearLayout
+                android:id="@+id/open_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:background="@drawable/btn_text_n" >
+                </ImageView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/open_btn"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#cc555555"
+                android:orientation="horizontal" />
+
+            <LinearLayout
+                android:id="@+id/open_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:background="@drawable/btn_cancel_n" >
+                </ImageView>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

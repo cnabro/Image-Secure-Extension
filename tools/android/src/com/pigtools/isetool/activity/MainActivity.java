@@ -5,47 +5,53 @@ import android.app.Service;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import com.pigtools.isetool.R;
-import com.pigtools.isetool.container.JpgxDecompressContainer;
 import com.pigtools.isetool.service.IseProcessingInterface;
+import com.pigtools.isetool.service.container.JpgxDecompressContainer;
 import com.pigtools.isetool.util.ImageUtil;
+import com.pigtools.isetool.view.SelectionCanvas;
 
 public class MainActivity extends Activity implements OnClickListener {
 
 	private IseProcessingInterface mProcessingService;
-	private Button mOpenButton;
 	private ImageView mPreviewImage;
 	private DrawerLayout mDrawerLayout;
 	private LinearLayout mSlidingDrawer;
 	private ActionBarDrawerToggle mDrawerToggle;
+	private SelectionCanvas mSelectionCanvas;
+
+	private int mCurrentImgWidth = 0;
+	private int mCurrentImgHeight = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 		setContentView(R.layout.activity_main);
 
-		mOpenButton = (Button) findViewById(R.id.open_btn);
-		mOpenButton.setOnClickListener(this);
-
 		mPreviewImage = (ImageView) findViewById(R.id.preview_image);
+		mSelectionCanvas = (SelectionCanvas) findViewById(R.id.selection_canvas);
 
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mSlidingDrawer = (LinearLayout) findViewById(R.id.left_drawer);
@@ -57,12 +63,12 @@ public class MainActivity extends Activity implements OnClickListener {
 		mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
 			public void onDrawerClosed(View view) {
 				getActionBar().setTitle(getResources().getString(R.string.app_name));
-				invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+				invalidateOptionsMenu();
 			}
 
 			public void onDrawerOpened(View drawerView) {
 				getActionBar().setTitle(getResources().getString(R.string.action_settings));
-				invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+				invalidateOptionsMenu();
 			}
 		};
 
@@ -87,10 +93,21 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// The action bar home/up action should open or close the drawer.
-		// ActionBarDrawerToggle will take care of this.
 		if (mDrawerToggle.onOptionsItemSelected(item)) {
 			return true;
+		}
+
+		switch (item.getItemId()) {
+		case R.id.action_open:
+			startActivityForResult(new Intent(this, FileListActivity.class), FileListActivity.REQUEST_CODE_OPEN_FILE);
+			break;
+
+		case R.id.action_save:
+			startActivityForResult(new Intent(this, FileListActivity.class), FileListActivity.REQUEST_CODE_OPEN_FILE);
+			break;
+
+		default:
+			break;
 		}
 
 		return super.onOptionsItemSelected(item);
@@ -113,13 +130,6 @@ public class MainActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.open_btn:
-			try {
-				JpgxDecompressContainer container = mProcessingService.getSecureJpegBuffer(Environment.getExternalStorageDirectory() + "/test2.jpgx",
-						"1234");
-				mPreviewImage.setImageBitmap(ImageUtil.byteArrayToBitmap(container.getImage(), container.getWidth(), container.getHeight()));
-			} catch (RemoteException e) {
-				e.printStackTrace();
-			}
 
 			break;
 
@@ -131,14 +141,105 @@ public class MainActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
-		// Sync the toggle state after onRestoreInstanceState has occurred.
 		mDrawerToggle.syncState();
 	}
 
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
-		// Pass any configuration change to the drawer toggls
 		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if (data != null) {
+			mSelectionCanvas.init();
+			mSelectionCanvas.setEnabled(true);
+
+			String path = data.getStringExtra(FileListActivity.EXTRA_KEY_RESULT);
+
+			switch (resultCode) {
+			case FileListActivity.RESULT_CODE_OPEN_JPEG:
+				Bitmap bitmap = BitmapFactory.decodeFile(path);
+				mCurrentImgWidth = bitmap.getWidth();
+				mCurrentImgHeight = bitmap.getHeight();
+
+				loadImage(bitmap);
+
+				break;
+
+			case FileListActivity.RESULT_CODE_OPEN_JPGX:
+
+				try {
+					JpgxDecompressContainer jpgxcontainer = mProcessingService.getSecureJpegBuffer(path, "");
+
+					mCurrentImgWidth = jpgxcontainer.getWidth();
+					mCurrentImgHeight = jpgxcontainer.getHeight();
+
+					loadImage(ImageUtil.byteArrayToBitmap(jpgxcontainer.getImage(), jpgxcontainer.getWidth(), jpgxcontainer.getHeight()));
+					mSelectionCanvas.setEnabled(false);
+
+				} catch (RemoteException e) {
+					e.printStackTrace();
+				}
+
+				break;
+
+			case FileListActivity.RESULT_CODE_OPEN_PNG:
+
+				break;
+
+			case FileListActivity.RESULT_CODE_OPEN_PNGX:
+				mSelectionCanvas.setEnabled(false);
+				break;
+
+			default:
+				break;
+			}
+		}
+	}
+
+	public void loadImage(Bitmap bitmap) {
+
+		mPreviewImage.setImageBitmap(bitmap);
+
+		/*
+		 * 화면에 뿌릴때 비율 계산해야 함
+		 */
+
+		Display display = getWindowManager().getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+
+		int screenWidth = size.x;
+		int screenHeight = size.y;
+		float ratio = 1.0f;
+
+		if (mCurrentImgWidth > mCurrentImgHeight) // 가로가 더 길면 가로에 맞춤
+		{
+			ratio = (float) screenWidth / (float) mCurrentImgWidth;
+
+			RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(screenWidth, (int) (mCurrentImgHeight * ratio));
+			layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+
+			mPreviewImage.setLayoutParams(layoutParams);
+
+			mSelectionCanvas.setImageSize(mCurrentImgWidth, mCurrentImgHeight, ratio);
+			mSelectionCanvas.setLayoutParams(layoutParams);
+		} else {
+			ratio = (float) screenHeight / (float) mCurrentImgHeight;
+
+			RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams((int) (screenWidth * ratio), mCurrentImgHeight);
+			layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+
+			mPreviewImage.setLayoutParams(layoutParams);
+
+			mSelectionCanvas.setImageSize(mCurrentImgWidth, mCurrentImgHeight, ratio);
+			mSelectionCanvas.setLayoutParams(layoutParams);
+		}
+
+	}
+
 }

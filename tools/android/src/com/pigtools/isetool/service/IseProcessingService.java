@@ -8,7 +8,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
-import com.pigtools.isetool.container.JpgxDecompressContainer;
+import com.pigtools.isetool.service.container.JpgxDecompressContainer;
 
 public class IseProcessingService extends Service {
 

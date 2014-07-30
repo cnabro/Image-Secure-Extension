@@ -21,6 +21,13 @@ public class SelectionCanvas extends View {
 
 	private RectF mDrawingRect = new RectF();
 	private ArrayList<RectF> mRectList = new ArrayList<RectF>();
+	private ArrayList<RectF> mAdjustRectList = new ArrayList<RectF>();
+
+	private int mImageWidth = 0;
+	private int mImageHeight = 0;
+	private float mRatio = 0;
+	
+	private boolean mIsEnable = false;
 
 	public SelectionCanvas(Context context) {
 		super(context);
@@ -38,45 +45,78 @@ public class SelectionCanvas extends View {
 		mBorderPaint.setStyle(Style.STROKE);
 		mBorderPaint.setPathEffect(new DashPathEffect(new float[] { 20, 5 }, 0));
 		mBorderPaint.setStrokeWidth(5);
-		
+
 		mInnerPaint = new Paint();
 		mInnerPaint.setARGB(150, 22, 22, 22);
 		mInnerPaint.setStyle(Style.FILL);
 		mInnerPaint.setStrokeWidth(5);
+		
+		mRectList.clear();
+		mAdjustRectList.clear();
+	}
 
+	public void setImageSize(int width, int height, float ratio) {
+		mImageHeight = height;
+		mImageWidth = width;
+		mRatio = ratio;
 	}
 
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		for(RectF rect : mRectList)
+		
+		if(mIsEnable)
 		{
-			canvas.drawRect(rect.left, rect.top, rect.right, rect.bottom, mBorderPaint);
-			canvas.drawRect(rect.left, rect.top, rect.right, rect.bottom, mInnerPaint);
+			for (RectF rect : mRectList) {
+				canvas.drawRect(rect.left, rect.top, rect.right, rect.bottom, mBorderPaint);
+				canvas.drawRect(rect.left, rect.top, rect.right, rect.bottom, mInnerPaint);
+			}
+			canvas.drawRect(mDrawingRect.left, mDrawingRect.top, mDrawingRect.right, mDrawingRect.bottom, mBorderPaint);
 		}
-		canvas.drawRect(mDrawingRect.left, mDrawingRect.top, mDrawingRect.right, mDrawingRect.bottom, mBorderPaint);
 	}
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		int action = event.getAction();
-
-		switch (action & MotionEvent.ACTION_MASK) {
-		case MotionEvent.ACTION_DOWN:
-			mInitialX = (int) event.getX();
-			mInitialY = (int) event.getY();
-			break;
-		case MotionEvent.ACTION_UP:
-			mDrawingRect.set(mInitialX, mInitialY, event.getX(), event.getY());
-			mRectList.add(new RectF(mDrawingRect));
-			mDrawingRect.set(0, 0, 0, 0);
-			break;
-		case MotionEvent.ACTION_MOVE:
-			mDrawingRect.set(mInitialX, mInitialY, event.getX(), event.getY());
-			break;
+		if(mIsEnable)
+		{
+			int action = event.getAction();
+	
+			switch (action & MotionEvent.ACTION_MASK) {
+			case MotionEvent.ACTION_DOWN:
+				mInitialX = (int) event.getX();
+				mInitialY = (int) event.getY();
+				break;
+			case MotionEvent.ACTION_UP:
+				if (mInitialX < event.getX() && mInitialY < event.getY()) {
+					mDrawingRect.set(mInitialX, mInitialY, event.getX(), event.getY());
+					mRectList.add(new RectF(mDrawingRect));
+					mInitialX = 0;
+					mInitialY = 0;
+	
+					/**
+					 * add adjust rect for saving
+					 */
+	
+					mAdjustRectList.add(new RectF(mDrawingRect.left / mRatio, mDrawingRect.top / mRatio, mDrawingRect.right / mRatio, mDrawingRect.bottom
+							/ mRatio));
+				}
+				mDrawingRect.set(0, 0, 0, 0);
+				break;
+			case MotionEvent.ACTION_MOVE:
+				mDrawingRect.set(mInitialX, mInitialY, event.getX(), event.getY());
+				break;
+			}
+			invalidate();
 		}
-		invalidate();
+			
 		return true;
+	}
+	
+	@Override
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+		
+		mIsEnable = enabled;
 	}
 
 }

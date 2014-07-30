@@ -1,9 +1,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/action_settings"/>
+        android:id="@+id/action_open"
+        android:icon="@drawable/btn_open_n"
+        android:showAsAction="ifRoom"
+        android:title="open"/>
+    <item
+        android:id="@+id/action_save"
+        android:icon="@drawable/btn_save_n"
+        android:showAsAction="ifRoom"
+        android:title="save"/>
 
 </menu>
