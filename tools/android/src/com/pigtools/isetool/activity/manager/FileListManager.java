@@ -3,6 +3,8 @@ package com.pigtools.isetool.activity.manager;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 import android.os.Environment;
 import android.util.Log;
@@ -22,11 +24,10 @@ public class FileListManager {
 	}
 
 	public ArrayList<FileData> getFileList(String path) {
-		Log.e("test", "path : " + path);
 		File files = new File(path);
 		IseFilter filter = new IseFilter();
 		ArrayList<FileData> list = new ArrayList<FileData>();
-
+		
 		if (!path.equals(Environment.getExternalStorageDirectory().getAbsolutePath())) {
 			list.add(new FileData("../", path + "/../", FileType.TYPE_FOLDER));
 		}

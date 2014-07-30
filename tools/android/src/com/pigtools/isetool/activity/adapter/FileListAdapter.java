@@ -7,9 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.pigtools.isetool.R;
 import com.pigtools.isetool.activity.model.FileData;
+import com.pigtools.isetool.activity.model.FileData.FileType;
 
 public class FileListAdapter extends BaseAdapter {
 
@@ -49,10 +52,22 @@ public class FileListAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 
-		convertView = mLayoutInflator.inflate(android.R.layout.simple_list_item_1, null);
+		convertView = mLayoutInflator.inflate(R.layout.layout_filelist_item, null);
 		
-		TextView tv = (TextView)convertView.findViewById(android.R.id.text1);
+		TextView tv = (TextView)convertView.findViewById(R.id.title_textview);
 		tv.setText(mFileList.get(position).getName());
+		
+		ImageView view = (ImageView)convertView.findViewById(R.id.icon_image);
+		if(getItem(position).getType() == FileType.TYPE_FILE)
+		{
+			view.setImageResource(R.drawable.btn_image_n);
+		}
+		else
+		{
+			view.setImageResource(R.drawable.btn_folder_n);
+		}
+		
+		
 		
 		return convertView;
 	}

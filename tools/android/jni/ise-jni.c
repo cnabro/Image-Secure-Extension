@@ -12,7 +12,7 @@ JNIEXPORT jobject JNICALL Java_com_pigtools_isetool_service_IseProcessingService
 	/**
 	 * convert to java class
 	 */
-	jclass jdc = (*env)->FindClass(env, "com/pigtools/isetool/container/JpgxDecompressContainer");
+	jclass jdc = (*env)->FindClass(env, "com/pigtools/isetool/service/container/JpgxDecompressContainer");
 	jmethodID constructor = (*env)->GetMethodID(env, jdc, "<init>", "()V");
 	jmethodID set_height = (*env)->GetMethodID(env, jdc, "setHeight", "(I)V");
 	jmethodID set_width = (*env)->GetMethodID(env, jdc, "setWidth", "(I)V");
