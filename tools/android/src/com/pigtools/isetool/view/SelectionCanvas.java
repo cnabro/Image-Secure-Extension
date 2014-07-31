@@ -7,7 +7,9 @@ import android.graphics.Canvas;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.graphics.PointF;
 import android.graphics.RectF;
+import android.media.FaceDetector.Face;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -26,7 +28,7 @@ public class SelectionCanvas extends View {
 	private int mImageWidth = 0;
 	private int mImageHeight = 0;
 	private float mRatio = 0;
-	
+
 	private boolean mIsEnable = false;
 
 	public SelectionCanvas(Context context) {
@@ -50,9 +52,11 @@ public class SelectionCanvas extends View {
 		mInnerPaint.setARGB(150, 22, 22, 22);
 		mInnerPaint.setStyle(Style.FILL);
 		mInnerPaint.setStrokeWidth(5);
-		
+
 		mRectList.clear();
 		mAdjustRectList.clear();
+
+		invalidate();
 	}
 
 	public void setImageSize(int width, int height, float ratio) {
@@ -64,9 +68,8 @@ public class SelectionCanvas extends View {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		
-		if(mIsEnable)
-		{
+
+		if (mIsEnable) {
 			for (RectF rect : mRectList) {
 				canvas.drawRect(rect.left, rect.top, rect.right, rect.bottom, mBorderPaint);
 				canvas.drawRect(rect.left, rect.top, rect.right, rect.bottom, mInnerPaint);
@@ -77,10 +80,9 @@ public class SelectionCanvas extends View {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		if(mIsEnable)
-		{
+		if (mIsEnable) {
 			int action = event.getAction();
-	
+
 			switch (action & MotionEvent.ACTION_MASK) {
 			case MotionEvent.ACTION_DOWN:
 				mInitialX = (int) event.getX();
@@ -92,13 +94,13 @@ public class SelectionCanvas extends View {
 					mRectList.add(new RectF(mDrawingRect));
 					mInitialX = 0;
 					mInitialY = 0;
-	
+
 					/**
 					 * add adjust rect for saving
 					 */
-	
-					mAdjustRectList.add(new RectF(mDrawingRect.left / mRatio, mDrawingRect.top / mRatio, mDrawingRect.right / mRatio, mDrawingRect.bottom
-							/ mRatio));
+
+					mAdjustRectList.add(new RectF(mDrawingRect.left / mRatio, mDrawingRect.top / mRatio, mDrawingRect.right / mRatio,
+							mDrawingRect.bottom / mRatio));
 				}
 				mDrawingRect.set(0, 0, 0, 0);
 				break;
@@ -108,15 +110,44 @@ public class SelectionCanvas extends View {
 			}
 			invalidate();
 		}
-			
+
 		return true;
 	}
-	
+
 	@Override
 	public void setEnabled(boolean enabled) {
 		super.setEnabled(enabled);
-		
+
 		mIsEnable = enabled;
+	}
+
+	public void setFaceArraySelection(Face[] faces) {
+		mAdjustRectList.clear();
+		mRectList.clear();
+
+		for (Face face : faces) {
+
+			if (face != null) {
+				PointF p = new PointF();
+				face.getMidPoint(p);
+				float distance = face.eyesDistance();
+
+				float left = (p.x - distance) < 0 ? 0 : (p.x - distance);
+				float top = (p.y - distance) < 0 ? 0 : (p.y - distance);
+				float right = (p.x + distance) < 0 ? 0 : (p.x + distance);
+				float bottom = (p.y + distance) < 0 ? 0 : (p.y + distance);
+
+				mAdjustRectList.add(new RectF(left, top, right, bottom));
+				mRectList.add(new RectF(left * mRatio, top * mRatio, right * mRatio, bottom * mRatio));
+			}
+		}
+
+		invalidate();
+	}
+	
+	public ArrayList<RectF> getAdjustRectList()
+	{
+		return mAdjustRectList;
 	}
 
 }
