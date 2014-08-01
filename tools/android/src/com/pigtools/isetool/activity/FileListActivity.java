@@ -38,6 +38,7 @@ public class FileListActivity extends Activity implements OnItemClickListener {
 		
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
+		getActionBar().setTitle("File Open");
 		
 		mFileListView = (ListView) findViewById(R.id.file_listview);
 		mFileListManager = new FileListManager();

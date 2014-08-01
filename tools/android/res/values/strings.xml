@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">ISE STUDIO</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_option">OPTION</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
 

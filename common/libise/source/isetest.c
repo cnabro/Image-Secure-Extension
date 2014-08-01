@@ -17,7 +17,7 @@ int main()
 	scarr[2] = (secure_container*)malloc(sizeof(secure_container));
 
 	/*
-		des
+	des
 	*/
 	des3_context ctx3;
 	unsigned char key[24];
@@ -26,7 +26,7 @@ int main()
 	//test
 
 	/*
-		jpeg crozping test
+	jpeg crozping test
 	*/
 
 	printf("file name with extention : %s\n", get_file_name_ex(infilename));
@@ -54,7 +54,7 @@ int main()
 		//decompress jpgx
 		read_jpgx_container("./test/test.jpgx", "test");
 	}
-	
+
 	return 0;
 }
 

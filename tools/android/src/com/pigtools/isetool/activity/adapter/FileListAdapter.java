@@ -31,7 +31,7 @@ public class FileListAdapter extends BaseAdapter {
 		if (mFileList != null) {
 			return mFileList.size();
 		}
-
+		
 		return 0;
 	}
 

@@ -1,5 +1,7 @@
 package com.pigtools.isetool.activity;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -33,11 +35,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.pigtools.isetool.R;
 import com.pigtools.isetool.activity.adapter.DrawerSelectionAdapter;
 import com.pigtools.isetool.service.IseProcessingInterface;
 import com.pigtools.isetool.service.container.JpgxDecompressContainer;
+import com.pigtools.isetool.service.container.PngxDecompressContainer;
+import com.pigtools.isetool.service.container.SecureContainer;
 import com.pigtools.isetool.util.ImageUtil;
 import com.pigtools.isetool.view.BottomToggleLayout;
 import com.pigtools.isetool.view.SelectionCanvas;
@@ -82,18 +87,19 @@ public class MainActivity extends Activity implements OnClickListener, OnBottomT
 
 		mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
 			public void onDrawerClosed(View view) {
-				getActionBar().setTitle(getResources().getString(R.string.app_name));
+				// getActionBar().setTitle(getResources().getString(R.string.app_name));
 				invalidateOptionsMenu();
 			}
 
 			public void onDrawerOpened(View drawerView) {
-				getActionBar().setTitle(getResources().getString(R.string.action_settings));
+				// getActionBar().setTitle(getResources().getString(R.string.action_option));
 				invalidateOptionsMenu();
 			}
 		};
 
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
 		setActionBarOptionEnabled(true);
+		getActionBar().setTitle("");
 
 		bindService(new Intent("com.pigtools.isetool.service"), mServiceConnection, Service.BIND_AUTO_CREATE);
 
@@ -133,7 +139,16 @@ public class MainActivity extends Activity implements OnClickListener, OnBottomT
 			break;
 
 		case R.id.action_save:
-			startActivityForResult(new Intent(this, FileListActivity.class), FileListActivity.REQUEST_CODE_OPEN_FILE);
+			try {
+				ArrayList<SecureContainer> list = new ArrayList<SecureContainer>();
+				list.add(new SecureContainer(50, 50, 50, 50));
+
+				boolean result = mProcessingService.makeJPGX(mCurrentPath, list, "1234");
+
+				Toast.makeText(this, "result : " + result, Toast.LENGTH_SHORT).show();
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
 			break;
 
 		default:
@@ -330,6 +345,7 @@ public class MainActivity extends Activity implements OnClickListener, OnBottomT
 
 			switch (mResultCode) {
 			case FileListActivity.RESULT_CODE_OPEN_JPEG:
+			case FileListActivity.RESULT_CODE_OPEN_PNG:
 				bitmap = BitmapFactory.decodeFile(mCurrentPath);
 
 				mCurrentImgWidth = bitmap.getWidth();
@@ -337,9 +353,8 @@ public class MainActivity extends Activity implements OnClickListener, OnBottomT
 				break;
 
 			case FileListActivity.RESULT_CODE_OPEN_JPGX:
-
 				try {
-					JpgxDecompressContainer jpgxcontainer = mProcessingService.getSecureJpegBuffer(mCurrentPath, mPassword == null ? "" : mPassword);
+					JpgxDecompressContainer jpgxcontainer = mProcessingService.getJpgxContainer(mCurrentPath, mPassword == null ? "" : mPassword);
 
 					mCurrentImgWidth = jpgxcontainer.getWidth();
 					mCurrentImgHeight = jpgxcontainer.getHeight();
@@ -352,12 +367,18 @@ public class MainActivity extends Activity implements OnClickListener, OnBottomT
 
 				break;
 
-			case FileListActivity.RESULT_CODE_OPEN_PNG:
-
-				break;
-
 			case FileListActivity.RESULT_CODE_OPEN_PNGX:
+				try {
+					PngxDecompressContainer jpgxcontainer = mProcessingService.getPngxContainer(mCurrentPath, mPassword == null ? "" : mPassword);
 
+					mCurrentImgWidth = jpgxcontainer.getWidth();
+					mCurrentImgHeight = jpgxcontainer.getHeight();
+
+					bitmap = ImageUtil.byteArrayToBitmap(jpgxcontainer.getImage(), jpgxcontainer.getWidth(), jpgxcontainer.getHeight());
+
+				} catch (RemoteException e) {
+					e.printStackTrace();
+				}
 				break;
 
 			default:
@@ -372,7 +393,8 @@ public class MainActivity extends Activity implements OnClickListener, OnBottomT
 			super.onPostExecute(result);
 
 			mCurrentBitmap = result;
-
+			mProgressDialog.hide();
+			
 			switch (mResultCode) {
 			case FileListActivity.RESULT_CODE_OPEN_JPEG:
 			case FileListActivity.RESULT_CODE_OPEN_PNG:
@@ -383,6 +405,8 @@ public class MainActivity extends Activity implements OnClickListener, OnBottomT
 
 			case FileListActivity.RESULT_CODE_OPEN_JPGX:
 			case FileListActivity.RESULT_CODE_OPEN_PNGX:
+				
+				
 				setActionBarOptionEnabled(false);
 				mSelectionCanvas.setEnabled(false);
 				loadImage(result);
@@ -392,7 +416,7 @@ public class MainActivity extends Activity implements OnClickListener, OnBottomT
 				break;
 			}
 
-			mProgressDialog.hide();
+			
 		}
 
 	}

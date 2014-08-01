@@ -9,8 +9,8 @@
 
     <!-- ActionBar styles -->
     <style name="IseToolActionBar" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
-        <item name="android:background">#576573</item>
-        <item name="android:backgroundSplit">#576573</item>
+        <item name="android:background">#111111</item>
+        <item name="android:backgroundSplit">#111111</item>
         
     </style>
 

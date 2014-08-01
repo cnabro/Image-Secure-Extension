@@ -82,7 +82,7 @@ public class PngxDecompressContainer implements Parcelable{
 		dest.writeByteArray(mImage);
 	}
 	
-	public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+	public static final Parcelable.Creator<PngxDecompressContainer> CREATOR = new Parcelable.Creator() {
         public PngxDecompressContainer createFromParcel(Parcel in) {
              return new PngxDecompressContainer(in);
        }
