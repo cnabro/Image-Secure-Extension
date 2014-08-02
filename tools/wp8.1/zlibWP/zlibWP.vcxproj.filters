@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tga;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header FIles">
+      <UniqueIdentifier>{cf6961a4-589b-47ae-929d-39197c5a7408}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{457b6c03-2357-4d08-94ae-01b85c5c1c67}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\common\zlib\source\adler32.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\common\zlib\source\compress.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\common\zlib\source\crc32.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\common\zlib\source\deflate.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\common\zlib\source\gzclose.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\common\zlib\source\gzlib.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\common\zlib\source\gzread.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\common\zlib\source\gzwrite.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\common\zlib\source\infback.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\common\zlib\source\inffast.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\common\zlib\source\inflate.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\common\zlib\source\inftrees.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\common\zlib\source\ioapi.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\common\zlib\source\iowin32.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\common\zlib\source\mztools.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\common\zlib\source\trees.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\common\zlib\source\uncompr.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\common\zlib\source\unzip.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\common\zlib\source\zip.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\common\zlib\source\zutil.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\common\zlib\include\crc32.h">
+      <Filter>Header FIles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\common\zlib\include\crypt.h">
+      <Filter>Header FIles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\common\zlib\include\deflate.h">
+      <Filter>Header FIles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\common\zlib\include\gzguts.h">
+      <Filter>Header FIles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\common\zlib\include\inffast.h">
+      <Filter>Header FIles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\common\zlib\include\inffixed.h">
+      <Filter>Header FIles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\common\zlib\include\inflate.h">
+      <Filter>Header FIles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\common\zlib\include\inftrees.h">
+      <Filter>Header FIles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\common\zlib\include\ioapi.h">
+      <Filter>Header FIles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\common\zlib\include\iowin32.h">
+      <Filter>Header FIles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\common\zlib\include\mztools.h">
+      <Filter>Header FIles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\common\zlib\include\trees.h">
+      <Filter>Header FIles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\common\zlib\include\unzip.h">
+      <Filter>Header FIles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\common\zlib\include\zconf.h">
+      <Filter>Header FIles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\common\zlib\include\zip.h">
+      <Filter>Header FIles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\common\zlib\include\zlib.h">
+      <Filter>Header FIles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\common\zlib\include\zutil.h">
+      <Filter>Header FIles</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -111,9 +111,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="IseWrapper">
-      <HintPath>..\..\..\..\library\lib-win\Debug\IseWrapper.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\IseWrapperWP\IseWrapperWP.vcxproj">
+      <Project>{5813da5e-af94-4cf5-8dee-f80c6114710c}</Project>
+      <Name>IseWrapperWP</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>

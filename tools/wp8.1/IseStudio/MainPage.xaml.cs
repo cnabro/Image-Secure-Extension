@@ -27,6 +27,8 @@ namespace IseStudio
             this.InitializeComponent();
 
             this.NavigationCacheMode = NavigationCacheMode.Required;
+
+           // IseWrapper.ImageSecureExtention.getJpgxContainer()
         }
 
         /// <summary>
