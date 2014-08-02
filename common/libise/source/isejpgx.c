@@ -123,12 +123,13 @@ jpgx_compress_container write_jpgx(char *filename, jpeg_decompress_container con
 		secure_container sc = *sc_array[i];
 		
 		char *out_file_name = "core.jpg";
+		int buf[4];
 
 		/*
 			malloc secure item
 		*/
-		sc_file_path[i] = (char*)malloc(strlen(out_temp_folder) + 4 + 4);
-		sc_enc_file_path[i] = (char*)malloc(strlen(out_temp_folder) + 4 + 4);
+		sc_file_path[i] = (char*)malloc(strlen(out_temp_folder) + 128);
+		sc_enc_file_path[i] = (char*)malloc(strlen(out_temp_folder) + 128);
 		secure_item_info[i] = (struct jpeg_compress_struct*)malloc(sizeof(struct jpeg_compress_struct));
 
 		/*
@@ -217,7 +218,7 @@ jpgx_compress_container write_jpgx(char *filename, jpeg_decompress_container con
 	/*
 		make property file
 	*/
-	make_prop_xml(sc_array, sc_arr_count, prop_file_path, 0); //for test
+	make_prop_xml(sc_array, sc_arr_count, prop_file_path, 0);
 	
 	/*
 		packing files

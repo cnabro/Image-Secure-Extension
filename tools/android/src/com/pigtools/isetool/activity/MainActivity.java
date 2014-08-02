@@ -408,7 +408,6 @@ public class MainActivity extends Activity implements OnClickListener, OnBottomT
 			case FileListActivity.RESULT_CODE_OPEN_JPEG:
 			case FileListActivity.RESULT_CODE_OPEN_PNG:
 				setActionBarOptionEnabled(true);
-				mSelectionCanvas.setEnabled(true);
 				loadImage(result);
 				break;
 
@@ -416,13 +415,14 @@ public class MainActivity extends Activity implements OnClickListener, OnBottomT
 			case FileListActivity.RESULT_CODE_OPEN_PNGX:
 
 				setActionBarOptionEnabled(false);
-				mSelectionCanvas.setEnabled(false);
 				loadImage(result);
 
 				if (mPassword == null)
 					showPasswordDialog();
 				break;
 			}
+			
+			mSelectionCanvas.setEnabled(false);
 
 		}
 
