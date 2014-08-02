@@ -69,13 +69,13 @@ public class SelectionCanvas extends View {
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 
-		if (mIsEnable) {
-			for (RectF rect : mRectList) {
-				canvas.drawRect(rect.left, rect.top, rect.right, rect.bottom, mBorderPaint);
-				canvas.drawRect(rect.left, rect.top, rect.right, rect.bottom, mInnerPaint);
-			}
-			canvas.drawRect(mDrawingRect.left, mDrawingRect.top, mDrawingRect.right, mDrawingRect.bottom, mBorderPaint);
+		
+		for (RectF rect : mRectList) {
+			canvas.drawRect(rect.left, rect.top, rect.right, rect.bottom, mBorderPaint);
+			canvas.drawRect(rect.left, rect.top, rect.right, rect.bottom, mInnerPaint);
 		}
+		canvas.drawRect(mDrawingRect.left, mDrawingRect.top, mDrawingRect.right, mDrawingRect.bottom, mBorderPaint);
+		
 	}
 
 	@Override

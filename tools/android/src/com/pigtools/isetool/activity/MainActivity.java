@@ -15,6 +15,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
+import android.graphics.RectF;
 import android.media.FaceDetector.Face;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -40,6 +41,7 @@ import android.widget.Toast;
 import com.pigtools.isetool.R;
 import com.pigtools.isetool.activity.adapter.DrawerSelectionAdapter;
 import com.pigtools.isetool.service.IseProcessingInterface;
+import com.pigtools.isetool.service.IseProcessingService;
 import com.pigtools.isetool.service.container.JpgxDecompressContainer;
 import com.pigtools.isetool.service.container.PngxDecompressContainer;
 import com.pigtools.isetool.service.container.SecureContainer;
@@ -57,6 +59,7 @@ public class MainActivity extends Activity implements OnClickListener, OnBottomT
 	private LinearLayout mSlidingDrawer;
 	private BottomToggleLayout mBottomToggleLayout;
 	private ListView mDrawerSecureListView;
+	private EditText mPassword;
 
 	private ActionBarDrawerToggle mDrawerToggle;
 	private SelectionCanvas mSelectionCanvas;
@@ -84,15 +87,14 @@ public class MainActivity extends Activity implements OnClickListener, OnBottomT
 		mBottomToggleLayout = (BottomToggleLayout) findViewById(R.id.bottom_layout);
 		mBottomToggleLayout.setOnItemSelectedListener(this);
 		mDrawerSecureListView = (ListView) findViewById(R.id.secure_listview);
+		mPassword = (EditText) findViewById(R.id.password_edittext);
 
 		mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
 			public void onDrawerClosed(View view) {
-				// getActionBar().setTitle(getResources().getString(R.string.app_name));
 				invalidateOptionsMenu();
 			}
 
 			public void onDrawerOpened(View drawerView) {
-				// getActionBar().setTitle(getResources().getString(R.string.action_option));
 				invalidateOptionsMenu();
 			}
 		};
@@ -101,7 +103,7 @@ public class MainActivity extends Activity implements OnClickListener, OnBottomT
 		setActionBarOptionEnabled(true);
 		getActionBar().setTitle("");
 
-		bindService(new Intent("com.pigtools.isetool.service"), mServiceConnection, Service.BIND_AUTO_CREATE);
+		bindService(new Intent(IseProcessingService.INTENT_PROCESSING_SERVICE), mServiceConnection, Service.BIND_AUTO_CREATE);
 
 	}
 
@@ -140,12 +142,23 @@ public class MainActivity extends Activity implements OnClickListener, OnBottomT
 
 		case R.id.action_save:
 			try {
-				ArrayList<SecureContainer> list = new ArrayList<SecureContainer>();
-				list.add(new SecureContainer(50, 50, 50, 50));
+				if (mPassword.getText().toString().equals("")) {
+					Toast.makeText(this, getString(R.string.msg_input_pwd), Toast.LENGTH_SHORT).show();
+				} else {
+					ArrayList<SecureContainer> list = new ArrayList<SecureContainer>();
+					for (RectF rect : mSelectionCanvas.getAdjustRectList()) {
+						list.add(new SecureContainer((int) rect.left, (int) rect.top, (int) (rect.right - rect.left), (int) (rect.bottom - rect.top)));
+					}
 
-				boolean result = mProcessingService.makeJPGX(mCurrentPath, list, "1234");
+					boolean result = mProcessingService.makeJPGX(mCurrentPath, list, mPassword.getText().toString());
 
-				Toast.makeText(this, "result : " + result, Toast.LENGTH_SHORT).show();
+					if (result) {
+						Toast.makeText(this, getString(R.string.msg_success), Toast.LENGTH_SHORT).show();
+					} else {
+						Toast.makeText(this, getString(R.string.msg_fail), Toast.LENGTH_SHORT).show();
+					}
+				}
+
 			} catch (RemoteException e) {
 				e.printStackTrace();
 			}
@@ -170,6 +183,7 @@ public class MainActivity extends Activity implements OnClickListener, OnBottomT
 
 		menu.findItem(R.id.action_open).setVisible(!drawerOpen);
 		menu.findItem(R.id.action_save).setVisible(drawerOpen);
+		menu.findItem(R.id.action_save).setEnabled(mCurrentOpenType > 0);
 
 		return super.onPrepareOptionsMenu(menu);
 	}
@@ -183,14 +197,7 @@ public class MainActivity extends Activity implements OnClickListener, OnBottomT
 
 	@Override
 	public void onClick(View v) {
-		switch (v.getId()) {
-		case R.id.open_btn:
-
-			break;
-
-		default:
-			break;
-		}
+		
 	}
 
 	@Override
@@ -198,10 +205,11 @@ public class MainActivity extends Activity implements OnClickListener, OnBottomT
 		if (mCurrentBitmap != null) {
 			switch (id) {
 			case R.id.selection_rect_btn:
-
+				mSelectionCanvas.setEnabled(true);
 				break;
 
 			case R.id.selection_people_btn:
+				mSelectionCanvas.setEnabled(false);
 				ImageUtil.findFaces(MainActivity.this, mCurrentBitmap, new OnFaceDetectionFinishedListener() {
 
 					@Override
@@ -213,11 +221,12 @@ public class MainActivity extends Activity implements OnClickListener, OnBottomT
 				break;
 
 			case R.id.selection_text_btn:
-
+				mSelectionCanvas.setEnabled(false);
 				break;
 
 			case R.id.selection_cancel_btn:
 				mSelectionCanvas.init();
+				mSelectionCanvas.setEnabled(false);
 				break;
 
 			default:
@@ -298,7 +307,7 @@ public class MainActivity extends Activity implements OnClickListener, OnBottomT
 	public void showPasswordDialog() {
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
-		alert.setTitle("Input Password");
+		alert.setTitle(getString(R.string.title_input_pwd));
 
 		final EditText input = new EditText(this);
 		input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
@@ -306,7 +315,7 @@ public class MainActivity extends Activity implements OnClickListener, OnBottomT
 
 		alert.setView(input);
 
-		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+		alert.setPositiveButton(getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				String pwd = input.getText().toString();
 
@@ -328,7 +337,7 @@ public class MainActivity extends Activity implements OnClickListener, OnBottomT
 		public LoadImageAsyncTask(Context context, int resultCode) {
 			mResultCode = resultCode;
 			mProgressDialog = new ProgressDialog(context);
-			mProgressDialog.setTitle("Loading");
+			mProgressDialog.setTitle(context.getString(R.string.title_loading_image));
 		}
 
 		@Override
@@ -394,7 +403,7 @@ public class MainActivity extends Activity implements OnClickListener, OnBottomT
 
 			mCurrentBitmap = result;
 			mProgressDialog.hide();
-			
+
 			switch (mResultCode) {
 			case FileListActivity.RESULT_CODE_OPEN_JPEG:
 			case FileListActivity.RESULT_CODE_OPEN_PNG:
@@ -405,8 +414,7 @@ public class MainActivity extends Activity implements OnClickListener, OnBottomT
 
 			case FileListActivity.RESULT_CODE_OPEN_JPGX:
 			case FileListActivity.RESULT_CODE_OPEN_PNGX:
-				
-				
+
 				setActionBarOptionEnabled(false);
 				mSelectionCanvas.setEnabled(false);
 				loadImage(result);
@@ -416,7 +424,6 @@ public class MainActivity extends Activity implements OnClickListener, OnBottomT
 				break;
 			}
 
-			
 		}
 
 	}

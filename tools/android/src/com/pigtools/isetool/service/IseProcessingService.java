@@ -15,7 +15,8 @@ import com.pigtools.isetool.service.container.PngxDecompressContainer;
 import com.pigtools.isetool.service.container.SecureContainer;
 
 public class IseProcessingService extends Service {
-
+	public static final String INTENT_PROCESSING_SERVICE= "com.pigtools.isetool.service";
+	
 	private IseProcessingServiceBinder mRemoteBinder = new IseProcessingServiceBinder();
 
 	@Override

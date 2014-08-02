@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="48dp"
-    android:background="#111111"
+    android:background="@color/theme_background"
     android:gravity="center_vertical"
     android:orientation="horizontal" >
 
@@ -24,12 +24,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:background="#00ffffff"
-        android:orientation="horizontal" />
-
-    <LinearLayout
         android:id="@+id/selection_people_btn"
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -47,13 +41,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/open_btn"
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:background="#00ffffff"
-        android:orientation="horizontal" />
-
-    <LinearLayout
         android:id="@+id/selection_text_btn"
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -69,13 +56,6 @@
             android:background="@drawable/btn_text_n" >
         </ImageView>
     </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/open_btn"
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:background="#00ffffff"
-        android:orientation="horizontal" />
 
     <LinearLayout
         android:id="@+id/selection_cancel_btn"

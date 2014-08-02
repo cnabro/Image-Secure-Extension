@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="drawer_background">#222222</color>
+    <color name="drawer_rect_background">#555555</color>
+    <color name="drawer_rect_text_background">#333333</color>
+    <color name="drawer_rect_divider_background">#55cccccc</color>
+    <color name="drawer_rect_text">#ffffff</color>
+    <color name="drawer_list_text">#ffffff</color>
+    <color name="canvas_background">#333333</color>
+    <color name="theme_background">#111111</color>
+
+</resources>

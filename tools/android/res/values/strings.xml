@@ -5,5 +5,22 @@
     <string name="action_option">OPTION</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
-
+	<string name="title_file_open">File Open</string>
+	<string name="msg_sd_error">Can\'t read external storage directory</string>
+	<string name="msg_input_pwd">Input secure password</string>
+	<string name="msg_success">Success</string>
+	<string name="msg_fail">Fail</string>
+	<string name="title_input_pwd">Input password</string>
+	<string name="btn_ok">Ok</string>
+	<string name="title_loading_image">Loading..</string>
+	<string name="title_loading_face">Face Detecting..</string>
+	<string name="text_encryption">Encryption</string>
+	<string name="text_mode">Mode</string>
+	<string name="text_des3">DES3(24bit)</string>
+	<string name="text_pwd">Password</string>
+	<string name="text_selection">Selection</string>
+	<string name="text_posx">pos x</string>
+	<string name="text_posy">pos y</string>
+	<string name="text_width">width</string>
+	<string name="text_height">height</string>
 </resources>

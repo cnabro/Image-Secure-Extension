@@ -12,14 +12,14 @@
             android:layout_width="match_parent"
             android:layout_height="170dp"
             android:layout_margin="10dp"
-            android:background="#555555"
+            android:background="@color/drawer_rect_background"
             android:orientation="vertical"
             android:padding="10dp" >
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Encryption"
+                android:text="@string/text_encryption"
                 android:textColor="@android:color/white"
                 android:textSize="15dp" />
 
@@ -28,41 +28,42 @@
                 android:layout_height="2dp"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
-                android:background="#55cccccc" >
+                android:background="@color/drawer_rect_divider_background" >
             </LinearLayout>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Mode"
+                android:text="@string/text_mode"
                 android:textColor="@android:color/white"
                 android:textSize="12dp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
-                android:background="#333333"
+                android:background="@color/drawer_rect_text_background"
                 android:gravity="center_vertical"
                 android:paddingLeft="5dp"
-                android:text="DES3(24bit)"
-                android:textColor="#ffffff"
+                android:text="@string/text_des3"
+                android:textColor="@color/drawer_rect_text"
                 android:textSize="11dp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="Password"
+                android:text="@string/text_pwd"
                 android:textColor="@android:color/white"
                 android:textSize="12dp" />
 
             <EditText
+                android:id="@+id/password_edittext"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
-                android:background="#333333"
+                android:background="@color/drawer_rect_text_background"
                 android:inputType="textPassword"
                 android:paddingLeft="5dp"
-                android:textColor="#ffffff"
+                android:textColor="@color/drawer_rect_text"
                 android:textCursorDrawable="@drawable/edittext_cursor"
                 android:textSize="11dp" />
         </LinearLayout>
@@ -72,15 +73,15 @@
             android:layout_height="0dp"
             android:layout_margin="10dp"
             android:layout_weight="1"
-            android:background="#555555"
+            android:background="@color/drawer_rect_background"
             android:orientation="vertical"
             android:padding="10dp" >
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Selection"
-                android:textColor="@android:color/white"
+                android:text="@string/text_selection"
+                android:textColor="@color/drawer_rect_text"
                 android:textSize="15dp" />
 
             <LinearLayout
@@ -88,13 +89,13 @@
                 android:layout_height="2dp"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
-                android:background="#55cccccc" >
+                android:background="@color/drawer_rect_divider_background" >
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#333333"
+                android:background="@color/drawer_rect_text_background"
                 android:minHeight="180dp"
                 android:orientation="vertical" >
 
@@ -109,17 +110,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="pos x"
-                        android:textColor="@android:color/white"
-                        android:textSize="12dp" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="pos y"
-                        android:textColor="@android:color/white"
+                        android:text="@string/text_posx"
+                        android:textColor="@color/drawer_rect_text"
                         android:textSize="10dp" />
 
                     <TextView
@@ -127,8 +119,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="width"
-                        android:textColor="@android:color/white"
+                        android:text="@string/text_posy"
+                        android:textColor="@color/drawer_rect_text"
                         android:textSize="10dp" />
 
                     <TextView
@@ -136,8 +128,17 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="height"
-                        android:textColor="@android:color/white"
+                        android:text="@string/text_width"
+                        android:textColor="@color/drawer_rect_text"
+                        android:textSize="10dp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/text_height"
+                        android:textColor="@color/drawer_rect_text"
                         android:textSize="10dp" />
                 </LinearLayout>
 
@@ -146,7 +147,7 @@
                     android:layout_height="2dp"
                     android:layout_margin="5dp"
                     android:layout_marginTop="5dp"
-                    android:background="#55cccccc" >
+                    android:background="@color/drawer_rect_divider_background" >
                 </LinearLayout>
 
                 <ListView

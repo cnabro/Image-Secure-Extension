@@ -38,13 +38,13 @@ public class FileListActivity extends Activity implements OnItemClickListener {
 		
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setHomeButtonEnabled(true);
-		getActionBar().setTitle("File Open");
+		getActionBar().setTitle(R.string.title_file_open);
 		
 		mFileListView = (ListView) findViewById(R.id.file_listview);
 		mFileListManager = new FileListManager();
 
 		if (!init()) {
-			Toast.makeText(this, "SD card를 읽을 수 없습니다.", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, getString(R.string.msg_sd_error), Toast.LENGTH_SHORT).show();
 		}
 	}
 	

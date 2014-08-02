@@ -9,6 +9,7 @@ import android.media.FaceDetector;
 import android.media.FaceDetector.Face;
 import android.os.AsyncTask;
 
+import com.pigtools.isetool.R;
 import com.pigtools.isetool.view.listener.OnFaceDetectionFinishedListener;
 
 public class ImageUtil {
@@ -32,7 +33,7 @@ public class ImageUtil {
 		public AsyncFaceDetectionTask(Context context, OnFaceDetectionFinishedListener listener) {
 			mOnFaceDetectionFinishedListener = listener;
 			mProgressDialog = new ProgressDialog(context);
-			mProgressDialog.setTitle("Loading");
+			mProgressDialog.setTitle(context.getString(R.string.title_loading_face));
 		}
 
 		@Override

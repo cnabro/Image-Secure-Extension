@@ -3,7 +3,7 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#333333" >
+    android:background="@color/canvas_background" >
 
     <LinearLayout
         android:id="@+id/content_frame"
@@ -28,7 +28,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="ISE STUDIO"
+                    android:text="@string/app_name"
                     android:textColor="#555555"
                     android:textSize="8dp" />
             </LinearLayout>
@@ -58,7 +58,7 @@
         android:layout_width="260dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="#222222"
+        android:background="@color/drawer_background"
         android:orientation="vertical" >
 
         <include
