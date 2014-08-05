@@ -74,7 +74,7 @@ typedef struct jpeg_decompress_container
 
 typedef struct png_decompress_container
 {
-	//struct jpeg_decompress_struct dcinfo; TODO : set png struct
+	png_infop dcinfo;
 	unsigned char *image;
 	int status;
 } png_decompress_container;

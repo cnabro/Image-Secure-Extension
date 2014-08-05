@@ -7,4 +7,5 @@ using namespace Platform;
 
 Class1::Class1()
 {
+	
 }
