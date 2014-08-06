@@ -20,6 +20,7 @@
 #include "zip.h"
 #include "unzip.h"
 #include "mxml.h"
+#include "png.h"
 
 #pragma once
 
@@ -74,7 +75,8 @@ typedef struct jpeg_decompress_container
 
 typedef struct png_decompress_container
 {
-	png_infop dcinfo;
+	png_structp png_ptr;
+	png_infop info_ptr;
 	unsigned char *image;
 	int status;
 } png_decompress_container;
@@ -102,8 +104,10 @@ typedef struct jpgx_decompress_container
 */
 typedef struct pngx_decompress_container
 {
+	int status;
 	int sc_cnt;
 	secure_container *sc_arr;
+	png_decompress_container pdcinfo;
 } pngx_decompress_container;
 
 typedef struct pngx_compress_container

@@ -5,6 +5,7 @@
 
 png_decompress_container read_png_container(char *filename)
 {
+	png_decompress_container info;
 	png_structp png_ptr;
 	png_infop info_ptr;
 	int number_of_passes;
@@ -17,29 +18,66 @@ png_decompress_container read_png_container(char *filename)
 	png_byte color_type;
 	png_byte bit_depth;
 
-	/* open file and test for it being a png */
-	FILE *fp = fopen(filename, "rb");
-	if (!fp)
-		abort_("[read_png_file] File %s could not be opened for reading", filename);
-	fread(header, 1, 8, fp);
+	/* 
+		open file and test for it being a png 
+	*/
+	FILE *infile = fopen(filename, "rb");
+	if (!infile)
+	{
+		info.status = ISE_STATUS_ERROR_IVALID_FILE;
+
+#ifdef _DEBUG
+		printf("file open error\n");
+#endif
+
+		return info;
+	}
+		
+	fread(header, 1, 8, infile);
 	if (png_sig_cmp(header, 0, 8))
-		abort_("[read_png_file] File %s is not recognized as a PNG file", filename);
+	{
+		info.status = ISE_STATUS_ERROR_UNPACKING;
+
+		return info;
+	}
 
 
-	/* initialize stuff */
+	/* 
+		initialize stuff 
+	*/
 	png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 
 	if (!png_ptr)
-		abort_("[read_png_file] png_create_read_struct failed");
+	{
+		info.status = ISE_STATUS_ERROR_UNPACKING;
+
+#ifdef _DEBUG
+		printf("png_ptr error\n");
+#endif
+
+		return info;
+	}
 
 	info_ptr = png_create_info_struct(png_ptr);
 	if (!info_ptr)
-		abort_("[read_png_file] png_create_info_struct failed");
+	{
+		info.status = ISE_STATUS_ERROR_UNPACKING;
+#ifdef _DEBUG
+		printf("info_ptr error\n");
+#endif
+		return info;
+	}
 
 	if (setjmp(png_jmpbuf(png_ptr)))
-		abort_("[read_png_file] Error during init_io");
+	{
+		info.status = ISE_STATUS_ERROR_UNPACKING;
+#ifdef _DEBUG
+		printf("setjmp error\n");
+#endif
+		return info;
+	}
 
-	png_init_io(png_ptr, fp);
+	png_init_io(png_ptr, infile);
 	png_set_sig_bytes(png_ptr, 8);
 
 	png_read_info(png_ptr, info_ptr);
@@ -53,82 +91,376 @@ png_decompress_container read_png_container(char *filename)
 	png_read_update_info(png_ptr, info_ptr);
 
 
-	/* read file */
+	/* 
+		read file 
+	*/
 	if (setjmp(png_jmpbuf(png_ptr)))
-		abort_("[read_png_file] Error during read_image");
+	{
+		info.status = ISE_STATUS_ERROR_UNPACKING;
+#ifdef _DEBUG
+		printf("read file error\n");
+#endif
+		return info;
+	}
 
 	row_pointers = (png_bytep*)malloc(sizeof(png_bytep) * height);
 	for (y = 0; y<height; y++)
+	{ 
 		row_pointers[y] = (png_byte*)malloc(png_get_rowbytes(png_ptr, info_ptr));
+	}
+		
 
 	png_read_image(png_ptr, row_pointers);
 
-	fclose(fp);
+	fclose(infile);
+
+	info.png_ptr = png_ptr;
+	info.info_ptr = info_ptr;
+	info.image = row_pointers;
+	info.status = ISE_STATUS_OK;
+#ifdef _DEBUG
+	printf("success read_png_container\n");
+#endif
+
+	return info;
 }
 
-pngx_compress_container write_jpgx(char *filename, png_decompress_container container, secure_container **sc_array, int sc_arr_count)
+pngx_compress_container write_pngx(char *filename, png_decompress_container container, secure_container **sc_array, int sc_arr_count, char *user_key)
 {
-	int x, y;
+	int i, j, k = 0;
 
-	int width, height;
-	png_byte color_type;
-	png_byte bit_depth;
+	/*
+		Load png info
+	*/
+	int width = png_get_image_width(container.png_ptr, container.info_ptr);
+	int height = png_get_image_height(container.png_ptr, container.info_ptr);
+	png_byte color_type = png_get_color_type(container.png_ptr, container.info_ptr);
+	png_byte bit_depth = png_get_bit_depth(container.png_ptr, container.info_ptr);
+	int input_components = 3;
 
-	png_structp png_ptr;
-	png_infop info_ptr;
-	int number_of_passes;
-	png_bytep * row_pointers;
+	png_bytep *row_pointers;
+	png_bytep secure_row_pointer;
 
-	/* create file */
-	FILE *fp = fopen(filename, "wb");
-	if (!fp)
-		abort_("[write_png_file] File %s could not be opened for writing", filename);
+	char *out_temp_folder = str_concat(3, get_current_path(filename), ".", get_file_name(filename));
+	char *core_file_path = str_concat(2, out_temp_folder, "/core.png");
+	FILE *core_file = fopen(core_file_path, "wb");
+
+	FILE **sc_file = NULL;
+	char **sc_file_path = NULL;
+	char **sc_enc_file_path = NULL;
+
+	char **pack_file_path = NULL;
+	char *pngx_file_path = str_concat(3, get_current_path(filename), get_file_name(filename), ".pngx");
+	char *prop_file_path = str_concat(2, out_temp_folder, "/prop.xml");
+
+	char * key = make_des_key(user_key);
+
+	int pack_file_count = 0;
+
+	pngx_compress_container pngx_container; /* output pngx container */
+	png_infop *png_item_info_ptr;
+	png_structp *png_item_ptr;
+	
+
+	/* 
+		create file 
+	*/
+
+	if (!core_file)
+	{
+#ifdef _DEBUG
+		printf("create file error");
+#endif
+	}
+
+	/* 
+		initialize stuff
+	*/
+	container.png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+
+	if (!container.png_ptr)
+	{ 
+#ifdef _DEBUG
+		printf("png_ptr error");
+#endif
+	}
+
+	container.info_ptr = png_create_info_struct(container.png_ptr);
+	if (!container.info_ptr)
+	{
+#ifdef _DEBUG
+		printf("info_ptr error");
+#endif
+	}
+
+	if (setjmp(png_jmpbuf(container.png_ptr)))
+	{
+#ifdef _DEBUG
+		printf("png_jmpbuf error");
+#endif
+	}
+
+	png_init_io(container.png_ptr, core_file);
 
 
-	/* initialize stuff */
-	png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+	/* 
+		write header
+	*/
+	if (setjmp(png_jmpbuf(container.png_ptr)))
+	{
+#ifdef _DEBUG
+		printf("write header error");
+#endif
+	}
+		
+	png_set_IHDR(container.png_ptr, container.info_ptr, width, height, bit_depth, color_type, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
+	png_write_info(container.png_ptr, container.info_ptr);
 
-	if (!png_ptr)
-		abort_("[write_png_file] png_create_write_struct failed");
+	/*
+		malloc secure item
+	*/
+	png_item_info_ptr = (png_infop*)malloc(sizeof(png_infop) * sc_arr_count);
+	png_item_ptr = (png_structp*)malloc(sizeof(png_structp) * sc_arr_count);
 
-	info_ptr = png_create_info_struct(png_ptr);
-	if (!info_ptr)
-		abort_("[write_png_file] png_create_info_struct failed");
+	sc_file = (FILE**)malloc(sizeof(FILE*)* sc_arr_count);
+	sc_file_path = (char **)malloc(sizeof(char*)*sc_arr_count);
+	sc_enc_file_path = (char **)malloc(sizeof(char*)*sc_arr_count);
 
-	if (setjmp(png_jmpbuf(png_ptr)))
-		abort_("[write_png_file] Error during init_io");
+	row_pointers = (png_bytep*)container.image;
 
-	png_init_io(png_ptr, fp);
+	for (i = 0; i < sc_arr_count; i++)
+	{
+		secure_container sc = *sc_array[i];
 
+		char *out_file_name = "core.png";
 
-	/* write header */
-	if (setjmp(png_jmpbuf(png_ptr)))
-		abort_("[write_png_file] Error during writing header");
+		/*
+			malloc secure item
+		*/
+		sc_file_path[i] = (char*)malloc(strlen(out_temp_folder) + 128);
+		sc_enc_file_path[i] = (char*)malloc(strlen(out_temp_folder) + 128);
+		png_item_info_ptr[i] = (png_infop)malloc(sizeof(png_infop));
+		png_item_ptr[i] = (png_structp)malloc(sizeof(png_structp));
 
-	png_set_IHDR(png_ptr, info_ptr, width, height,
-		bit_depth, color_type, PNG_INTERLACE_NONE,
-		PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
+		/*
+			set file path
+		*/
+		sprintf(sc_file_path[i], "%s/item%d.png", out_temp_folder, i);
+		sprintf(sc_enc_file_path[i], "%s/item%d.ise", out_temp_folder, i);
 
-	png_write_info(png_ptr, info_ptr);
+		/*
+			log
+		*/
+		printf("sc_file_path : %s\n", sc_file_path[i]);
+		printf("sc_enc_file_path : %s\n", sc_enc_file_path[i]);
+		printf("\n");
 
+		sc_file[i] = fopen(sc_file_path[i], "wb");
 
-	/* write bytes */
-	if (setjmp(png_jmpbuf(png_ptr)))
-		abort_("[write_png_file] Error during writing bytes");
+		/*
+			make png file
+		*/
+		png_item_ptr[i] = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+		png_item_info_ptr[i] = png_create_info_struct(png_item_ptr[i]);
 
-	png_write_image(png_ptr, row_pointers);
+		setjmp(png_jmpbuf(png_item_ptr[i]));
+		png_init_io(png_item_ptr[i], sc_file[i]);
+		setjmp(png_jmpbuf(png_item_ptr[i]));
 
+		png_set_IHDR(png_item_ptr[i], png_item_info_ptr[i], sc.width, sc.height, bit_depth, color_type, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
 
-	/* end write */
-	if (setjmp(png_jmpbuf(png_ptr)))
-		abort_("[write_png_file] Error during end of write");
+		png_write_info(png_item_ptr[i], png_item_info_ptr[i]);
+	}
 
-	png_write_end(png_ptr, NULL);
+	for (i = 0; i < height; i++)
+	{
+		png_byte* row = row_pointers[i];
 
-	/* cleanup heap allocation */
-	for (y = 0; y<height; y++)
-		free(row_pointers[y]);
+		for (j = 0; j < sc_arr_count; j++)
+		{
+			secure_container sc = *sc_array[j];
+			/*
+				if secure container is matching, then copy to ise
+			*/
+			if (sc.pos_y <= i && sc.pos_y + sc.height > i )
+			{
+				secure_row_pointer = (png_bytep)malloc(input_components * width * sizeof(png_byte));
+				
+				for (k = sc.pos_x * input_components; k < (sc.pos_x + sc.width) * input_components; k++)
+				{
+					secure_row_pointer[k - (sc.pos_x * input_components)] = row[k];
+					row[k] = 0;
+				}
+
+				png_write_row(png_item_ptr[j], secure_row_pointer);
+				free(secure_row_pointer);
+			}
+		}
+	}
+
+	png_write_image(container.png_ptr, row_pointers);
+	png_write_end(container.png_ptr, container.info_ptr);
+
+	for (i = 0; i < sc_arr_count; i++)
+	{
+		png_write_end(png_item_ptr[i], png_item_info_ptr[i]);
+		png_free_data(png_item_ptr[i], png_item_info_ptr[i], PNG_FREE_ALL, -1);
+		png_destroy_write_struct(&png_item_ptr[i], (png_infopp)NULL);
+		
+		fclose(sc_file[i]);
+
+		if (encode_file_des(sc_file_path[i], sc_enc_file_path[i], key) > 0)
+		{
+			printf("encode file  : %s\n", sc_file_path[i]);
+			printf("\n");
+		}
+		else
+		{
+			printf("encode file failed: %s\n", sc_file_path[i]);
+			printf("\n");
+		}
+	}
+
+	/* 
+		cleanup heap allocation 
+	*/
+	for (i = 0; i < height; i++)
+		free(row_pointers[i]);
+
 	free(row_pointers);
+	fclose(core_file);
 
-	fclose(fp);
+
+	/*
+		make property file
+	*/
+	make_prop_xml(sc_array, sc_arr_count, prop_file_path, 0);
+
+	/*
+		packing files
+	*/
+	pack_file_count = sc_arr_count + 2;
+	pack_file_path = (char **)malloc(sizeof(char*)*pack_file_count);
+
+	pack_file_path[0] = core_file_path;
+	pack_file_path[1] = prop_file_path; /* prop path */
+
+	for (i = 0; i < sc_arr_count; i++)
+	{
+		pack_file_path[i + 2] = sc_enc_file_path[i];
+		printf("pack_file_path[%d] : %s\n", (i + 2), pack_file_path[i + 2]);
+	}
+
+	if (make_compress(pack_file_path, pack_file_count, pngx_file_path, "jpgx") == ZIP_OK)
+	{
+		printf("compress : success\n");
+	}
+	else
+	{
+		printf("compress : fail\n");
+	}
+
+	/*
+		remove temp files
+	*/
+	for (i = 0; i < sc_arr_count; i++)
+	{
+		remove(sc_file_path[i]); /* item files */
+	}
+
+	for (i = 0; i < pack_file_count; i++)
+	{
+		remove(pack_file_path[i]); /* packing files */
+	}
+
+#if WIN32
+	_rmdir(out_temp_folder);
+#else
+	rmdir(out_temp_folder);
+#endif
+}
+
+pngx_decompress_container read_pngx_container(char* filename, char* user_key)
+{
+//	pngx_decompress_container pngx_container;
+//
+//	int i, j = 0;
+//	secure_container **sc_array;
+//	png_decompress_container container;
+//	JSAMPROW row_pointer = NULL;
+//	prop_info_container prop;
+//
+//	char * key = make_des_key(user_key);
+//
+//	/*
+//		set file path
+//	*/
+//	char *out_temp_folder = str_concat(3, get_current_path(filename), ".", get_file_name(filename));
+//	char *decode_path = str_concat(2, out_temp_folder, "/.decode");
+//
+//	if (make_decompress(filename) == UNZ_OK)
+//	{
+//		/*
+//			init struct prop_xml, jpeg_container
+//		*/
+//		prop = parse_prop_xml(str_concat(2, out_temp_folder, "/prop.xml"));
+//		container = read_png_container(str_concat(2, out_temp_folder, "/core.png"));
+//
+//		sc_array = prop.sc_arr;
+//
+//		for (i = 0; i < prop.sc_count; i++)
+//		{
+//			int core_pos = 0;
+//			int sc_pos = 0;
+//
+//			printf("file name : %s\n", prop.file_name[i]);
+//			decode_file_des(str_concat(3, out_temp_folder, "/", prop.file_name[i]), decode_path, key);
+//			png_decompress_container jdc = read_png_container(decode_path);
+//			JSAMPROW secure_row_pointer;
+//
+//			if (jdc.status > 0)
+//			{
+//				for (core_pos = sc_array[i]->pos_y, sc_pos = 0; core_pos < (int)(sc_array[i]->pos_y + sc_array[i]->height); core_pos++, sc_pos++)
+//				{
+//					row_pointer = &container.image[core_pos * container.dcinfo.image_width * container.dcinfo.output_components];
+//
+//					secure_row_pointer = &jdc.image[sc_pos * jdc.dcinfo.image_width * jdc.dcinfo.output_components];
+//
+//					for (j = 0; j < jdc.dcinfo.image_width*jdc.dcinfo.output_components; j++)
+//					{
+//						/*
+//							combine buffers uinsg core.jpg and ise files
+//						*/
+//						row_pointer[j + (sc_array[i]->pos_x)*jdc.dcinfo.output_components] = secure_row_pointer[j];
+//					}
+//				}
+//			}
+//
+//			/*
+//				remove temp decode files
+//			*/
+//			remove(decode_path);
+//			remove(str_concat(3, out_temp_folder, "/", prop.file_name[i]));
+//		}
+//
+//		remove(str_concat(2, out_temp_folder, "/core.jpg"));
+//		remove(str_concat(2, out_temp_folder, "/prop.xml"));
+//#if WIN32
+//		_rmdir(out_temp_folder);
+//#else
+//		rmdir(out_temp_folder);
+//#endif
+//
+//		pngx_container.pdcinfo = container;
+//		pngx_container.sc_cnt = prop.sc_count;
+//		pngx_container.sc_arr = sc_array;
+//		pngx_container.status = ISE_STATUS_OK;
+//
+//		return pngx_container;
+//	}
+//
+//	pngx_container.status = ISE_STATUS_ERROR_UNPACKING;
+//
+
+	return pngx_container;
 }

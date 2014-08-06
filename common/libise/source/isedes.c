@@ -28,7 +28,6 @@ int encode_file_des(char *in_file_path, char *out_file_path, char * key)
 	while (0 < (n = fread((void*)buf, 1, 8, in_file)))
 	{
 		des3_crypt_ecb(&ctx3, buf, buf);
-		//printf("enc cnt : %d\n", sizeof(buf));
 		fwrite(buf, 1, 8, out_file);
 	}
 

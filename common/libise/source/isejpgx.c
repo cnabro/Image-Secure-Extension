@@ -123,7 +123,6 @@ jpgx_compress_container write_jpgx(char *filename, jpeg_decompress_container con
 		secure_container sc = *sc_array[i];
 		
 		char *out_file_name = "core.jpg";
-		int buf[4];
 
 		/*
 			malloc secure item
