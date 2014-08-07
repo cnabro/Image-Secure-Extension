@@ -31,8 +31,20 @@ IseWrapper::PngxDecompressContainer^ IseWrapper::ImageSecureExtention::getPngxCo
 
 	int width = png_get_image_width(container.pdcinfo.png_ptr, container.pdcinfo.info_ptr);
 	int height = png_get_image_height(container.pdcinfo.png_ptr, container.pdcinfo.info_ptr);
+	png_byte color_type = png_get_color_type(container.pdcinfo.png_ptr, container.pdcinfo.info_ptr);
 
-	PngxDecompressContainer^ containerWrapper = gcnew PngxDecompressContainer(container.pdcinfo.image, width, height, 3, container.status);
+	int input_components = 3;
+
+	if (color_type == PNG_COLOR_TYPE_RGB)
+	{
+		input_components = 3;
+	}
+	else if (color_type == PNG_COLOR_TYPE_RGBA)
+	{
+		input_components = 4;
+	}
+
+	PngxDecompressContainer^ containerWrapper = gcnew PngxDecompressContainer(container.pdcinfo.image, width, height, input_components, container.status);
 
 	return containerWrapper;
 }

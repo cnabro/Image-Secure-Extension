@@ -87,7 +87,7 @@ namespace IseWrapper
 			return this->image_height;
 		}
 
-		System::Drawing::Bitmap^ getImageBitmapRGB24()
+		System::Drawing::Bitmap^ getImageBitmapRGB()
 		{
 			//convert rgb24 to bgr24
 			int offset = 0;
@@ -102,11 +102,20 @@ namespace IseWrapper
 					image[offset+1] = g;
 					image[offset+2] = r;
 
-					offset += 3;
+					offset += color_space;
 				}
 			}
 
-			System::Drawing::Bitmap^ systemBitmap = gcnew System::Drawing::Bitmap(image_width, image_height, System::Drawing::Imaging::PixelFormat::Format24bppRgb);
+			System::Drawing::Bitmap^ systemBitmap;
+			if (color_space == 3)
+			{
+				systemBitmap = gcnew System::Drawing::Bitmap(image_width, image_height, System::Drawing::Imaging::PixelFormat::Format24bppRgb);
+			}
+			else if (color_space == 4)
+			{
+				systemBitmap = gcnew System::Drawing::Bitmap(image_width, image_height, System::Drawing::Imaging::PixelFormat::Format32bppArgb);
+			}
+
 			System::Drawing::Rectangle rect;// = new System::Drawing::Rectangle(0, 0, image_width, image_height);
 			rect.X = 0;
 			rect.Y = 0;
@@ -184,10 +193,10 @@ namespace IseWrapper
 		System::Drawing::Bitmap^ getImageBitmap()
 		{
 			for (int y = 0; y < image_height; y++) {
-				for (int x = 0; x < image_width*3; x=x+3) {
+				for (int x = 0; x < image_width * color_space; x = x + color_space) {
 					int r = image[y][x];
-					int g = image[y][x+1];
-					int b = image[y][x+2];
+					int g = image[y][x + 1];
+					int b = image[y][x + 2];
 
 					image[y][x] = b;
 					image[y][x + 1] = g;
@@ -195,7 +204,16 @@ namespace IseWrapper
 				}
 			}
 
-			System::Drawing::Bitmap^ systemBitmap = gcnew System::Drawing::Bitmap(image_width, image_height, System::Drawing::Imaging::PixelFormat::Format24bppRgb);
+			System::Drawing::Bitmap^ systemBitmap;
+			if (color_space == 3)
+			{
+				systemBitmap = gcnew System::Drawing::Bitmap(image_width, image_height, System::Drawing::Imaging::PixelFormat::Format24bppRgb);
+			}
+			else if (color_space == 4)
+			{
+				systemBitmap = gcnew System::Drawing::Bitmap(image_width, image_height, System::Drawing::Imaging::PixelFormat::Format32bppArgb);
+			}
+
 			System::Drawing::Rectangle rect;// = new System::Drawing::Rectangle(0, 0, image_width, image_height);
 			rect.X = 0;
 			rect.Y = 0;

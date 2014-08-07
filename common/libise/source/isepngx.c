@@ -140,6 +140,7 @@ pngx_compress_container write_pngx(char *filename, png_decompress_container cont
 	int height = png_get_image_height(container.png_ptr, container.info_ptr);
 	png_byte color_type = png_get_color_type(container.png_ptr, container.info_ptr);
 	png_byte bit_depth = png_get_bit_depth(container.png_ptr, container.info_ptr);
+
 	int input_components = 3;
 
 	png_bytep *row_pointers;
@@ -166,9 +167,18 @@ pngx_compress_container write_pngx(char *filename, png_decompress_container cont
 	png_structp *png_item_ptr;
 
 	int i, j, k = 0;
+	
+	if (color_type == PNG_COLOR_TYPE_RGB)
+	{
+		input_components = 3;
+	}
+	else if (color_type == PNG_COLOR_TYPE_RGBA)
+	{
+		input_components = 4;
+	}
 
 	/*
-	create file
+		create file
 	*/
 
 	if (!core_file)
@@ -179,50 +189,19 @@ pngx_compress_container write_pngx(char *filename, png_decompress_container cont
 	}
 
 	/*
-	initialize stuff
+		initialize stuff
 	*/
 	container.png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-
-	if (!container.png_ptr)
-	{
-#ifdef _DEBUG
-		printf("png_ptr error");
-#endif
-	}
-
 	container.info_ptr = png_create_info_struct(container.png_ptr);
-	if (!container.info_ptr)
-	{
-#ifdef _DEBUG
-		printf("info_ptr error");
-#endif
-	}
 
-	if (setjmp(png_jmpbuf(container.png_ptr)))
-	{
-#ifdef _DEBUG
-		printf("png_jmpbuf error");
-#endif
-	}
-
+	setjmp(png_jmpbuf(container.png_ptr));
 	png_init_io(container.png_ptr, core_file);
-
-
-	/*
-	write header
-	*/
-	if (setjmp(png_jmpbuf(container.png_ptr)))
-	{
-#ifdef _DEBUG
-		printf("write header error");
-#endif
-	}
-
+	setjmp(png_jmpbuf(container.png_ptr));
 	png_set_IHDR(container.png_ptr, container.info_ptr, width, height, bit_depth, color_type, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
 	png_write_info(container.png_ptr, container.info_ptr);
 
 	/*
-	malloc secure item
+		malloc secure item
 	*/
 	png_item_info_ptr = (png_infop*)malloc(sizeof(png_infop) * sc_arr_count);
 	png_item_ptr = (png_structp*)malloc(sizeof(png_structp) * sc_arr_count);
@@ -231,7 +210,8 @@ pngx_compress_container write_pngx(char *filename, png_decompress_container cont
 	sc_file_path = (char **)malloc(sizeof(char*)*sc_arr_count);
 	sc_enc_file_path = (char **)malloc(sizeof(char*)*sc_arr_count);
 
-	row_pointers = (png_bytep*)container.image;
+	row_pointers = container.image;
+
 
 	for (i = 0; i < sc_arr_count; i++)
 	{
@@ -240,21 +220,21 @@ pngx_compress_container write_pngx(char *filename, png_decompress_container cont
 		char *out_file_name = "core.png";
 
 		/*
-		malloc secure item
+			malloc secure item
 		*/
 		sc_file_path[i] = (char*)malloc(strlen(out_temp_folder) + 128);
 		sc_enc_file_path[i] = (char*)malloc(strlen(out_temp_folder) + 128);
-		png_item_info_ptr[i] = (png_infop)malloc(sizeof(png_infop));
-		png_item_ptr[i] = (png_structp)malloc(sizeof(png_structp));
+		//png_item_info_ptr[i] = (png_infop)malloc(sizeof(png_infop));
+		//png_item_ptr[i] = (png_structp)malloc(sizeof(png_structp));
 
 		/*
-		set file path
+			set file path
 		*/
 		sprintf(sc_file_path[i], "%s/item%d.png", out_temp_folder, i);
 		sprintf(sc_enc_file_path[i], "%s/item%d.ise", out_temp_folder, i);
 
 		/*
-		log
+			log
 		*/
 		printf("sc_file_path : %s\n", sc_file_path[i]);
 		printf("sc_enc_file_path : %s\n", sc_enc_file_path[i]);
@@ -263,7 +243,7 @@ pngx_compress_container write_pngx(char *filename, png_decompress_container cont
 		sc_file[i] = fopen(sc_file_path[i], "wb");
 
 		/*
-		make png file
+			make png file
 		*/
 		png_item_ptr[i] = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 		png_item_info_ptr[i] = png_create_info_struct(png_item_ptr[i]);
@@ -285,7 +265,7 @@ pngx_compress_container write_pngx(char *filename, png_decompress_container cont
 		{
 			secure_container sc = *sc_array[j];
 			/*
-			if secure container is matching, then copy to ise
+				if secure container is matching, then copy to ise
 			*/
 			if (sc.pos_y <= i && sc.pos_y + sc.height > i)
 			{
@@ -304,15 +284,17 @@ pngx_compress_container write_pngx(char *filename, png_decompress_container cont
 	}
 
 	png_write_image(container.png_ptr, row_pointers);
-	png_write_end(container.png_ptr, container.info_ptr);
+
+	if (core_file != NULL) fclose(core_file);
+	if (container.info_ptr != NULL) png_free_data(container.png_ptr, container.info_ptr, PNG_FREE_ALL, -1);
+	if (container.png_ptr != NULL) png_destroy_write_struct(&container.png_ptr, (png_infopp)NULL);
+	if (row_pointers != NULL) free(row_pointers);
 
 	for (i = 0; i < sc_arr_count; i++)
 	{
-		png_write_end(png_item_ptr[i], png_item_info_ptr[i]);
-		png_free_data(png_item_ptr[i], png_item_info_ptr[i], PNG_FREE_ALL, -1);
-		png_destroy_write_struct(&png_item_ptr[i], (png_infopp)NULL);
-
-		fclose(sc_file[i]);
+		if (sc_file[i] != NULL) fclose(sc_file[i]);
+		if (png_item_info_ptr[i] != NULL) png_free_data(png_item_ptr[i], png_item_info_ptr[i], PNG_FREE_ALL, -1);
+		if (png_item_ptr[i] != NULL) png_destroy_write_struct(&png_item_ptr[i], (png_infopp)NULL);
 
 		if (encode_file_des(sc_file_path[i], sc_enc_file_path[i], key) > 0)
 		{
@@ -327,22 +309,12 @@ pngx_compress_container write_pngx(char *filename, png_decompress_container cont
 	}
 
 	/*
-	cleanup heap allocation
-	*/
-	for (i = 0; i < height; i++)
-		free(row_pointers[i]);
-
-	free(row_pointers);
-	fclose(core_file);
-
-
-	/*
-	make property file
+		make property file
 	*/
 	make_prop_xml(sc_array, sc_arr_count, prop_file_path, 0);
 
 	/*
-	packing files
+		packing files
 	*/
 	pack_file_count = sc_arr_count + 2;
 	pack_file_path = (char **)malloc(sizeof(char*)*pack_file_count);
@@ -366,7 +338,7 @@ pngx_compress_container write_pngx(char *filename, png_decompress_container cont
 	}
 
 	/*
-	remove temp files
+		remove temp files
 	*/
 	for (i = 0; i < sc_arr_count; i++)
 	{
@@ -383,6 +355,13 @@ pngx_compress_container write_pngx(char *filename, png_decompress_container cont
 #else
 	rmdir(out_temp_folder);
 #endif
+
+	pngx_container.file_path = filename;
+	pngx_container.status = ISE_STATUS_OK;
+	pngx_container.sc_arr = sc_array;
+	pngx_container.sc_cnt = sc_arr_count;
+
+	return pngx_container;
 }
 
 pngx_decompress_container read_pngx_container(char* filename, char* user_key)

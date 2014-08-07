@@ -316,7 +316,7 @@ namespace isetool.ViewModel
             if(path.EndsWith(".jpgx"))
             {
                 JpgxDecompressContainer container = ImageSecureExtention.getJpgxContainer(path, pwd);
-                Bitmap bitmap = container.getImageBitmapRGB24();
+                Bitmap bitmap = container.getImageBitmapRGB();
 
                 MemoryStream ms = new MemoryStream();
                 ms.Seek(0, SeekOrigin.Begin);
