@@ -25,6 +25,7 @@ png_decompress_container read_png_container(char *filename)
 	if (!infile)
 	{
 		info.status = ISE_STATUS_ERROR_IVALID_FILE;
+		fclose(infile);
 
 #ifdef _DEBUG
 		printf("file open error\n");
@@ -37,6 +38,7 @@ png_decompress_container read_png_container(char *filename)
 	if (png_sig_cmp(header, 0, 8))
 	{
 		info.status = ISE_STATUS_ERROR_UNPACKING;
+		fclose(infile);
 
 		return info;
 	}
@@ -50,6 +52,7 @@ png_decompress_container read_png_container(char *filename)
 	if (!png_ptr)
 	{
 		info.status = ISE_STATUS_ERROR_UNPACKING;
+		fclose(infile);
 
 #ifdef _DEBUG
 		printf("png_ptr error\n");
@@ -62,6 +65,7 @@ png_decompress_container read_png_container(char *filename)
 	if (!info_ptr)
 	{
 		info.status = ISE_STATUS_ERROR_UNPACKING;
+		fclose(infile);
 #ifdef _DEBUG
 		printf("info_ptr error\n");
 #endif
@@ -71,6 +75,7 @@ png_decompress_container read_png_container(char *filename)
 	if (setjmp(png_jmpbuf(png_ptr)))
 	{
 		info.status = ISE_STATUS_ERROR_UNPACKING;
+		fclose(infile);
 #ifdef _DEBUG
 		printf("setjmp error\n");
 #endif
@@ -97,6 +102,7 @@ png_decompress_container read_png_container(char *filename)
 	if (setjmp(png_jmpbuf(png_ptr)))
 	{
 		info.status = ISE_STATUS_ERROR_UNPACKING;
+		fclose(infile);
 #ifdef _DEBUG
 		printf("read file error\n");
 #endif
@@ -127,8 +133,6 @@ png_decompress_container read_png_container(char *filename)
 
 pngx_compress_container write_pngx(char *filename, png_decompress_container container, secure_container **sc_array, int sc_arr_count, char *user_key)
 {
-	int i, j, k = 0;
-
 	/*
 		Load png info
 	*/
@@ -160,10 +164,11 @@ pngx_compress_container write_pngx(char *filename, png_decompress_container cont
 	pngx_compress_container pngx_container; /* output pngx container */
 	png_infop *png_item_info_ptr;
 	png_structp *png_item_ptr;
-	
 
-	/* 
-		create file 
+	int i, j, k = 0;
+
+	/*
+	create file
 	*/
 
 	if (!core_file)
@@ -173,13 +178,13 @@ pngx_compress_container write_pngx(char *filename, png_decompress_container cont
 #endif
 	}
 
-	/* 
-		initialize stuff
+	/*
+	initialize stuff
 	*/
 	container.png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 
 	if (!container.png_ptr)
-	{ 
+	{
 #ifdef _DEBUG
 		printf("png_ptr error");
 #endif
@@ -203,8 +208,8 @@ pngx_compress_container write_pngx(char *filename, png_decompress_container cont
 	png_init_io(container.png_ptr, core_file);
 
 
-	/* 
-		write header
+	/*
+	write header
 	*/
 	if (setjmp(png_jmpbuf(container.png_ptr)))
 	{
@@ -212,12 +217,12 @@ pngx_compress_container write_pngx(char *filename, png_decompress_container cont
 		printf("write header error");
 #endif
 	}
-		
+
 	png_set_IHDR(container.png_ptr, container.info_ptr, width, height, bit_depth, color_type, PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
 	png_write_info(container.png_ptr, container.info_ptr);
 
 	/*
-		malloc secure item
+	malloc secure item
 	*/
 	png_item_info_ptr = (png_infop*)malloc(sizeof(png_infop) * sc_arr_count);
 	png_item_ptr = (png_structp*)malloc(sizeof(png_structp) * sc_arr_count);
@@ -235,7 +240,7 @@ pngx_compress_container write_pngx(char *filename, png_decompress_container cont
 		char *out_file_name = "core.png";
 
 		/*
-			malloc secure item
+		malloc secure item
 		*/
 		sc_file_path[i] = (char*)malloc(strlen(out_temp_folder) + 128);
 		sc_enc_file_path[i] = (char*)malloc(strlen(out_temp_folder) + 128);
@@ -243,13 +248,13 @@ pngx_compress_container write_pngx(char *filename, png_decompress_container cont
 		png_item_ptr[i] = (png_structp)malloc(sizeof(png_structp));
 
 		/*
-			set file path
+		set file path
 		*/
 		sprintf(sc_file_path[i], "%s/item%d.png", out_temp_folder, i);
 		sprintf(sc_enc_file_path[i], "%s/item%d.ise", out_temp_folder, i);
 
 		/*
-			log
+		log
 		*/
 		printf("sc_file_path : %s\n", sc_file_path[i]);
 		printf("sc_enc_file_path : %s\n", sc_enc_file_path[i]);
@@ -258,7 +263,7 @@ pngx_compress_container write_pngx(char *filename, png_decompress_container cont
 		sc_file[i] = fopen(sc_file_path[i], "wb");
 
 		/*
-			make png file
+		make png file
 		*/
 		png_item_ptr[i] = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 		png_item_info_ptr[i] = png_create_info_struct(png_item_ptr[i]);
@@ -280,12 +285,12 @@ pngx_compress_container write_pngx(char *filename, png_decompress_container cont
 		{
 			secure_container sc = *sc_array[j];
 			/*
-				if secure container is matching, then copy to ise
+			if secure container is matching, then copy to ise
 			*/
-			if (sc.pos_y <= i && sc.pos_y + sc.height > i )
+			if (sc.pos_y <= i && sc.pos_y + sc.height > i)
 			{
 				secure_row_pointer = (png_bytep)malloc(input_components * width * sizeof(png_byte));
-				
+
 				for (k = sc.pos_x * input_components; k < (sc.pos_x + sc.width) * input_components; k++)
 				{
 					secure_row_pointer[k - (sc.pos_x * input_components)] = row[k];
@@ -306,7 +311,7 @@ pngx_compress_container write_pngx(char *filename, png_decompress_container cont
 		png_write_end(png_item_ptr[i], png_item_info_ptr[i]);
 		png_free_data(png_item_ptr[i], png_item_info_ptr[i], PNG_FREE_ALL, -1);
 		png_destroy_write_struct(&png_item_ptr[i], (png_infopp)NULL);
-		
+
 		fclose(sc_file[i]);
 
 		if (encode_file_des(sc_file_path[i], sc_enc_file_path[i], key) > 0)
@@ -321,8 +326,8 @@ pngx_compress_container write_pngx(char *filename, png_decompress_container cont
 		}
 	}
 
-	/* 
-		cleanup heap allocation 
+	/*
+	cleanup heap allocation
 	*/
 	for (i = 0; i < height; i++)
 		free(row_pointers[i]);
@@ -332,12 +337,12 @@ pngx_compress_container write_pngx(char *filename, png_decompress_container cont
 
 
 	/*
-		make property file
+	make property file
 	*/
 	make_prop_xml(sc_array, sc_arr_count, prop_file_path, 0);
 
 	/*
-		packing files
+	packing files
 	*/
 	pack_file_count = sc_arr_count + 2;
 	pack_file_path = (char **)malloc(sizeof(char*)*pack_file_count);
@@ -361,7 +366,7 @@ pngx_compress_container write_pngx(char *filename, png_decompress_container cont
 	}
 
 	/*
-		remove temp files
+	remove temp files
 	*/
 	for (i = 0; i < sc_arr_count; i++)
 	{
@@ -382,85 +387,88 @@ pngx_compress_container write_pngx(char *filename, png_decompress_container cont
 
 pngx_decompress_container read_pngx_container(char* filename, char* user_key)
 {
-//	pngx_decompress_container pngx_container;
-//
-//	int i, j = 0;
-//	secure_container **sc_array;
-//	png_decompress_container container;
-//	JSAMPROW row_pointer = NULL;
-//	prop_info_container prop;
-//
-//	char * key = make_des_key(user_key);
-//
-//	/*
-//		set file path
-//	*/
-//	char *out_temp_folder = str_concat(3, get_current_path(filename), ".", get_file_name(filename));
-//	char *decode_path = str_concat(2, out_temp_folder, "/.decode");
-//
-//	if (make_decompress(filename) == UNZ_OK)
-//	{
-//		/*
-//			init struct prop_xml, jpeg_container
-//		*/
-//		prop = parse_prop_xml(str_concat(2, out_temp_folder, "/prop.xml"));
-//		container = read_png_container(str_concat(2, out_temp_folder, "/core.png"));
-//
-//		sc_array = prop.sc_arr;
-//
-//		for (i = 0; i < prop.sc_count; i++)
-//		{
-//			int core_pos = 0;
-//			int sc_pos = 0;
-//
-//			printf("file name : %s\n", prop.file_name[i]);
-//			decode_file_des(str_concat(3, out_temp_folder, "/", prop.file_name[i]), decode_path, key);
-//			png_decompress_container jdc = read_png_container(decode_path);
-//			JSAMPROW secure_row_pointer;
-//
-//			if (jdc.status > 0)
-//			{
-//				for (core_pos = sc_array[i]->pos_y, sc_pos = 0; core_pos < (int)(sc_array[i]->pos_y + sc_array[i]->height); core_pos++, sc_pos++)
-//				{
-//					row_pointer = &container.image[core_pos * container.dcinfo.image_width * container.dcinfo.output_components];
-//
-//					secure_row_pointer = &jdc.image[sc_pos * jdc.dcinfo.image_width * jdc.dcinfo.output_components];
-//
-//					for (j = 0; j < jdc.dcinfo.image_width*jdc.dcinfo.output_components; j++)
-//					{
-//						/*
-//							combine buffers uinsg core.jpg and ise files
-//						*/
-//						row_pointer[j + (sc_array[i]->pos_x)*jdc.dcinfo.output_components] = secure_row_pointer[j];
-//					}
-//				}
-//			}
-//
-//			/*
-//				remove temp decode files
-//			*/
-//			remove(decode_path);
-//			remove(str_concat(3, out_temp_folder, "/", prop.file_name[i]));
-//		}
-//
-//		remove(str_concat(2, out_temp_folder, "/core.jpg"));
-//		remove(str_concat(2, out_temp_folder, "/prop.xml"));
-//#if WIN32
-//		_rmdir(out_temp_folder);
-//#else
-//		rmdir(out_temp_folder);
-//#endif
-//
-//		pngx_container.pdcinfo = container;
-//		pngx_container.sc_cnt = prop.sc_count;
-//		pngx_container.sc_arr = sc_array;
-//		pngx_container.status = ISE_STATUS_OK;
-//
-//		return pngx_container;
-//	}
-//
-//	pngx_container.status = ISE_STATUS_ERROR_UNPACKING;
-//
+	pngx_decompress_container pngx_container;
+
+	int i, j = 0;
+	secure_container **sc_array;
+	png_decompress_container container;
+
+	prop_info_container prop;
+	int output_components = 3;
+	int width = 0;
+	int height = 0;
+
+	char * key = make_des_key(user_key);
+
+	/*
+		set file path
+	*/
+	char *out_temp_folder = str_concat(3, get_current_path(filename), ".", get_file_name(filename));
+	char *decode_path = str_concat(2, out_temp_folder, "/.decode");
+
+	if (make_decompress(filename) == UNZ_OK)
+	{
+		/*
+			init struct prop_xml, jpeg_container
+		*/
+		prop = parse_prop_xml(str_concat(2, out_temp_folder, "/prop.xml"));
+		container = read_png_container(str_concat(2, out_temp_folder, "/core.png"));
+
+		png_bytep * row_pointer = container.image;
+
+		width = png_get_image_width(container.png_ptr, container.info_ptr);
+		height = png_get_image_height(container.png_ptr, container.info_ptr);
+
+		sc_array = prop.sc_arr;
+
+		for (i = 0; i < prop.sc_count; i++)
+		{
+			printf("file name : %s\n", prop.file_name[i]);
+			decode_file_des(str_concat(3, out_temp_folder, "/", prop.file_name[i]), decode_path, key);
+			png_decompress_container pdc = read_png_container(decode_path);
+			png_bytep * secure_row_pointer = pdc.image;
+
+			if (pdc.status > 0)
+			{
+				int x, y = 0;
+
+				for (y = 0; y < sc_array[i]->height; y++)//y cood
+				{
+					for (x = 0; x < sc_array[i]->width*output_components; x++)
+					{
+						/*
+							combine buffers uinsg core.png and ise files
+						*/
+						row_pointer[sc_array[i]->pos_y + y][sc_array[i]->pos_x*output_components + x] = secure_row_pointer[y][x];
+					}
+				}
+			}
+
+			/*
+				remove temp decode files
+			*/
+			remove(decode_path);
+			remove(str_concat(3, out_temp_folder, "/", prop.file_name[i]));
+		}
+
+		remove(str_concat(2, out_temp_folder, "/core.png"));
+		remove(str_concat(2, out_temp_folder, "/prop.xml"));
+#if WIN32
+		_rmdir(out_temp_folder);
+#else
+		rmdir(out_temp_folder);
+#endif
+
+		pngx_container.pdcinfo = container;
+		pngx_container.sc_cnt = prop.sc_count;
+		pngx_container.sc_arr = sc_array;
+		pngx_container.status = ISE_STATUS_OK;
+
+		return pngx_container;
+	}
+
+	pngx_container.status = ISE_STATUS_ERROR_UNPACKING;
+
 
 	return pngx_container;
 }

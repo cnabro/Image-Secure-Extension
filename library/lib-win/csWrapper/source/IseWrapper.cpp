@@ -24,11 +24,17 @@ IseWrapper::PngxDecompressContainer^ IseWrapper::ImageSecureExtention::getPngxCo
 	std::wstring wstr_filename = msclr::interop::marshal_as<std::wstring>(filename);
 	std::wstring wstr_key = msclr::interop::marshal_as<std::wstring>(key);
 
+	char* path = ws2c(wstr_filename);
+	char* skey = ws2c(wstr_key);
 
-	printf("test getSecurePngContainer : %s %s", wstr_filename.c_str(), wstr_key.c_str());
-	//return get_secure_png_container(filename, key);
+	pngx_decompress_container container = get_pngx_container(path, (char*)skey);
 
-	return gcnew PngxDecompressContainer(); // test code
+	int width = png_get_image_width(container.pdcinfo.png_ptr, container.pdcinfo.info_ptr);
+	int height = png_get_image_height(container.pdcinfo.png_ptr, container.pdcinfo.info_ptr);
+
+	PngxDecompressContainer^ containerWrapper = gcnew PngxDecompressContainer(container.pdcinfo.image, width, height, 3, container.status);
+
+	return containerWrapper;
 }
 
 void IseWrapper::ImageSecureExtention::makeJPGX(System::String^ filename, System::Collections::Generic::List<SecureContainer^>^ scList, System::String^ key)
@@ -69,8 +75,13 @@ void IseWrapper::ImageSecureExtention::makePNGX(System::String^ filename, System
 		sc_array[i]->pos_x = scList[i]->getPosX();
 		sc_array[i]->pos_y = scList[i]->getPosY();
 	}
-		
-	//make_jpgx(WCharToChar(wstr_filename.c_str()), sc_array, scList->Count, (char*)des3_test_keys);
-	make_jpgx("C:/Users/gyu-il/Desktop/ÆÇ¸Å/IMG_20140112_220817.jpg", sc_array, scList->Count, (char*)des3_test_keys);
+
+	char* path = ws2c(wstr_filename);
+	char* skey = ws2c(wstr_key);
+
+	make_pngx(path, sc_array, scList->Count, skey);
+
+	free(sc_array);
+	free(path);
 }
 

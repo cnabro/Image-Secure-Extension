@@ -77,7 +77,7 @@ typedef struct png_decompress_container
 {
 	png_structp png_ptr;
 	png_infop info_ptr;
-	unsigned char *image;
+	png_bytep *image;
 	int status;
 } png_decompress_container;
 
@@ -87,7 +87,7 @@ typedef struct png_decompress_container
 typedef struct jpgx_compress_container
 {
 	int sc_cnt;
-	secure_container *sc_arr;
+	secure_container ** sc_arr;
 	char *file_path;
 } jpgx_compress_container;
 
@@ -95,7 +95,7 @@ typedef struct jpgx_decompress_container
 {
 	int status;
 	int sc_cnt;
-	secure_container *sc_arr;
+	secure_container ** sc_arr;
 	jpeg_decompress_container jdcinfo;
 } jpgx_decompress_container;
 
@@ -106,7 +106,7 @@ typedef struct pngx_decompress_container
 {
 	int status;
 	int sc_cnt;
-	secure_container *sc_arr;
+	secure_container ** sc_arr;
 	png_decompress_container pdcinfo;
 } pngx_decompress_container;
 
@@ -114,7 +114,7 @@ typedef struct pngx_compress_container
 {
 	int status;
 	int sc_cnt;
-	secure_container *sc_arr;
+	secure_container ** sc_arr;
 	char *file_path;
 } pngx_compress_container;
 

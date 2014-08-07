@@ -231,7 +231,15 @@ namespace isetool.ViewModel
                         scList.Add(new SecureContainer(model.Width, model.Height, model.X, model.Y));
                     }
 
-                    ImageSecureExtention.makeJPGX(FilePath, scList, Password);
+                    if (FilePath.EndsWith(".jpg"))
+                    {
+                        ImageSecureExtention.makeJPGX(FilePath, scList, Password);
+                    }
+                    else
+                    {
+                        ImageSecureExtention.makePNGX(FilePath, scList, Password);
+                    }
+                    
                 }
                 catch (Exception e)
                 {
@@ -254,7 +262,7 @@ namespace isetool.ViewModel
 
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
 
-            dlg.Filter = "JPEG Files (*.jpeg,*.jpg)|*.jpg;*.jpeg|PNG Files (*.png)|*.png|JPGX Files (*.jpgx)|*.jpgx";
+            dlg.Filter = "JPEG Files (*.jpeg,*.jpg)|*.jpg;*.jpeg|PNG Files (*.png)|*.png|JPGX Files (*.jpgx)|*.jpgx|PNGX Files (*.pngx)|*.pngx";
 
             Nullable<bool> result = dlg.ShowDialog();
 
@@ -305,25 +313,49 @@ namespace isetool.ViewModel
 
         private void LoadSecurityFile(string path,string pwd="")
         {
-            JpgxDecompressContainer container = ImageSecureExtention.getJpgxContainer(path, pwd);
-            Bitmap bitmap = container.getImageBitmapRGB24();
-            
-            MemoryStream ms = new MemoryStream();
-            ms.Seek(0, SeekOrigin.Begin);
+            if(path.EndsWith(".jpgx"))
+            {
+                JpgxDecompressContainer container = ImageSecureExtention.getJpgxContainer(path, pwd);
+                Bitmap bitmap = container.getImageBitmapRGB24();
 
-            bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
-            bitmap.Save("./test3333.jpg");
+                MemoryStream ms = new MemoryStream();
+                ms.Seek(0, SeekOrigin.Begin);
 
-            BitmapImage image = new BitmapImage();
-            image.BeginInit();
-            
-            image.StreamSource = ms;
-            image.EndInit();
+                bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
 
-            Image = image;
+                BitmapImage image = new BitmapImage();
+                image.BeginInit();
 
-            ImageWidth = container.getWidth();
-            ImageHeight = container.getHeight();
+                image.StreamSource = ms;
+                image.EndInit();
+
+                Image = image;
+
+                ImageWidth = container.getWidth();
+                ImageHeight = container.getHeight();
+            }
+            else
+            {
+                PngxDecompressContainer container = ImageSecureExtention.getPngxContainer(path, pwd);
+                Bitmap bitmap = container.getImageBitmap();
+
+                MemoryStream ms = new MemoryStream();
+                ms.Seek(0, SeekOrigin.Begin);
+
+                bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+
+                BitmapImage image = new BitmapImage();
+                image.BeginInit();
+
+                image.StreamSource = ms;
+                image.EndInit();
+
+                Image = image;
+
+                ImageWidth = container.getWidth();
+                ImageHeight = container.getHeight();
+            }
+           
         }
 
         private void LoadFile()

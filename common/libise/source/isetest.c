@@ -54,16 +54,11 @@ void test_pngx()
 #else
 	mkdir(out_temp_folder);
 #endif
-	//while (1)
-	{
-		write_pngx(infilename, container, scarr, 2, "test");
+	write_pngx(infilename, container, scarr, 2, "test");
+	printf("===============================\n\n", out_temp_folder);
 
-
-		printf("===============================\n\n", out_temp_folder);
-
-		//decompress jpgx
-		//read_jpgx_container("./test/test.jpgx", "test");
-	}
+	//decompress pngx
+	pngx_decompress_container pdc = read_pngx_container("./test/test.pngx", "test");
 }
 
 void test_jpgx()
@@ -90,7 +85,7 @@ void test_jpgx()
 	//test
 
 	/*
-	jpeg crozping test
+		jpeg crozping test
 	*/
 
 

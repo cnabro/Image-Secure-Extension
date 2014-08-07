@@ -141,7 +141,7 @@ namespace IseWrapper
 	{
 	public:
 		PngxDecompressContainer(
-			unsigned char *image,
+			png_bytep *image,
 			//System::Collections::Generic::List<SecureContainer^>^ list, 
 			int width,
 			int height,
@@ -183,19 +183,35 @@ namespace IseWrapper
 
 		System::Drawing::Bitmap^ getImageBitmap()
 		{
-			array<unsigned char>^ values = gcnew array<unsigned char>(image_width*image_height*color_space);
-			System::Runtime::InteropServices::Marshal::Copy(System::IntPtr((void *)image), values, 0, image_width*image_height*color_space);
+			for (int y = 0; y < image_height; y++) {
+				for (int x = 0; x < image_width*3; x=x+3) {
+					int r = image[y][x];
+					int g = image[y][x+1];
+					int b = image[y][x+2];
+
+					image[y][x] = b;
+					image[y][x + 1] = g;
+					image[y][x + 2] = r;
+				}
+			}
 
 			System::Drawing::Bitmap^ systemBitmap = gcnew System::Drawing::Bitmap(image_width, image_height, System::Drawing::Imaging::PixelFormat::Format24bppRgb);
-			
 			System::Drawing::Rectangle rect;// = new System::Drawing::Rectangle(0, 0, image_width, image_height);
 			rect.X = 0;
 			rect.Y = 0;
 			rect.Width = image_width;
 			rect.Height = image_height;
 
-			System::Drawing::Imaging::BitmapData^ bitmapData = systemBitmap->LockBits(rect , System::Drawing::Imaging::ImageLockMode::WriteOnly, systemBitmap->PixelFormat);
-			System::Runtime::InteropServices::Marshal::Copy(values, 0, bitmapData->Scan0, image_width*image_height*color_space);
+			System::Drawing::Imaging::BitmapData^ bitmapData = systemBitmap->LockBits(rect, System::Drawing::Imaging::ImageLockMode::WriteOnly, systemBitmap->PixelFormat);
+
+			array<unsigned char>^ values = gcnew array<unsigned char>(image_height*bitmapData->Stride);
+			for (int i = 0; i < image_height; i++)
+			{
+				System::Runtime::InteropServices::Marshal::Copy(System::IntPtr((void *)(image[i])), values, bitmapData->Stride*i, image_width*color_space);
+			}
+
+
+			System::Runtime::InteropServices::Marshal::Copy(values, 0, bitmapData->Scan0, image_height*bitmapData->Stride);
 			systemBitmap->UnlockBits(bitmapData);
 
 			return systemBitmap;
@@ -203,7 +219,7 @@ namespace IseWrapper
 
 	private:
 		//System::Collections::Generic::List<SecureContainer^>^ scList;
-		unsigned char *image;
+		png_bytep *image;
 		int color_space;
 		int image_width;
 		int image_height;
