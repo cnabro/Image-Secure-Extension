@@ -71,120 +71,79 @@ JNIEXPORT jobject JNICALL Java_com_pigtools_isetool_service_IseProcessingService
 
 JNIEXPORT jobject JNICALL Java_com_pigtools_isetool_service_IseProcessingService_nativeGetSecurePngBuffer(JNIEnv *env,jobject obj, jstring strpath, jstring strkey)
 {
-//	char *path = (*env)->GetStringUTFChars(env, strpath, 0);
-//	char *key = (*env)->GetStringUTFChars(env, strkey, 0);
-//
-//	pngx_decompress_container container = get_pngx_container(path, (char *)key);
-//
-//	/**
-//	 * convert to java class
-//	 */
-//	jclass pdc_class = (*env)->FindClass(env, "com/pigtools/isetool/service/container/PngxDecompressContainer");
-//	jmethodID constructor = (*env)->GetMethodID(env, pdc_class, "<init>", "()V");
-//	jmethodID set_height = (*env)->GetMethodID(env, pdc_class, "setHeight", "(I)V");
-//	jmethodID set_width = (*env)->GetMethodID(env, pdc_class, "setWidth", "(I)V");
-//	jmethodID set_cs = (*env)->GetMethodID(env, pdc_class, "setColorSpace", "(I)V");
-//	jmethodID set_status = (*env)->GetMethodID(env, pdc_class, "setStatus", "(I)V");
-//	jmethodID set_bitmap = (*env)->GetMethodID(env, pdc_class, "setImage", "([B)V");
-//
-//	jobject ret = (*env)->NewObject(env, pdc_class, constructor);
-//
-//	int height = (int)container.jdcinfo.dcinfo.image_height;
-//	int width = (int)container.jdcinfo.dcinfo.image_width;
-//	int cs = (int)container.jdcinfo.dcinfo.jpeg_color_space;
-//	int status = (int)container.jdcinfo.status;
-//	unsigned char * bitmap = (unsigned char *)container.jdcinfo.image;
-//
-//	(*env)->CallVoidMethod(env, ret, set_height, height);
-//	(*env)->CallVoidMethod(env, ret, set_width, width);
-//	(*env)->CallVoidMethod(env, ret, set_cs, cs);
-//	(*env)->CallVoidMethod(env, ret, set_status, status);
-//
-//	/**
-//	 * 24bit bitmap is not supported in android
-//	 * convert rgb888 to rgb565
-//	 */
-//
-//	int i = 0;
-//	for(i = 0 ; i < height*width ; i++)
-//	{
-//		unsigned char r = bitmap[i*3];
-//		unsigned char g = bitmap[i*3 + 1];
-//		unsigned char b = bitmap[i*3 + 2];
-//
-//		short rgb565 = RGB888TO565(r,g,b);
-//
-//		bitmap[i*2]= (rgb565 & 0xff);
-//		bitmap[i*2+1]= ((rgb565 >> 8) & 0xff);
-//	}
-//
-//	/**
-//	 * copy to jbyteAray
-//	 */
-//	jbyteArray arr =(*env)->NewByteArray(env, height*width*2);
-//	(*env)->SetByteArrayRegion(env, arr, 0, height*width*2, (jbyte*)bitmap );
-//	(*env)->CallVoidMethod(env, ret, set_bitmap, arr);
-//
-//	free(bitmap);
-//
-//	return ret;
 	char *path = (*env)->GetStringUTFChars(env, strpath, 0);
-		char *key = (*env)->GetStringUTFChars(env, strkey, 0);
+	char *key = (*env)->GetStringUTFChars(env, strkey, 0);
 
-		jpgx_decompress_container container = get_jpgx_container(path, (char *)key);
+	pngx_decompress_container container = get_pngx_container(path, (char *)key);
 
-		/**
-		 * convert to java class
-		 */
-		jclass jdc_class = (*env)->FindClass(env, "com/pigtools/isetool/service/container/JpgxDecompressContainer");
-		jmethodID constructor = (*env)->GetMethodID(env, jdc_class, "<init>", "()V");
-		jmethodID set_height = (*env)->GetMethodID(env, jdc_class, "setHeight", "(I)V");
-		jmethodID set_width = (*env)->GetMethodID(env, jdc_class, "setWidth", "(I)V");
-		jmethodID set_cs = (*env)->GetMethodID(env, jdc_class, "setColorSpace", "(I)V");
-		jmethodID set_status = (*env)->GetMethodID(env, jdc_class, "setStatus", "(I)V");
-		jmethodID set_bitmap = (*env)->GetMethodID(env, jdc_class, "setImage", "([B)V");
+	/**
+	 * convert to java class
+	 */
+	jclass jdc_class = (*env)->FindClass(env, "com/pigtools/isetool/service/container/PngxDecompressContainer");
+	jmethodID constructor = (*env)->GetMethodID(env, jdc_class, "<init>", "()V");
+	jmethodID set_height = (*env)->GetMethodID(env, jdc_class, "setHeight", "(I)V");
+	jmethodID set_width = (*env)->GetMethodID(env, jdc_class, "setWidth", "(I)V");
+	jmethodID set_cs = (*env)->GetMethodID(env, jdc_class, "setColorSpace", "(I)V");
+	jmethodID set_status = (*env)->GetMethodID(env, jdc_class, "setStatus", "(I)V");
+	jmethodID set_bitmap = (*env)->GetMethodID(env, jdc_class, "setImage", "([B)V");
 
-		jobject ret = (*env)->NewObject(env, jdc_class, constructor);
+	jobject ret = (*env)->NewObject(env, jdc_class, constructor);
 
-		int height = (int)container.jdcinfo.dcinfo.image_height;
-		int width = (int)container.jdcinfo.dcinfo.image_width;
-		int cs = (int)container.jdcinfo.dcinfo.jpeg_color_space;
-		int status = (int)container.jdcinfo.status;
-		unsigned char * bitmap = (unsigned char *)container.jdcinfo.image;
+	int width = png_get_image_width(container.pdcinfo.png_ptr, container.pdcinfo.info_ptr);
+	int height = png_get_image_height(container.pdcinfo.png_ptr, container.pdcinfo.info_ptr);
+	int cs = 3;
+	png_byte color_type = png_get_color_type(container.pdcinfo.png_ptr, container.pdcinfo.info_ptr);
 
-		(*env)->CallVoidMethod(env, ret, set_height, height);
-		(*env)->CallVoidMethod(env, ret, set_width, width);
-		(*env)->CallVoidMethod(env, ret, set_cs, cs);
-		(*env)->CallVoidMethod(env, ret, set_status, status);
+	if (color_type == PNG_COLOR_TYPE_RGB)
+	{
+		cs = 3;
+	}
+	else if (color_type == PNG_COLOR_TYPE_RGBA)
+	{
+		cs = 4;
+	}
 
-		/**
-		 * 24bit bitmap is not supported in android
-		 * convert rgb888 to rgb565
-		 */
+	png_bytep * bitmap = (png_bytep *)container.pdcinfo.image;
 
-		int i = 0;
-		for(i = 0 ; i < height*width ; i++)
+	(*env)->CallVoidMethod(env, ret, set_height, height);
+	(*env)->CallVoidMethod(env, ret, set_width, width);
+	(*env)->CallVoidMethod(env, ret, set_cs, cs);
+	(*env)->CallVoidMethod(env, ret, set_status, 1);
+
+	/**
+	 * 24bit bitmap is not supported in android
+	 * convert rgb888 to rgb565
+	 */
+
+	int x,y = 0;
+	for(y = 0 ; y < height ; y ++)
+	{
+		for(x = 0 ; x < width ; x ++)
 		{
-			unsigned char r = bitmap[i*3];
-			unsigned char g = bitmap[i*3 + 1];
-			unsigned char b = bitmap[i*3 + 2];
+			int r = bitmap[y][x*3];
+			int g = bitmap[y][x*3 + 1];
+			int b = bitmap[y][x*3 + 2];
 
 			short rgb565 = RGB888TO565(r,g,b);
 
-			bitmap[i*2]= (rgb565 & 0xff);
-			bitmap[i*2+1]= ((rgb565 >> 8) & 0xff);
+			bitmap[y][x*2]= (rgb565 & 0xff);
+			bitmap[y][x*2+1]= ((rgb565 >> 8) & 0xff);
 		}
+	}
 
-		/**
-		 * copy to jbyteAray
-		 */
-		jbyteArray arr =(*env)->NewByteArray(env, height*width*2);
-		(*env)->SetByteArrayRegion(env, arr, 0, height*width*2, (jbyte*)bitmap );
-		(*env)->CallVoidMethod(env, ret, set_bitmap, arr);
+	/**
+	 * copy to jbyteAray
+	 */
+	jbyteArray arr =(*env)->NewByteArray(env, height*width*2);
+	for(y = 0 ; y < height ; y++)
+	{
+		(*env)->SetByteArrayRegion(env, arr, y*width*2, width*2, (jbyte*)bitmap[y] );
+	}
+	(*env)->CallVoidMethod(env, ret, set_bitmap, arr);
 
-		free(bitmap);
+	free(bitmap);
 
-		return ret;
+	return ret;
 }
 
 JNIEXPORT jboolean JNICALL Java_com_pigtools_isetool_service_IseProcessingService_nativeMakeJPGX(JNIEnv *env, jobject obj, jstring strpath, jobject list, jstring strkey)
@@ -248,18 +207,23 @@ JNIEXPORT jboolean JNICALL Java_com_pigtools_isetool_service_IseProcessingServic
 	jmethodID get_y = (*env)->GetMethodID(env, sc_class, "getPosY", "()I");
 
 	int i = 0;
+	LOGE("path : %s ", path);
+	LOGE("key  : %s ", key);
+	LOGE("size : %d ", sc_size);
 	for (i = 0; i < sc_size; i++)
 	{
 		jobject item = (*env)->CallObjectMethod(env, list, get_obj , i);
 
 		sc_array[i] = (secure_container*)malloc(sizeof(secure_container));
-		sc_array[i]->height = (int) (*env)->CallIntMethod(env, item, get_height);;
-		sc_array[i]->width  = (int) (*env)->CallIntMethod(env, item, get_width);;
-		sc_array[i]->pos_x  = (int) (*env)->CallIntMethod(env, item, get_x);;
-		sc_array[i]->pos_y  = (int) (*env)->CallIntMethod(env, item, get_y);;
+		sc_array[i]->height = (int) (*env)->CallIntMethod(env, item, get_height);
+		sc_array[i]->width  = (int) (*env)->CallIntMethod(env, item, get_width);
+		sc_array[i]->pos_x  = (int) (*env)->CallIntMethod(env, item, get_x);
+		sc_array[i]->pos_y  = (int) (*env)->CallIntMethod(env, item, get_y);
+
+		LOGE("x : %d / y : %d / width : %d / height : %d ", sc_array[i]->height, sc_array[i]->width, sc_array[i]->pos_x, sc_array[i]->pos_y);
 	}
 
-	pngx_compress_container jcc = make_pngx(path, sc_array, sc_size, key);
+	pngx_compress_container pcc = make_pngx(path, sc_array, sc_size, key);
 
 	return JNI_TRUE;
 }

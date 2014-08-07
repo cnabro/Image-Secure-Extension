@@ -29,4 +29,3 @@ LOCAL_MODULE    := libise
 LOCAL_LDLIBS := -lz
 
 include $(BUILD_SHARED_LIBRARY)
-#include $(BUILD_STATIC_LIBRARY)

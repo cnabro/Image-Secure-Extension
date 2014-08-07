@@ -25,8 +25,8 @@
 #include <time.h>
 #include <sys/stat.h>
 #ifndef WIN32
-//#  include <dirent.h>
-//#  include <unistd.h>
+#  include <dirent.h>
+#  include <unistd.h>
 #endif /* !WIN32 */
 #ifdef __APPLE__
 #  include <spawn.h>

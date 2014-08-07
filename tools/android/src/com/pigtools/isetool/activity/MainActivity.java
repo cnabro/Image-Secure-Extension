@@ -149,9 +149,22 @@ public class MainActivity extends Activity implements OnClickListener, OnBottomT
 					for (RectF rect : mSelectionCanvas.getAdjustRectList()) {
 						list.add(new SecureContainer((int) rect.left, (int) rect.top, (int) (rect.right - rect.left), (int) (rect.bottom - rect.top)));
 					}
-
-					boolean result = mProcessingService.makeJPGX(mCurrentPath, list, mPassword.getText().toString());
-
+					
+					boolean result = false;
+					
+					if(mCurrentOpenType == FileListActivity.RESULT_CODE_OPEN_JPEG)
+					{
+						result = mProcessingService.makeJPGX(mCurrentPath, list, mPassword.getText().toString());
+					}
+					else if(mCurrentOpenType == FileListActivity.RESULT_CODE_OPEN_PNG)
+					{
+						result = mProcessingService.makePNGX(mCurrentPath, list, mPassword.getText().toString());
+					}
+					else
+					{
+						result = false;
+					}
+					
 					if (result) {
 						Toast.makeText(this, getString(R.string.msg_success), Toast.LENGTH_SHORT).show();
 					} else {
