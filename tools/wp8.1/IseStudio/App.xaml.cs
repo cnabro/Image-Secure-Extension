@@ -37,6 +37,24 @@ namespace IseStudio
             this.Suspending += this.OnSuspending;
         }
 
+        protected async override void OnActivated(IActivatedEventArgs e)
+        {
+            Frame rootFrame = Window.Current.Content as Frame;
+            if (rootFrame == null)
+            {
+                rootFrame = new Frame();
+                Window.Current.Content = rootFrame;
+            }
+
+
+            var continuationEventArgs = e as FileOpenPickerContinuationEventArgs;
+            if (continuationEventArgs != null)
+            {
+                var mainPage = rootFrame.Content as MainPage;
+                mainPage.Continue(continuationEventArgs);
+            }
+        }
+
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points
         /// will be used when the application is launched to open a specific file, to display

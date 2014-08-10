@@ -9,6 +9,13 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-
+        <Pivot>
+            <PivotItem Header="Image">
+                
+            </PivotItem>
+            <PivotItem Header="Setting">
+                <Button x:Name="OpenBtn" Content="Open" Click="OpenBtn_Click"></Button>
+            </PivotItem>
+        </Pivot>
     </Grid>
 </Page>

@@ -1,6 +1,7 @@
 #include <wrl.h>
 #include <robuffer.h>
 #include <Converter.h>
+#include <png.h>
 
 using namespace Microsoft::WRL;
 
@@ -71,11 +72,6 @@ namespace IseWrapperWP
 
 		}
 
-		void setImageSource(unsigned char * source)
-		{
-			image = source;
-		}
-
 		int getColorSpace()
 		{
 			return this->color_space;
@@ -139,8 +135,13 @@ namespace IseWrapperWP
 			return bimage;
 		}
 
+	internal:
+		void setImageSource(unsigned char * source)
+		{
+			image = source;
+		}
+
 	private:
-		//System::Collections::Generic::List<SecureContainer^>^ scList;
 		unsigned char * image;
 		int color_space;
 		int image_width;
@@ -166,11 +167,6 @@ namespace IseWrapperWP
 		PngxDecompressContainer()
 		{
 
-		}
-
-		void setImageSource(unsigned char * source)
-		{
-			image = source;
 		}
 
 		int getColorSpace()
@@ -238,8 +234,14 @@ namespace IseWrapperWP
 		//	return systemBitmap;
 		//}
 
+	internal:
+		void setImageSource(png_bytep * source)
+		{
+			image = source;
+		}
+
 	private:
-		unsigned char *image;
+		png_bytep *image;
 		int color_space;
 		int image_width;
 		int image_height;

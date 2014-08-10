@@ -1,10 +1,14 @@
-﻿using System;
+﻿using IseWrapperWP;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage.Pickers;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -27,6 +31,8 @@ namespace IseStudio
             this.InitializeComponent();
 
             this.NavigationCacheMode = NavigationCacheMode.Required;
+
+            
         }
 
         /// <summary>
@@ -43,6 +49,44 @@ namespace IseStudio
             // Windows.Phone.UI.Input.HardwareButtons.BackPressed event.
             // If you are using the NavigationHelper provided by some templates,
             // this event is handled for you.
+        }
+
+        public void fileOpen()
+        {
+            FileOpenPicker openPicker = new FileOpenPicker();
+            openPicker.ViewMode = PickerViewMode.Thumbnail;
+            openPicker.SuggestedStartLocation = PickerLocationId.Downloads;
+            openPicker.FileTypeFilter.Add(".jpg");
+            openPicker.FileTypeFilter.Add(".jpeg");
+            openPicker.FileTypeFilter.Add(".png");
+
+            openPicker.PickSingleFileAndContinue();
+        }
+
+        
+
+        public async void Continue(FileOpenPickerContinuationEventArgs args)
+        {
+            if (args.Files.Count > 0)
+            {
+                MessageDialog dialog = new MessageDialog("Picked photo: " + args.Files[0].Path);
+                await dialog.ShowAsync();
+
+                List<SecureContainer> scList = new List<SecureContainer>();
+                scList.Add(new SecureContainer(100, 100, 50, 50));
+
+                ImageSecureExtention.makePNGX("D:/test333.png", scList, "test");
+            }
+            else
+            {
+                MessageDialog dialog = new MessageDialog("Canceled");
+                dialog.ShowAsync();
+            }
+        }
+
+        private void OpenBtn_Click(object sender, RoutedEventArgs e)
+        {
+            fileOpen();
         }
     }
 }
