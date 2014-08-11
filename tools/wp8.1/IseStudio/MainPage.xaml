@@ -5,17 +5,164 @@
     xmlns:local="using:IseStudio"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:IseControls="using:IseStudio.Controls"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="#111111">
+    <Page.Resources>
+        <Style x:Key="IsePivotStyle" TargetType="Pivot">
+			<Setter Property="Margin" Value="0"/>
+			<Setter Property="Padding" Value="0"/>
+			<Setter Property="Foreground" Value="{ThemeResource PhoneForegroundBrush}"/>
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="ItemsPanel">
+				<Setter.Value>
+					<ItemsPanelTemplate>
+						<Grid/>
+					</ItemsPanelTemplate>
+				</Setter.Value>
+			</Setter>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="Pivot">
+						<Grid x:Name="RootElement" Background="{TemplateBinding Background}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalAlignment="{TemplateBinding VerticalAlignment}">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="*"/>
+							</Grid.RowDefinitions>
+							<VisualStateManager.VisualStateGroups>
+								<VisualStateGroup x:Name="Orientation">
+									<VisualState x:Name="Portrait"/>
+									<VisualState x:Name="Landscape"/>
+								</VisualStateGroup>
+							</VisualStateManager.VisualStateGroups>
+							<ScrollViewer x:Name="ScrollViewer" HorizontalSnapPointsAlignment="Center" HorizontalSnapPointsType="MandatorySingle" HorizontalScrollBarVisibility="Hidden" Margin="{TemplateBinding Padding}" Grid.Row="1" Template="{StaticResource ScrollViewerScrollBarlessTemplate}" VerticalSnapPointsType="None" VerticalScrollBarVisibility="Disabled" VerticalScrollMode="Disabled" VerticalContentAlignment="Stretch" ZoomMode="Disabled">
+								<PivotPanel x:Name="Panel" VerticalAlignment="Stretch" Margin="0,10,0,0">
+                                    <PivotHeaderPanel x:Name="Header" Margin="0,10,0,0" VerticalAlignment="Center">
+										<PivotHeaderPanel.RenderTransform>
+											<CompositeTransform x:Name="HeaderTranslateTransform" TranslateX="0"/>
+										</PivotHeaderPanel.RenderTransform>
+									</PivotHeaderPanel>
+									<ItemsPresenter x:Name="PivotItemPresenter" Margin="0,-15,0,0">
+										<ItemsPresenter.RenderTransform>
+											<TranslateTransform x:Name="ItemsPresenterTranslateTransform" X="0"/>
+										</ItemsPresenter.RenderTransform>
+									</ItemsPresenter>
+								</PivotPanel>
+							</ScrollViewer>
+						</Grid>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+	</Page.Resources>
 
     <Grid>
-        <Pivot>
-            <PivotItem Header="Image">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="3*"></RowDefinition>
+            <RowDefinition Height="4*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <!--<StackPanel Grid.Row="0" Background="#111111" Orientation="Horizontal" VerticalAlignment="Stretch" >
+            <StackPanel Orientation="Horizontal" Margin="15,15,0,0">
+                <Image Source="./Assets/Icon.png" Height="40" Width="40"></Image>
+                <TextBlock Text="ISE Studio" VerticalAlignment="Center" FontSize="20" Margin="10,0,0,0"></TextBlock>
+            </StackPanel>
+        </StackPanel>-->
+        <Grid Grid.Row="0">
+            <Image Source="./Assets/Sample.jpg" Margin="20"></Image>
+            <IseControls:MultiSelectionControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="{Binding ImageWidth}" Height="{Binding ImageHeight}" Background="Transparent">
                 
-            </PivotItem>
-            <PivotItem Header="Setting">
-                <Button x:Name="OpenBtn" Content="Open" Click="OpenBtn_Click"></Button>
-            </PivotItem>
-        </Pivot>
+            </IseControls:MultiSelectionControl>
+        </Grid>
+        <Grid Grid.Row="2">
+            <Pivot Style="{StaticResource IsePivotStyle}" Margin="0,5,0,0" Background="#000000">
+                <PivotItem>
+                    <PivotItem.Header>
+                        <Grid Margin="5,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="selection" VerticalAlignment="Center" FontSize="23"></TextBlock>
+                        </Grid>
+                    </PivotItem.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="110"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0"  HorizontalAlignment="Left">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="50"></RowDefinition>
+                                    <RowDefinition Height="50"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50"></ColumnDefinition>
+                                    <ColumnDefinition Width="50"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Background="#005d8a" Margin="3" Grid.Row="0" Grid.Column="0">
+                                    <Image Source="./Assets/IconSelection.png"></Image>
+                                </StackPanel>
+                                <StackPanel Background="#111111" Margin="3" Grid.Row="0" Grid.Column="1">
+                                    <Image Source="./Assets/IconPeople.png"></Image>
+                                </StackPanel>
+                                <StackPanel Background="#111111" Margin="3" Grid.Row="1" Grid.Column="0">
+                                    <Image Source="./Assets/IconFit.png"></Image>
+                                </StackPanel>
+                                <StackPanel Background="#111111" Margin="3" Grid.Row="1" Grid.Column="1">
+                                    <Image Source="./Assets/IconCancel.png"></Image>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <Grid Height="20" VerticalAlignment="Center" Background="#111111" Margin="0,5,0,5" Width="225" HorizontalAlignment="Left">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="5"></ColumnDefinition>
+                                    <ColumnDefinition Width="55"></ColumnDefinition>
+                                    <ColumnDefinition Width="55"></ColumnDefinition>
+                                    <ColumnDefinition Width="55"></ColumnDefinition>
+                                    <ColumnDefinition Width="55"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="X" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+                                <TextBlock Text="Y" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+                                <TextBlock Text="Width" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+                                <TextBlock Text="Height" Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+                            </Grid>
+                            <ListView DataContext="{Binding Source={StaticResource Locator}, Path=MultiSelectionCanvas}" ItemsSource="{Binding ContainerList}" Height="180">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid VerticalAlignment="Center">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="5"></ColumnDefinition>
+                                                <ColumnDefinition Width="55"></ColumnDefinition>
+                                                <ColumnDefinition Width="55"></ColumnDefinition>
+                                                <ColumnDefinition Width="55"></ColumnDefinition>
+                                                <ColumnDefinition Width="55"></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid Background="#005d8a" Height="15" VerticalAlignment="Center"></Grid>
+                                            <TextBlock Text="{Binding X}" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+                                            <TextBlock Text="{Binding Y}" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+                                            <TextBlock Text="{Binding Width}" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+                                            <TextBlock Text="{Binding Height}" Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ListView>
+                        </StackPanel>
+                    </Grid>
+                </PivotItem>
+                <PivotItem>
+                    <PivotItem.Header>
+                        <Grid Margin="5,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="settings" VerticalAlignment="Center" FontSize="23"></TextBlock>
+                        </Grid>
+                    </PivotItem.Header>
+                </PivotItem>
+            </Pivot>
+        </Grid>
     </Grid>
+    
+    <Page.BottomAppBar>
+        <CommandBar Background="#111111">
+            <AppBarButton Icon="OpenWith" Click="OpenBtn_Click"></AppBarButton>
+            <AppBarButton Icon="Save"></AppBarButton>
+        </CommandBar>
+    </Page.BottomAppBar>
 </Page>

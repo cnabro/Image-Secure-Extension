@@ -9,6 +9,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage.Pickers;
 using Windows.UI.Popups;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -31,7 +32,7 @@ namespace IseStudio
             this.InitializeComponent();
 
             this.NavigationCacheMode = NavigationCacheMode.Required;
-
+            ApplicationView.GetForCurrentView().SetDesiredBoundsMode(ApplicationViewBoundsMode.UseCoreWindow);
             
         }
 
@@ -54,17 +55,19 @@ namespace IseStudio
         public void fileOpen()
         {
             FileOpenPicker openPicker = new FileOpenPicker();
-            openPicker.ViewMode = PickerViewMode.Thumbnail;
-            openPicker.SuggestedStartLocation = PickerLocationId.Downloads;
+            openPicker.ViewMode = PickerViewMode.List;
+            //openPicker.SuggestedStartLocation = PickerLocationId.ComputerFolder;
             openPicker.FileTypeFilter.Add(".jpg");
             openPicker.FileTypeFilter.Add(".jpeg");
             openPicker.FileTypeFilter.Add(".png");
+            openPicker.FileTypeFilter.Add(".pngx");
+            openPicker.FileTypeFilter.Add(".jpgx");
 
             openPicker.PickSingleFileAndContinue();
         }
 
         
-
+         
         public async void Continue(FileOpenPickerContinuationEventArgs args)
         {
             if (args.Files.Count > 0)
