@@ -111,8 +111,6 @@
     <Content Include="Assets\IconFit.png" />
     <Content Include="Assets\IconPeople.png" />
     <Content Include="Assets\IconSelection.png" />
-    <Content Include="Assets\img_bg.png" />
-    <Content Include="Assets\img_security.jpg" />
     <Content Include="Assets\Sample.jpg" />
     <Content Include="Assets\Logo.scale-240.png" />
     <Content Include="Assets\SmallLogo.scale-240.png" />
@@ -156,6 +154,9 @@
     </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation">
       <HintPath>..\packages\MvvmLightLibs.4.4.32.1\lib\wpa81\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="WriteableBitmapEx.WinRT">
+      <HintPath>..\packages\WriteableBitmapEx.1.0.12.0\lib\wpa81\WriteableBitmapEx.WinRT.dll</HintPath>
     </Reference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">

@@ -92,47 +92,61 @@ namespace IseWrapperWP
 			return this->image_height;
 		}
 
-		Windows::UI::Xaml::Media::Imaging::BitmapImage^ getImageBitmapRGB()
+		IBuffer^ getImageBitmapRGB()
 		{
-			//convert rgb24 to bgr24
-			int offset = 0;
+			
 
-			for (int y = 0; y < image_height; y++) {
-				for (int x = 0; x < image_width; x++) {
-					int r = image[offset];
-					int g = image[offset + 1];
-					int b = image[offset + 2];
+			byte *rgba;
 
-					image[offset] = b;
-					image[offset + 1] = g;
-					image[offset + 2] = r;
+			if (color_space == 3)
+			{
+				rgba = new byte[image_width * image_height * 4];
 
-					offset += color_space;
+				byte * rgb = static_cast<byte*>(image);
+
+				//convert rgb24 to bgr24
+				for (int y = 0; y < image_height; y++) {
+					for (int x = 0; x < image_width; x++) {
+						int r = image[y * image_width * 3 + x * 3];
+						int g = image[y * image_width * 3 + x * 3 + 1];
+						int b = image[y * image_width * 3 + x * 3 + 2];
+						//int a = 255;
+
+						rgba[y * image_width * 4 + x * 4] = r;
+						rgba[y * image_width * 4 + x * 4 + 1] = g;
+						rgba[y * image_width * 4 + x * 4 + 2] = b;
+						rgba[y * image_width * 4 + x * 4 + 3] = 255;
+					}
 				}
 			}
-
-			IBuffer ^srcDataBuffer = byteArrayToIBufferPtr(static_cast<byte*>(image), image_width * image_height * color_space);
-
-			InMemoryRandomAccessStream^ stream = ref new InMemoryRandomAccessStream();
-			stream->ReadAsync(srcDataBuffer, image_width * image_height * color_space, InputStreamOptions::None);
-
-			BitmapImage^ bimage = ref new  Windows::UI::Xaml::Media::Imaging::BitmapImage();
-			bimage->SetSource(stream);
-
-			WriteableBitmap^ bitmap = ref new WriteableBitmap(image_width, image_height);
-			
-			/*for (int i = 0; i < image_height; i++)
+			else
 			{
-				Runtime::InteropServices::
-
-				Runtime::InteropServicesMarshal::Copy(System::IntPtr((void *)(image + i*image_width*color_space)), values, bitmapData->Stride*i, image_width*color_space);
+				rgba = static_cast<byte*>(image);
 			}
 
+			IBuffer ^srcDataBuffer = byteArrayToIBufferPtr(rgba, image_width * image_height * 4);
 
-			System::Runtime::InteropServices::Marshal::Copy(values, 0, bitmapData->Scan0, image_height*bitmapData->Stride);
-			systemBitmap->UnlockBits(bitmapData);*/
+			return srcDataBuffer;
+			//InMemoryRandomAccessStream^ stream = ref new InMemoryRandomAccessStream();
+			//stream->ReadAsync(srcDataBuffer, image_width * image_height * color_space, InputStreamOptions::None);
 
-			return bimage;
+			//BitmapImage^ bimage = ref new  Windows::UI::Xaml::Media::Imaging::BitmapImage();
+			//bimage->DecodePixelWidth = image_width;
+			//bimage->DecodePixelHeight = image_height;
+			//bimage->SetSource(stream);
+			//
+			///*for (int i = 0; i < image_height; i++)
+			//{
+			//	Runtime::InteropServices::
+
+			//	Runtime::InteropServicesMarshal::Copy(System::IntPtr((void *)(image + i*image_width*color_space)), values, bitmapData->Stride*i, image_width*color_space);
+			//}
+
+
+			//System::Runtime::InteropServices::Marshal::Copy(values, 0, bitmapData->Scan0, image_height*bitmapData->Stride);
+			//systemBitmap->UnlockBits(bitmapData);*/
+
+			//return bimage;
 		}
 
 	internal:
@@ -189,7 +203,7 @@ namespace IseWrapperWP
 			return this->image_height;
 		}
 
-		//System::Drawing::Bitmap^ getImageBitmap()
+		//Windows::UI::Xaml::Media::Imaging::BitmapImage^ getImageBitmap()
 		//{
 		//	for (int y = 0; y < image_height; y++) {
 		//		for (int x = 0; x < image_width * color_space; x = x + color_space) {
@@ -203,35 +217,35 @@ namespace IseWrapperWP
 		//		}
 		//	}
 
-		//	System::Drawing::Bitmap^ systemBitmap;
-		//	if (color_space == 3)
-		//	{
-		//		systemBitmap = gcnew System::Drawing::Bitmap(image_width, image_height, System::Drawing::Imaging::PixelFormat::Format24bppRgb);
-		//	}
-		//	else if (color_space == 4)
-		//	{
-		//		systemBitmap = gcnew System::Drawing::Bitmap(image_width, image_height, System::Drawing::Imaging::PixelFormat::Format32bppArgb);
-		//	}
+		////	System::Drawing::Bitmap^ systemBitmap;
+		////	if (color_space == 3)
+		////	{
+		////		systemBitmap = gcnew System::Drawing::Bitmap(image_width, image_height, System::Drawing::Imaging::PixelFormat::Format24bppRgb);
+		////	}
+		////	else if (color_space == 4)
+		////	{
+		////		systemBitmap = gcnew System::Drawing::Bitmap(image_width, image_height, System::Drawing::Imaging::PixelFormat::Format32bppArgb);
+		////	}
 
-		//	System::Drawing::Rectangle rect;// = new System::Drawing::Rectangle(0, 0, image_width, image_height);
-		//	rect.X = 0;
-		//	rect.Y = 0;
-		//	rect.Width = image_width;
-		//	rect.Height = image_height;
+		////	System::Drawing::Rectangle rect;// = new System::Drawing::Rectangle(0, 0, image_width, image_height);
+		////	rect.X = 0;
+		////	rect.Y = 0;
+		////	rect.Width = image_width;
+		////	rect.Height = image_height;
 
-		//	System::Drawing::Imaging::BitmapData^ bitmapData = systemBitmap->LockBits(rect, System::Drawing::Imaging::ImageLockMode::WriteOnly, systemBitmap->PixelFormat);
+		////	System::Drawing::Imaging::BitmapData^ bitmapData = systemBitmap->LockBits(rect, System::Drawing::Imaging::ImageLockMode::WriteOnly, systemBitmap->PixelFormat);
 
-		//	array<unsigned char>^ values = gcnew array<unsigned char>(image_height*bitmapData->Stride);
-		//	for (int i = 0; i < image_height; i++)
-		//	{
-		//		System::Runtime::InteropServices::Marshal::Copy(System::IntPtr((void *)(image[i])), values, bitmapData->Stride*i, image_width*color_space);
-		//	}
+		////	array<unsigned char>^ values = gcnew array<unsigned char>(image_height*bitmapData->Stride);
+		////	for (int i = 0; i < image_height; i++)
+		////	{
+		////		System::Runtime::InteropServices::Marshal::Copy(System::IntPtr((void *)(image[i])), values, bitmapData->Stride*i, image_width*color_space);
+		////	}
 
 
-		//	System::Runtime::InteropServices::Marshal::Copy(values, 0, bitmapData->Scan0, image_height*bitmapData->Stride);
-		//	systemBitmap->UnlockBits(bitmapData);
+		////	System::Runtime::InteropServices::Marshal::Copy(values, 0, bitmapData->Scan0, image_height*bitmapData->Stride);
+		////	systemBitmap->UnlockBits(bitmapData);
 
-		//	return systemBitmap;
+		////	return systemBitmap;
 		//}
 
 	internal:

@@ -68,7 +68,7 @@
             </StackPanel>
         </StackPanel>-->
         <Grid Grid.Row="0">
-            <Image Source="./Assets/Sample.jpg" Margin="20"></Image>
+            <Image x:Name="sourceImage" Source="./Assets/Sample.jpg" Margin="20" VerticalAlignment="Center" HorizontalAlignment="Center"></Image>
             <IseControls:MultiSelectionControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="{Binding ImageWidth}" Height="{Binding ImageHeight}" Background="Transparent">
                 
             </IseControls:MultiSelectionControl>

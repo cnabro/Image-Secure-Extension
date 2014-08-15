@@ -315,7 +315,7 @@ namespace IseStudio.ViewModel
             {
                 JpgxDecompressContainer container = ImageSecureExtention.getJpgxContainer(path, pwd);
  
-                Image = container.getImageBitmapRGB();
+                //Image = container.getImageBitmapRGB();
 
                 ImageWidth = container.getWidth();
                 ImageHeight = container.getHeight();
