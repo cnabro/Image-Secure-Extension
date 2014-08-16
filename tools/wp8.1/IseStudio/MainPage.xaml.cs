@@ -1,6 +1,7 @@
 ﻿using IseWrapperWP;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -10,6 +11,7 @@ using Windows.Foundation.Collections;
 using Windows.Graphics.Imaging;
 using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
+using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -62,24 +64,13 @@ namespace IseStudio
 
             //openPicker.PickSingleFileAndContinue();
 
-            JpgxDecompressContainer jdc = ImageSecureExtention.getJpgxContainer("D:/test.jpgx", "1234");
-            IBuffer image = jdc.getImageBitmapRGB();
+            
+            JpgxDecompressContainer jdc = ImageSecureExtention.getJpgxContainer("D:/test_d2.jpgx", "test");
+            BitmapImage image = await jdc.GetImageAsync();
+            sourceImage.Source = image;
 
-            byte[] arr = image.ToArray();
 
-            using (IRandomAccessStream stream = new InMemoryRandomAccessStream())
-            {
-                BitmapEncoder encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.JpegEncoderId, stream);
-
-                encoder.SetPixelData(BitmapPixelFormat.Rgba8, BitmapAlphaMode.Straight, (uint)jdc.getWidth(), (uint)jdc.getHeight(), 96.0, 96.0, arr);
-                await encoder.FlushAsync();
-
-                BitmapImage bitmapImage = new BitmapImage();
-
-                bitmapImage.SetSource(stream);
-                sourceImage.Source = bitmapImage;
-            }
-
+            Debug.WriteLine("set source");
         }
 
         public async void SetImageFromByteArray(byte[] data, Windows.UI.Xaml.Controls.Image image)
@@ -123,24 +114,7 @@ namespace IseStudio
                 //scList.Add(new SecureContainer(100, 100, 50, 50));
 
                 //ImageSecureExtention.makePNGX("D:/test333.png", scList, "test");
-                JpgxDecompressContainer jdc = ImageSecureExtention.getJpgxContainer("D:/test.jpgx", "test");
-                IBuffer image = jdc.getImageBitmapRGB();
-                //sourceImage.Source = image;
-
-                //MemoryStream stream = new MemoryStream(image.ToArray(), 0, (int)image.Length);
-
-                InMemoryRandomAccessStream ras = new InMemoryRandomAccessStream();
-
-                using (MemoryStream stream = new MemoryStream(image.ToArray(), 0, (int)image.Length))
-                {
-                    await stream.CopyToAsync(ras.AsStreamForWrite());
-                }
-
-
-                BitmapImage bitmap = new BitmapImage();
-                await bitmap.SetSourceAsync(ras);
-
-                sourceImage.Source = bitmap;
+                
             }
             else
             {

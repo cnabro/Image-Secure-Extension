@@ -2,12 +2,16 @@
 #include <robuffer.h>
 #include <Converter.h>
 #include <png.h>
+#include <ppltasks.h>
 
+using namespace concurrency;
 using namespace Microsoft::WRL;
 
 using namespace Platform;
 using namespace Windows::UI::Xaml::Media::Imaging;
+using namespace Windows::Graphics::Imaging;
 using namespace Windows::Storage::Streams;
+using namespace Windows::Foundation;
 
 namespace IseWrapperWP
 {
@@ -92,61 +96,63 @@ namespace IseWrapperWP
 			return this->image_height;
 		}
 
-		IBuffer^ getImageBitmapRGB()
+		IAsyncOperation<BitmapImage^>^ GetImageAsync()
 		{
-			
-
-			byte *rgba;
-
-			if (color_space == 3)
+			IAsyncOperation<BitmapImage^>^ asynctask = create_async([this]() -> task<BitmapImage^>
 			{
-				rgba = new byte[image_width * image_height * 4];
+				IRandomAccessStream^ stream = ref new InMemoryRandomAccessStream();
+				IAsyncOperation<BitmapEncoder^>^ encoder = BitmapEncoder::CreateAsync(BitmapEncoder::JpegEncoderId, stream);
 
-				byte * rgb = static_cast<byte*>(image);
+				task<BitmapEncoder^> encodertask = create_task(encoder);
 
-				//convert rgb24 to bgr24
-				for (int y = 0; y < image_height; y++) {
-					for (int x = 0; x < image_width; x++) {
-						int r = image[y * image_width * 3 + x * 3];
-						int g = image[y * image_width * 3 + x * 3 + 1];
-						int b = image[y * image_width * 3 + x * 3 + 2];
-						//int a = 255;
+				return encodertask.then([this, stream](BitmapEncoder^ encoder)->task<BitmapImage^>
+				{
+					byte *rgba;
 
-						rgba[y * image_width * 4 + x * 4] = r;
-						rgba[y * image_width * 4 + x * 4 + 1] = g;
-						rgba[y * image_width * 4 + x * 4 + 2] = b;
-						rgba[y * image_width * 4 + x * 4 + 3] = 255;
+					if (color_space == 3)
+					{
+						rgba = new byte[image_width * image_height * 4];
+
+						byte * rgb = static_cast<byte*>(image);
+
+						//convert rgb24 to bgr24
+						for (int y = 0; y < image_height; y++)
+						{
+							for (int x = 0; x < image_width; x++)
+							{
+								int r = image[y * image_width * 3 + x * 3];
+								int g = image[y * image_width * 3 + x * 3 + 1];
+								int b = image[y * image_width * 3 + x * 3 + 2];
+								//int a = 255;
+
+								rgba[y * image_width * 4 + x * 4] = r;
+								rgba[y * image_width * 4 + x * 4 + 1] = g;
+								rgba[y * image_width * 4 + x * 4 + 2] = b;
+								rgba[y * image_width * 4 + x * 4 + 3] = 255;
+							}
+						}
 					}
-				}
-			}
-			else
-			{
-				rgba = static_cast<byte*>(image);
-			}
+					else
+					{
+						rgba = static_cast<byte*>(image);
+					}
 
-			IBuffer ^srcDataBuffer = byteArrayToIBufferPtr(rgba, image_width * image_height * 4);
+					Platform::ArrayReference<uint8> blobArray(rgba, image_width * image_height * 4);
 
-			return srcDataBuffer;
-			//InMemoryRandomAccessStream^ stream = ref new InMemoryRandomAccessStream();
-			//stream->ReadAsync(srcDataBuffer, image_width * image_height * color_space, InputStreamOptions::None);
+					encoder->SetPixelData(BitmapPixelFormat::Rgba8, BitmapAlphaMode::Straight, image_width, image_height, 96, 96, blobArray);
+					task<void> flushtask = create_task(encoder->FlushAsync());
+					
+					return flushtask.then([stream]()->BitmapImage^
+					{
+						BitmapImage^ bitmapImage = ref new BitmapImage();
+						bitmapImage->SetSource(stream);
 
-			//BitmapImage^ bimage = ref new  Windows::UI::Xaml::Media::Imaging::BitmapImage();
-			//bimage->DecodePixelWidth = image_width;
-			//bimage->DecodePixelHeight = image_height;
-			//bimage->SetSource(stream);
-			//
-			///*for (int i = 0; i < image_height; i++)
-			//{
-			//	Runtime::InteropServices::
-
-			//	Runtime::InteropServicesMarshal::Copy(System::IntPtr((void *)(image + i*image_width*color_space)), values, bitmapData->Stride*i, image_width*color_space);
-			//}
-
-
-			//System::Runtime::InteropServices::Marshal::Copy(values, 0, bitmapData->Scan0, image_height*bitmapData->Stride);
-			//systemBitmap->UnlockBits(bitmapData);*/
-
-			//return bimage;
+						return bitmapImage;
+					});
+				});
+			});
+			
+			return asynctask;
 		}
 
 	internal:
