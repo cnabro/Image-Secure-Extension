@@ -96,7 +96,7 @@ namespace IseWrapperWP
 			return this->image_height;
 		}
 
-		IAsyncOperation<BitmapImage^>^ GetImageAsync()
+		IAsyncOperation<BitmapImage^>^ getImageAsync()
 		{
 			IAsyncOperation<BitmapImage^>^ asynctask = create_async([this]() -> task<BitmapImage^>
 			{
@@ -209,50 +209,62 @@ namespace IseWrapperWP
 			return this->image_height;
 		}
 
-		//Windows::UI::Xaml::Media::Imaging::BitmapImage^ getImageBitmap()
-		//{
-		//	for (int y = 0; y < image_height; y++) {
-		//		for (int x = 0; x < image_width * color_space; x = x + color_space) {
-		//			int r = image[y][x];
-		//			int g = image[y][x + 1];
-		//			int b = image[y][x + 2];
+		IAsyncOperation<BitmapImage^>^ getImageAsync()
+		{
+			IAsyncOperation<BitmapImage^>^ asynctask = create_async([this]() -> task<BitmapImage^>
+			{
+				IRandomAccessStream^ stream = ref new InMemoryRandomAccessStream();
+				IAsyncOperation<BitmapEncoder^>^ encoder = BitmapEncoder::CreateAsync(BitmapEncoder::JpegEncoderId, stream);
 
-		//			image[y][x] = b;
-		//			image[y][x + 1] = g;
-		//			image[y][x + 2] = r;
-		//		}
-		//	}
+				task<BitmapEncoder^> encodertask = create_task(encoder);
 
-		////	System::Drawing::Bitmap^ systemBitmap;
-		////	if (color_space == 3)
-		////	{
-		////		systemBitmap = gcnew System::Drawing::Bitmap(image_width, image_height, System::Drawing::Imaging::PixelFormat::Format24bppRgb);
-		////	}
-		////	else if (color_space == 4)
-		////	{
-		////		systemBitmap = gcnew System::Drawing::Bitmap(image_width, image_height, System::Drawing::Imaging::PixelFormat::Format32bppArgb);
-		////	}
+				return encodertask.then([this, stream](BitmapEncoder^ encoder)->task<BitmapImage^>
+				{
+					byte *rgba = new byte[image_width * image_height * 4];
 
-		////	System::Drawing::Rectangle rect;// = new System::Drawing::Rectangle(0, 0, image_width, image_height);
-		////	rect.X = 0;
-		////	rect.Y = 0;
-		////	rect.Width = image_width;
-		////	rect.Height = image_height;
+					//convert rgb24 to bgr24
+					for (int y = 0; y < image_height; y++)
+					{
+						for (int x = 0; x < image_width ; x++)
+						{
+							int r = image[y][x * color_space];
+							int g = image[y][x * color_space + 1];
+							int b = image[y][x * color_space + 2];
+							int a = 255;
 
-		////	System::Drawing::Imaging::BitmapData^ bitmapData = systemBitmap->LockBits(rect, System::Drawing::Imaging::ImageLockMode::WriteOnly, systemBitmap->PixelFormat);
-
-		////	array<unsigned char>^ values = gcnew array<unsigned char>(image_height*bitmapData->Stride);
-		////	for (int i = 0; i < image_height; i++)
-		////	{
-		////		System::Runtime::InteropServices::Marshal::Copy(System::IntPtr((void *)(image[i])), values, bitmapData->Stride*i, image_width*color_space);
-		////	}
+							if (color_space == 4)
+							{
+								a = image[image_height][x * color_space + 3];
+							}
 
 
-		////	System::Runtime::InteropServices::Marshal::Copy(values, 0, bitmapData->Scan0, image_height*bitmapData->Stride);
-		////	systemBitmap->UnlockBits(bitmapData);
+							rgba[(y * image_width * 4) + x * 4] = r;
+							rgba[(y * image_width * 4) + x * 4 + 1] = g;
+							rgba[(y * image_width * 4) + x * 4 + 2] = b;
+							rgba[(y * image_width * 4) + x * 4 + 3] = a;
 
-		////	return systemBitmap;
-		//}
+							
+						}
+					}
+					
+
+					Platform::ArrayReference<uint8> blobArray(rgba, image_width * image_height * 4);
+
+					encoder->SetPixelData(BitmapPixelFormat::Rgba8, BitmapAlphaMode::Straight, image_width, image_height, 96, 96, blobArray);
+					task<void> flushtask = create_task(encoder->FlushAsync());
+
+					return flushtask.then([stream]()->BitmapImage^
+					{
+						BitmapImage^ bitmapImage = ref new BitmapImage();
+						bitmapImage->SetSource(stream);
+
+						return bitmapImage;
+					});
+				});
+			});
+
+			return asynctask;
+		}
 
 	internal:
 		void setImageSource(png_bytep * source)

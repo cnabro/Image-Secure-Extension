@@ -65,8 +65,9 @@ namespace IseStudio
             //openPicker.PickSingleFileAndContinue();
 
             
-            JpgxDecompressContainer jdc = ImageSecureExtention.getJpgxContainer("D:/test_d2.jpgx", "test");
-            BitmapImage image = await jdc.GetImageAsync();
+            //JpgxDecompressContainer jdc = ImageSecureExtention.getJpgxContainer("D:/test_d2.jpgx", "test");
+            PngxDecompressContainer jdc = ImageSecureExtention.getPngxContainer("D:/ise_studio.pngx", "test");
+            BitmapImage image = await jdc.getImageAsync();
             sourceImage.Source = image;
 
 
