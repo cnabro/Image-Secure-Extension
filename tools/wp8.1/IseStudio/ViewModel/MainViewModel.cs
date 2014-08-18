@@ -7,7 +7,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
+using Windows.ApplicationModel.Activation;
+using Windows.Storage.Pickers;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace IseStudio.ViewModel
@@ -25,7 +28,7 @@ namespace IseStudio.ViewModel
             MenuFileSaveCommand = new RelayCommand(() => SaveFile());
             MenuFileOpenCommand = new RelayCommand(() => ExcuteFileOpen());
             DialogSubmitCommand = new RelayCommand(() => DialogSubmit());
-            DialogCancelCommand = new RelayCommand(() => HidePasswordDialog());
+            //DialogCancelCommand = new RelayCommand(() => HidePasswordDialog());
             MenuSelectionAllCommand = new RelayCommand(() => AllSelection());
             MenuSelectionCancelCommand = new RelayCommand(() => CancelSelection());
             MenuSelectionFaceCommand = new RelayCommand(() => FaceSelection());
@@ -148,7 +151,6 @@ namespace IseStudio.ViewModel
                     RaisePropertyChanged("DialogPassword");
                 }
             }
-
         }
 
         /// <summary>
@@ -190,6 +192,28 @@ namespace IseStudio.ViewModel
                 {
                     this._Image = value;
                     RaisePropertyChanged("Image");
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// Image Property
+        /// </summary>
+        private Boolean _PasswordDialogVisibility = false;
+        public Boolean PasswordDialogVisibility
+        {
+            get
+            {
+                return this._PasswordDialogVisibility;
+            }
+
+            set
+            {
+                if (value != this._PasswordDialogVisibility)
+                {
+                    this._PasswordDialogVisibility = value;
+                    RaisePropertyChanged("PasswordDialogVisibility");
                 }
             }
 
@@ -258,29 +282,37 @@ namespace IseStudio.ViewModel
         {
             CancelSelection();
 
-            //Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            FileOpenPicker openPicker = new FileOpenPicker();
+            openPicker.ViewMode = PickerViewMode.List;
+            openPicker.SuggestedStartLocation = PickerLocationId.ComputerFolder;
+            openPicker.FileTypeFilter.Add(".jpg");
+            openPicker.FileTypeFilter.Add(".jpeg");
+            openPicker.FileTypeFilter.Add(".png");
+            openPicker.FileTypeFilter.Add(".pngx");
+            openPicker.FileTypeFilter.Add(".jpgx");
 
-            //dlg.Filter = "JPEG Files (*.jpeg,*.jpg)|*.jpg;*.jpeg|PNG Files (*.png)|*.png|JPGX Files (*.jpgx)|*.jpgx|PNGX Files (*.pngx)|*.pngx";
-
-            //Nullable<bool> result = dlg.ShowDialog();
-
-            //if (result == true)
-            //{
-            //    FilePath = dlg.FileName;
-            //    LoadFile();
-            //}
+            openPicker.PickSingleFileAndContinue();
         }
 
-        public void ParseParameter()
+        public void Continue(FileOpenPickerContinuationEventArgs args)
         {
-            //string[] args = Environment.GetCommandLineArgs();
-
-            //if (args.Length > 1)
-            //{
-            //    FilePath = args[1];
-            //    LoadFile();
-            //}
+            if (args.Files.Count > 0)
+            {
+                FilePath = args.Files[0].Path;
+                LoadFile();
+            }
         }
+
+        //public void ParseParameter()
+        //{
+        //    //string[] args = Environment.GetCommandLineArgs();
+
+        //    //if (args.Length > 1)
+        //    //{
+        //    //    FilePath = args[1];
+        //    //    LoadFile();
+        //    //}
+        //}
 
         private void FileOpen(string path)
         {
@@ -309,13 +341,13 @@ namespace IseStudio.ViewModel
             vm.ContainerList.Add(new Model.SecureContainerModel(0, 0, ImageWidth, ImageHeight));
         }
 
-        private void LoadSecurityFile(string path, string pwd = "")
+        private async void LoadSecurityFile(string path, string pwd = "")
         {
             if (path.EndsWith(".jpgx"))
             {
                 JpgxDecompressContainer container = ImageSecureExtention.getJpgxContainer(path, pwd);
  
-                //Image = container.getImageBitmapRGB();
+                Image = await container.getImageAsync();
 
                 ImageWidth = container.getWidth();
                 ImageHeight = container.getHeight();
@@ -323,23 +355,11 @@ namespace IseStudio.ViewModel
             else
             {
                 PngxDecompressContainer container = ImageSecureExtention.getPngxContainer(path, pwd);
-                //Bitmap bitmap = container.getImageBitmap();
 
-                //MemoryStream ms = new MemoryStream();
-                //ms.Seek(0, SeekOrigin.Begin);
+                Image = await container.getImageAsync();
 
-                //bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
-
-                //BitmapImage image = new BitmapImage();
-                //image.BeginInit();
-
-                //image.StreamSource = ms;
-                //image.EndInit();
-
-                //Image = image;
-
-                //ImageWidth = container.getWidth();
-                //ImageHeight = container.getHeight();
+                ImageWidth = container.getWidth();
+                ImageHeight = container.getHeight();
             }
 
         }
@@ -362,23 +382,12 @@ namespace IseStudio.ViewModel
         private void DialogSubmit()
         {
             LoadSecurityFile(FilePath, DialogPassword);
-            HidePasswordDialog();
+            PasswordDialogVisibility = false;
         }
 
         private void OpenPasswordDialog()
         {
-            //MetroWindow window = Application.Current.MainWindow as MetroWindow;
-            //var dialog = (BaseMetroDialog)window.Resources["PasswordDialog"];
-
-            //window.ShowMetroDialogAsync(dialog);
-        }
-
-        private void HidePasswordDialog()
-        {
-            //MetroWindow window = Application.Current.MainWindow as MetroWindow;
-            //var dialog = (BaseMetroDialog)window.Resources["PasswordDialog"];
-
-            //window.HideMetroDialogAsync(dialog);
+            PasswordDialogVisibility = true;
         }
 
     }

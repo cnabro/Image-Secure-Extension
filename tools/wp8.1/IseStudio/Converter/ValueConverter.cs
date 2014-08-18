@@ -57,6 +57,30 @@ namespace IseStudio.Converter
         }
     }
 
+    public class ModeToSpanConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string culture)
+        {
+            StartMode mode = (StartMode)value;
+            switch (mode)
+            {
+                case StartMode.MODE_MAKER:
+                    return 1;
+
+                case StartMode.MODE_VIEWER:
+                    return 2;
+
+                default:
+                    return 1;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string culture)
+        {
+            return null;
+        }
+    }
+
     public class ModeToSizeConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string culture)

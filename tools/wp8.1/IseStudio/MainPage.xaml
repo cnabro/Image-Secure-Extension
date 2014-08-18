@@ -6,8 +6,10 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:IseControls="using:IseStudio.Controls"
+    xmlns:IseConverter="using:IseStudio.Converter"
     mc:Ignorable="d"
-    Background="#111111">
+    Background="#111111"
+    DataContext="{Binding Source={StaticResource Locator}, Path=Main}">
     <Page.Resources>
         <Style x:Key="IsePivotStyle" TargetType="Pivot">
 			<Setter Property="Margin" Value="0"/>
@@ -54,7 +56,12 @@
 				</Setter.Value>
 			</Setter>
 		</Style>
-	</Page.Resources>
+
+        <IseConverter:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <IseConverter:ModeToSizeConverter x:Key="ModeToSizeConverter" />
+        <IseConverter:ModeToSpanConverter x:Key="ModeToSpanConverter" />
+        <IseConverter:ModeToVisibilityConverter x:Key="ModeToVisibilityConverter" />
+    </Page.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -67,15 +74,15 @@
                 <TextBlock Text="ISE Studio" VerticalAlignment="Center" FontSize="20" Margin="10,0,0,0"></TextBlock>
             </StackPanel>
         </StackPanel>-->
-        <Grid Grid.Row="0">
-            <Image x:Name="sourceImage" Source="./Assets/Sample.jpg" Margin="20" VerticalAlignment="Center" HorizontalAlignment="Center"></Image>
+        <Grid Grid.Row="0" Grid.RowSpan="{Binding StMode,Converter={StaticResource ModeToSpanConverter}}">
+            <Image x:Name="sourceImage" Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center"></Image>
             <IseControls:MultiSelectionControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="{Binding ImageWidth}" Height="{Binding ImageHeight}" Background="Transparent">
                 
             </IseControls:MultiSelectionControl>
         </Grid>
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="1" Visibility="{Binding StMode,Converter={StaticResource ModeToVisibilityConverter}}">
             <Pivot Style="{StaticResource IsePivotStyle}" Margin="0,5,0,0" Background="#000000">
-                <PivotItem>
+                <PivotItem> 
                     <PivotItem.Header>
                         <Grid Margin="5,0,0,0" VerticalAlignment="Center">
                             <TextBlock Text="selection" VerticalAlignment="Center" FontSize="23"></TextBlock>
@@ -154,15 +161,32 @@
                             <TextBlock Text="settings" VerticalAlignment="Center" FontSize="23"></TextBlock>
                         </Grid>
                     </PivotItem.Header>
+                    <StackPanel>
+                        <TextBlock Text="Mode" FontSize="15"></TextBlock>
+                        <ComboBox SelectedIndex="0">
+                            <ComboBoxItem Content="DES3(24bit)"></ComboBoxItem>
+                        </ComboBox>
+                        <TextBlock Text="Password" FontSize="15"></TextBlock>
+                        <PasswordBox IseControls:BindablePasswordBox.Password="{Binding Password,Mode=TwoWay}" IseControls:BindablePasswordBox.Attach="True"/>
+                    </StackPanel>
                 </PivotItem>
             </Pivot>
+        </Grid>
+        <Grid Background="#cc111111" Grid.RowSpan="3" Visibility="{Binding PasswordDialogVisibility,Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid Background="#111111" VerticalAlignment="Top">
+                <StackPanel Margin="20">
+                    <TextBlock Text="Please input password" FontSize="20"></TextBlock>
+                    <PasswordBox IseControls:BindablePasswordBox.Password="{Binding DialogPassword,Mode=TwoWay}" IseControls:BindablePasswordBox.Attach="True"/>
+                    <Button Content="Ok" HorizontalAlignment="Stretch" Command="{Binding DialogSubmitCommand}"></Button>
+                </StackPanel>
+            </Grid>
         </Grid>
     </Grid>
     
     <Page.BottomAppBar>
         <CommandBar Background="#111111">
-            <AppBarButton Icon="OpenWith" Click="OpenBtn_Click"></AppBarButton>
-            <AppBarButton Icon="Save"></AppBarButton>
+            <AppBarButton Icon="OpenWith" Command="{Binding MenuFileOpenCommand}"></AppBarButton>
+            <AppBarButton Icon="Save" Visibility="{Binding StMode,Converter={StaticResource ModeToVisibilityConverter}}"></AppBarButton>
         </CommandBar>
     </Page.BottomAppBar>
 </Page>

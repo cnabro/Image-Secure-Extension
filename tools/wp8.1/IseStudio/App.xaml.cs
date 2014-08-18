@@ -1,4 +1,6 @@
-﻿using System;
+﻿using IseStudio.ViewModel;
+using Microsoft.Practices.ServiceLocation;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -50,8 +52,8 @@ namespace IseStudio
             var continuationEventArgs = e as FileOpenPickerContinuationEventArgs;
             if (continuationEventArgs != null)
             {
-                var mainPage = rootFrame.Content as MainPage;
-                mainPage.Continue(continuationEventArgs);
+                MainViewModel mainVm = ServiceLocator.Current.GetInstance<MainViewModel>();
+                mainVm.Continue(continuationEventArgs);
             }
         }
 
