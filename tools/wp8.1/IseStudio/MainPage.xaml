@@ -67,7 +67,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="3*"></RowDefinition>
             <RowDefinition Height="4*"></RowDefinition>
-        </Grid.RowDefinitions>
+        </Grid.RowDefinitions> 
         <!--<StackPanel Grid.Row="0" Background="#111111" Orientation="Horizontal" VerticalAlignment="Stretch" >
             <StackPanel Orientation="Horizontal" Margin="15,15,0,0">
                 <Image Source="./Assets/Icon.png" Height="40" Width="40"></Image>
@@ -76,8 +76,8 @@
         </StackPanel>-->
         <Grid Grid.Row="0" Grid.RowSpan="{Binding StMode,Converter={StaticResource ModeToSpanConverter}}">
             <Image x:Name="sourceImage" Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center"></Image>
-            <IseControls:MultiSelectionControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="{Binding ImageWidth}" Height="{Binding ImageHeight}" Background="Transparent">
-                
+            <IseControls:MultiSelectionControl Background="Transparent" Width="0" Visibility="{Binding StMode,Converter={StaticResource ModeToVisibilityConverter}}" IseControls:MultiSelectionControl.PixelWidth="{Binding ImageWidth}" IseControls:MultiSelectionControl.PixelHeight="{Binding ImageHeight}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                 
             </IseControls:MultiSelectionControl>
         </Grid>
         <Grid Grid.Row="1" Visibility="{Binding StMode,Converter={StaticResource ModeToVisibilityConverter}}">
@@ -132,7 +132,7 @@
                                 <TextBlock Text="Width" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
                                 <TextBlock Text="Height" Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
                             </Grid>
-                            <ListView DataContext="{Binding Source={StaticResource Locator}, Path=MultiSelectionCanvas}" ItemsSource="{Binding ContainerList}" Height="180">
+                            <ListView ItemsSource="{Binding ActualContainerList}" Height="180">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Grid VerticalAlignment="Center">
@@ -186,7 +186,7 @@
     <Page.BottomAppBar>
         <CommandBar Background="#111111">
             <AppBarButton Icon="OpenWith" Command="{Binding MenuFileOpenCommand}"></AppBarButton>
-            <AppBarButton Icon="Save" Visibility="{Binding StMode,Converter={StaticResource ModeToVisibilityConverter}}"></AppBarButton>
+            <AppBarButton Icon="Save" Visibility="{Binding StMode,Converter={StaticResource ModeToVisibilityConverter}}" Command="{Binding MenuFileSaveCommand}"></AppBarButton>
         </CommandBar>
     </Page.BottomAppBar>
 </Page>

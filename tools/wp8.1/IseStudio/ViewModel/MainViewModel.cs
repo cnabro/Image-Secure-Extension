@@ -1,14 +1,17 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using IseStudio.Model;
 using IseWrapperWP;
 using Microsoft.Practices.ServiceLocation;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using Windows.ApplicationModel.Activation;
 using Windows.Storage.Pickers;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
@@ -92,7 +95,7 @@ namespace IseStudio.ViewModel
         /// <summary>
         /// Image Height Property
         /// </summary>
-        private int _ImageHeight;
+        private int _ImageHeight = 0;
         public int ImageHeight
         {
             get
@@ -156,7 +159,7 @@ namespace IseStudio.ViewModel
         /// <summary>
         /// Image Width Property
         /// </summary>
-        private int _ImageWidth;
+        private int _ImageWidth = 0;
         public int ImageWidth
         {
             get
@@ -240,15 +243,48 @@ namespace IseStudio.ViewModel
             }
         }
 
+        private ObservableCollection<SecureContainerModel> _ContainerList = new ObservableCollection<SecureContainerModel>();
+        public ObservableCollection<SecureContainerModel> ContainerList
+        {
+            get
+            {
+                return _ContainerList;
+            }
+            set
+            {
+                if (value != _ContainerList)
+                {
+                    _ContainerList = value;
+                    RaisePropertyChanged("ContainerList");
+                }
+            }
+        }
+
+        private ObservableCollection<SecureContainerModel> _ActualContainerList = new ObservableCollection<SecureContainerModel>();
+        public ObservableCollection<SecureContainerModel> ActualContainerList
+        {
+            get
+            {
+                return _ActualContainerList;
+            }
+            set
+            {
+                if (value != _ContainerList)
+                {
+                    _ActualContainerList = value;
+                    RaisePropertyChanged("ActualContainerList");
+                }
+            }
+        }
+
         private void SaveFile()
         {
             if (FilePath != null && !String.IsNullOrEmpty(Password))
             {
                 try
                 {
-                    MultiSelectionCanvasViewModel vm = ServiceLocator.Current.GetInstance<MultiSelectionCanvasViewModel>();
                     List<SecureContainer> scList = new List<SecureContainer>();
-                    foreach (Model.SecureContainerModel model in vm.ContainerList)
+                    foreach (Model.SecureContainerModel model in ActualContainerList)
                     {
                         scList.Add(new SecureContainer(model.Width, model.Height, model.X, model.Y));
                     }
@@ -265,16 +301,19 @@ namespace IseStudio.ViewModel
                 }
                 catch (Exception e)
                 {
-                    //DialogManager.ShowMessageAsync(Window.Current.Content as Page, "Error", "Failed to save file.");
+                    MessageDialog dialog = new MessageDialog("Failed to save file.");
+                    dialog.ShowAsync();
                 }
                 finally
                 {
-                    //DialogManager.ShowMessageAsync(Application.Current.MainWindow as MetroWindow, "Result", "Success.");
+                    MessageDialog dialog = new MessageDialog("Success.");
+                    dialog.ShowAsync();
                 }
             }
             else
             {
-                //DialogManager.ShowMessageAsync(Application.Current.MainWindow as MetroWindow, "Warning", "Please Input Password.");
+                MessageDialog dialog = new MessageDialog("Please Input Password.");
+                dialog.ShowAsync();
             }
         }
 
@@ -303,29 +342,26 @@ namespace IseStudio.ViewModel
             }
         }
 
-        //public void ParseParameter()
-        //{
-        //    //string[] args = Environment.GetCommandLineArgs();
-
-        //    //if (args.Length > 1)
-        //    //{
-        //    //    FilePath = args[1];
-        //    //    LoadFile();
-        //    //}
-        //}
-
         private void FileOpen(string path)
         {
             FilePath = path;
             Image = new BitmapImage(new Uri(FilePath, UriKind.RelativeOrAbsolute));
-            ImageWidth = Image.PixelWidth;
-            ImageHeight = Image.PixelHeight;
+            Image.ImageOpened += Image_ImageOpened;
+            
+        }
+
+        void Image_ImageOpened(object sender, RoutedEventArgs e)
+        {
+            BitmapImage image = sender as BitmapImage;
+
+            ImageWidth = image.PixelWidth;
+            ImageHeight = image.PixelHeight;
         }
 
         private void CancelSelection()
         {
-            MultiSelectionCanvasViewModel vm = ServiceLocator.Current.GetInstance<MultiSelectionCanvasViewModel>();
-            vm.ContainerList.Clear();
+            ContainerList.Clear();
+            ActualContainerList.Clear();
         }
 
         private void FaceSelection()
@@ -337,8 +373,7 @@ namespace IseStudio.ViewModel
         {
             CancelSelection();
 
-            MultiSelectionCanvasViewModel vm = ServiceLocator.Current.GetInstance<MultiSelectionCanvasViewModel>();
-            vm.ContainerList.Add(new Model.SecureContainerModel(0, 0, ImageWidth, ImageHeight));
+            ContainerList.Add(new Model.SecureContainerModel(0, 0, ImageWidth, ImageHeight));
         }
 
         private async void LoadSecurityFile(string path, string pwd = "")

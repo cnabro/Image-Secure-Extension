@@ -19,7 +19,6 @@ namespace IseStudio
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
             SimpleIoc.Default.Register<MainViewModel>();
-            SimpleIoc.Default.Register<MultiSelectionCanvasViewModel>();
         }
 
         public MainViewModel Main
@@ -27,14 +26,6 @@ namespace IseStudio
             get
             {
                 return ServiceLocator.Current.GetInstance<MainViewModel>();
-            }
-        }
-
-        public MultiSelectionCanvasViewModel MultiSelectionCanvas
-        {
-            get
-            {
-                return ServiceLocator.Current.GetInstance<MultiSelectionCanvasViewModel>();
             }
         }
         
