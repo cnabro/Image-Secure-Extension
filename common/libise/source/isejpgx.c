@@ -217,7 +217,7 @@ jpgx_compress_container write_jpgx(char *filename, jpeg_decompress_container con
 	/*
 		make property file
 	*/
-	make_prop_xml(sc_array, sc_arr_count, prop_file_path, 0);
+	make_prop_xml(sc_array, sc_arr_count, prop_file_path, key, "normal");
 	
 	/*
 		packing files

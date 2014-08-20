@@ -42,7 +42,7 @@ const char * whitespace_cb(mxml_node_t *node, int where)
 	return (NULL);
 }
 
-int make_prop_xml(secure_container **sc_arr,int arr_cnt, char* path, int img_type)
+int make_prop_xml(secure_container **sc_arr, int arr_cnt, char* path, char* skey, char* type)
 {
 	/*
 		example of prop.xml
@@ -61,12 +61,12 @@ int make_prop_xml(secure_container **sc_arr,int arr_cnt, char* path, int img_typ
 	mxml_node_t	*xml, *prop, *key, *items, *item;
 	mxml_index_t *ind;
 	char buffer[16384];
-	static const char *types[] = {
-		"MXML_ELEMENT",
-		"MXML_INTEGER",
-		"MXML_OPAQUE",
-		"MXML_REAL",
-		"MXML_TEXT"
+	unsigned char md5sum[16];
+	char *out = (char*)malloc(33);
+
+	static const int md5_test_buflen[7] =
+	{
+		0, 1, 3, 14, 26, 62, 80
 	};
 
 	//tree = mxmlNewElement(MXML_NO_PARENT, "element");
@@ -77,7 +77,14 @@ int make_prop_xml(secure_container **sc_arr,int arr_cnt, char* path, int img_typ
 	items = mxmlNewElement(prop, "items");
 	mxmlElementSetAttrf(items, "count", "%d", arr_cnt);
 
-	mxmlElementSetAttr(key, "enc", "as89dfas89d7fa8sdf78");
+	md5(skey, strlen(skey), md5sum);
+	for (i = 0; i < 16; i++)
+	{
+		sprintf(out+(i * 2), "%02x", md5sum[i]);
+		printf("%02X", (int)md5sum[i]);
+	}
+
+	mxmlElementSetAttr(key, "enc", out);
 
 	for (i = 0; i < arr_cnt; i++)
 	{

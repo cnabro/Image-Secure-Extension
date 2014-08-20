@@ -311,7 +311,7 @@ pngx_compress_container write_pngx(char *filename, png_decompress_container cont
 	/*
 		make property file
 	*/
-	make_prop_xml(sc_array, sc_arr_count, prop_file_path, 0);
+	make_prop_xml(sc_array, sc_arr_count, prop_file_path, key, "normal");
 
 	/*
 		packing files
