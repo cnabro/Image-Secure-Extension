@@ -392,6 +392,15 @@ pngx_decompress_container read_pngx_container(char* filename, char* user_key)
 		*/
 		prop = parse_prop_xml(str_concat(2, out_temp_folder, "/prop.xml"));
 		container = read_png_container(str_concat(2, out_temp_folder, "/core.png"));
+		png_byte color_type = png_get_color_type(container.png_ptr, container.info_ptr);
+		if (color_type == PNG_COLOR_TYPE_RGB)
+		{
+			output_components = 3;
+		}
+		else if (color_type == PNG_COLOR_TYPE_RGBA)
+		{
+			output_components = 4;
+		}
 
 		png_bytep * row_pointer = container.image;
 

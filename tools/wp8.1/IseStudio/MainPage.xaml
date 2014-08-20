@@ -12,50 +12,50 @@
     DataContext="{Binding Source={StaticResource Locator}, Path=Main}">
     <Page.Resources>
         <Style x:Key="IsePivotStyle" TargetType="Pivot">
-			<Setter Property="Margin" Value="0"/>
-			<Setter Property="Padding" Value="0"/>
-			<Setter Property="Foreground" Value="{ThemeResource PhoneForegroundBrush}"/>
-			<Setter Property="Background" Value="Transparent"/>
-			<Setter Property="ItemsPanel">
-				<Setter.Value>
-					<ItemsPanelTemplate>
-						<Grid/>
-					</ItemsPanelTemplate>
-				</Setter.Value>
-			</Setter>
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="Pivot">
-						<Grid x:Name="RootElement" Background="{TemplateBinding Background}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalAlignment="{TemplateBinding VerticalAlignment}">
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition Height="*"/>
-							</Grid.RowDefinitions>
-							<VisualStateManager.VisualStateGroups>
-								<VisualStateGroup x:Name="Orientation">
-									<VisualState x:Name="Portrait"/>
-									<VisualState x:Name="Landscape"/>
-								</VisualStateGroup>
-							</VisualStateManager.VisualStateGroups>
-							<ScrollViewer x:Name="ScrollViewer" HorizontalSnapPointsAlignment="Center" HorizontalSnapPointsType="MandatorySingle" HorizontalScrollBarVisibility="Hidden" Margin="{TemplateBinding Padding}" Grid.Row="1" Template="{StaticResource ScrollViewerScrollBarlessTemplate}" VerticalSnapPointsType="None" VerticalScrollBarVisibility="Disabled" VerticalScrollMode="Disabled" VerticalContentAlignment="Stretch" ZoomMode="Disabled">
-								<PivotPanel x:Name="Panel" VerticalAlignment="Stretch" Margin="0,10,0,0">
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Foreground" Value="{ThemeResource PhoneForegroundBrush}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="ItemsPanel">
+                <Setter.Value>
+                    <ItemsPanelTemplate>
+                        <Grid/>
+                    </ItemsPanelTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Pivot">
+                        <Grid x:Name="RootElement" Background="{TemplateBinding Background}" HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalAlignment="{TemplateBinding VerticalAlignment}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="Orientation">
+                                    <VisualState x:Name="Portrait"/>
+                                    <VisualState x:Name="Landscape"/>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <ScrollViewer x:Name="ScrollViewer" HorizontalSnapPointsAlignment="Center" HorizontalSnapPointsType="MandatorySingle" HorizontalScrollBarVisibility="Hidden" Margin="{TemplateBinding Padding}" Grid.Row="1" Template="{StaticResource ScrollViewerScrollBarlessTemplate}" VerticalSnapPointsType="None" VerticalScrollBarVisibility="Disabled" VerticalScrollMode="Disabled" VerticalContentAlignment="Stretch" ZoomMode="Disabled">
+                                <PivotPanel x:Name="Panel" VerticalAlignment="Stretch" Margin="0,10,0,0">
                                     <PivotHeaderPanel x:Name="Header" Margin="0,10,0,0" VerticalAlignment="Center">
-										<PivotHeaderPanel.RenderTransform>
-											<CompositeTransform x:Name="HeaderTranslateTransform" TranslateX="0"/>
-										</PivotHeaderPanel.RenderTransform>
-									</PivotHeaderPanel>
-									<ItemsPresenter x:Name="PivotItemPresenter" Margin="0,-15,0,0">
-										<ItemsPresenter.RenderTransform>
-											<TranslateTransform x:Name="ItemsPresenterTranslateTransform" X="0"/>
-										</ItemsPresenter.RenderTransform>
-									</ItemsPresenter>
-								</PivotPanel>
-							</ScrollViewer>
-						</Grid>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
+                                        <PivotHeaderPanel.RenderTransform>
+                                            <CompositeTransform x:Name="HeaderTranslateTransform" TranslateX="0"/>
+                                        </PivotHeaderPanel.RenderTransform>
+                                    </PivotHeaderPanel>
+                                    <ItemsPresenter x:Name="PivotItemPresenter" Margin="0,-15,0,0">
+                                        <ItemsPresenter.RenderTransform>
+                                            <TranslateTransform x:Name="ItemsPresenterTranslateTransform" X="0"/>
+                                        </ItemsPresenter.RenderTransform>
+                                    </ItemsPresenter>
+                                </PivotPanel>
+                            </ScrollViewer>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
         <IseConverter:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <IseConverter:ModeToSizeConverter x:Key="ModeToSizeConverter" />
@@ -67,7 +67,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="3*"></RowDefinition>
             <RowDefinition Height="4*"></RowDefinition>
-        </Grid.RowDefinitions> 
+        </Grid.RowDefinitions>
         <!--<StackPanel Grid.Row="0" Background="#111111" Orientation="Horizontal" VerticalAlignment="Stretch" >
             <StackPanel Orientation="Horizontal" Margin="15,15,0,0">
                 <Image Source="./Assets/Icon.png" Height="40" Width="40"></Image>
@@ -77,12 +77,12 @@
         <Grid Grid.Row="0" Grid.RowSpan="{Binding StMode,Converter={StaticResource ModeToSpanConverter}}">
             <Image x:Name="sourceImage" Source="{Binding Image}" VerticalAlignment="Center" HorizontalAlignment="Center"></Image>
             <IseControls:MultiSelectionControl Background="Transparent" Width="0" Visibility="{Binding StMode,Converter={StaticResource ModeToVisibilityConverter}}" IseControls:MultiSelectionControl.PixelWidth="{Binding ImageWidth}" IseControls:MultiSelectionControl.PixelHeight="{Binding ImageHeight}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                 
+
             </IseControls:MultiSelectionControl>
         </Grid>
         <Grid Grid.Row="1" Visibility="{Binding StMode,Converter={StaticResource ModeToVisibilityConverter}}">
             <Pivot Style="{StaticResource IsePivotStyle}" Margin="0,5,0,0" Background="#000000">
-                <PivotItem> 
+                <PivotItem>
                     <PivotItem.Header>
                         <Grid Margin="5,0,0,0" VerticalAlignment="Center">
                             <TextBlock Text="selection" VerticalAlignment="Center" FontSize="23"></TextBlock>
@@ -105,16 +105,24 @@
                                 </Grid.ColumnDefinitions>
 
                                 <StackPanel Background="#005d8a" Margin="3" Grid.Row="0" Grid.Column="0">
-                                    <Image Source="./Assets/IconSelection.png"></Image>
+                                    <HyperlinkButton>
+                                        <Image Source="./Assets/IconSelection.png" Width="50" Height="50"></Image>
+                                    </HyperlinkButton>
                                 </StackPanel>
                                 <StackPanel Background="#111111" Margin="3" Grid.Row="0" Grid.Column="1">
-                                    <Image Source="./Assets/IconPeople.png"></Image>
+                                    <HyperlinkButton Command="{Binding MenuSelectionFaceCommand}">
+                                        <Image Source="./Assets/IconPeople.png"></Image>
+                                    </HyperlinkButton>
                                 </StackPanel>
                                 <StackPanel Background="#111111" Margin="3" Grid.Row="1" Grid.Column="0">
-                                    <Image Source="./Assets/IconFit.png"></Image>
+                                    <HyperlinkButton Command="{Binding MenuSelectionAllCommand}">
+                                        <Image Source="./Assets/IconFit.png"></Image>
+                                    </HyperlinkButton>
                                 </StackPanel>
                                 <StackPanel Background="#111111" Margin="3" Grid.Row="1" Grid.Column="1">
-                                    <Image Source="./Assets/IconCancel.png"></Image>
+                                    <HyperlinkButton Command="{Binding MenuSelectionCancelCommand}">
+                                        <Image Source="./Assets/IconCancel.png"></Image>
+                                    </HyperlinkButton>
                                 </StackPanel>
                             </Grid>
                         </StackPanel>
@@ -182,7 +190,7 @@
             </Grid>
         </Grid>
     </Grid>
-    
+
     <Page.BottomAppBar>
         <CommandBar Background="#111111">
             <AppBarButton Icon="OpenWith" Command="{Binding MenuFileOpenCommand}"></AppBarButton>

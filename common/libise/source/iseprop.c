@@ -23,7 +23,7 @@ const char * whitespace_cb(mxml_node_t *node, int where)
 		where == MXML_WS_AFTER_CLOSE)
 			return ("\n");
 	}
-	else if (!strcmp(name, "dl") ||
+	else if (!strcmp(name, "dl") || 
 		!strcmp(name, "ol") ||
 		!strcmp(name, "ul"))
 	{

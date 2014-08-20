@@ -50,5 +50,10 @@ namespace IseStudio
         {
             
         }
+
+        private void StackPanel_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+
+        }
     }
 }

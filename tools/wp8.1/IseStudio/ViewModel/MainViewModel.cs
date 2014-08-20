@@ -374,6 +374,7 @@ namespace IseStudio.ViewModel
             CancelSelection();
 
             ContainerList.Add(new Model.SecureContainerModel(0, 0, ImageWidth, ImageHeight));
+            ActualContainerList.Add(new Model.SecureContainerModel(0, 0, ImageWidth, ImageHeight));
         }
 
         private async void LoadSecurityFile(string path, string pwd = "")

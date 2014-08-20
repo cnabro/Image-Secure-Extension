@@ -16,7 +16,7 @@ int main()
 
 void test_pngx()
 {
-	char *infilename = "./test/test.png";
+	char *infilename = "./test/sample_deungi.png";
 	png_decompress_container container = read_png_container(infilename);
 	char *out_temp_folder = str_concat(3, get_current_path(infilename), ".", get_file_name(infilename));
 
@@ -58,7 +58,7 @@ void test_pngx()
 	printf("===============================\n\n", out_temp_folder);
 
 	//decompress pngx
-	pngx_decompress_container pdc = read_pngx_container("./test/test.pngx", "test");
+	pngx_decompress_container pdc = read_pngx_container("./test/sample_deungi.pngx", "test");
 }
 
 void test_jpgx()

@@ -24,6 +24,15 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+				<category android:name="android.intent.category.DEFAULT" /> 
+				
+                <data android:scheme="file" />
+                <data android:mimeType="*/*" />
+                <data android:pathPattern=".*\\.jpgx" />
+                <data android:pathPattern=".*\\.pngx" />
+            </intent-filter>
         </activity>
         <activity
             android:name="com.pigtools.isetool.activity.FileListActivity"

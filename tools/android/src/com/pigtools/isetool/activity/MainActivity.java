@@ -1,5 +1,6 @@
 package com.pigtools.isetool.activity;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -17,8 +18,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.media.FaceDetector.Face;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -26,6 +29,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,6 +49,7 @@ import com.pigtools.isetool.service.IseProcessingService;
 import com.pigtools.isetool.service.container.JpgxDecompressContainer;
 import com.pigtools.isetool.service.container.PngxDecompressContainer;
 import com.pigtools.isetool.service.container.SecureContainer;
+import com.pigtools.isetool.util.FileUtil;
 import com.pigtools.isetool.util.ImageUtil;
 import com.pigtools.isetool.view.BottomToggleLayout;
 import com.pigtools.isetool.view.SelectionCanvas;
@@ -104,7 +109,7 @@ public class MainActivity extends Activity implements OnClickListener, OnBottomT
 		getActionBar().setTitle("");
 
 		bindService(new Intent(IseProcessingService.INTENT_PROCESSING_SERVICE), mServiceConnection, Service.BIND_AUTO_CREATE);
-
+		
 	}
 
 	public void setActionBarOptionEnabled(boolean value) {
@@ -123,6 +128,42 @@ public class MainActivity extends Activity implements OnClickListener, OnBottomT
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			mProcessingService = IseProcessingInterface.Stub.asInterface(service);
+			
+			Intent intent = getIntent();
+			
+			if(intent != null && intent.getData() != null)
+			{
+				Uri uri = intent.getData();
+				String path = uri.toString().replace("file://", "");
+				
+				if(path.contains("com.google.android.apps.docs"))
+				{
+					File temp = new File(Environment.getExternalStorageDirectory()+"/.ise");
+					temp.mkdir();
+					
+					File google = new File(path);
+					String outputPath = temp.getAbsolutePath()+"/"+ google.getName();
+					
+					FileUtil.copyFile(path, outputPath);
+					path = outputPath;
+				}
+				
+				if(path.contains(".jpgx"))
+				{
+					mCurrentOpenType = FileListActivity.RESULT_CODE_OPEN_JPGX;
+				}
+				else
+				{
+					mCurrentOpenType = FileListActivity.RESULT_CODE_OPEN_PNGX;
+				}
+
+				mSelectionCanvas.init();
+				mSelectionCanvas.setEnabled(true);
+
+				mCurrentPath = path;
+				LoadImageAsyncTask task = new LoadImageAsyncTask(MainActivity.this, mCurrentOpenType);
+				task.execute();
+			}
 		}
 	};
 
