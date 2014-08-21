@@ -14,8 +14,8 @@
 #include <unistd.h>
 #endif
 
-#include "des.h"
 #include "md5.h"
+#include "des.h"
 #include "jpeglib.h"
 #include "zlib.h"
 #include "zip.h"

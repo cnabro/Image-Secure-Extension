@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\common\mxml\include\config.h" />
+    <ClInclude Include="..\..\common\mxml\include\mxml-config.h" />
     <ClInclude Include="..\..\common\mxml\include\mxml-private.h" />
     <ClInclude Include="..\..\common\mxml\include\mxml.h" />
   </ItemGroup>

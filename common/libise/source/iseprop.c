@@ -1,4 +1,5 @@
 #include "iseprop.h"
+#include "md5.h"
 
 const char * whitespace_cb(mxml_node_t *node, int where)
 {
@@ -64,11 +65,6 @@ int make_prop_xml(secure_container **sc_arr, int arr_cnt, char* path, char* skey
 	unsigned char md5sum[16];
 	char *out = (char*)malloc(33);
 
-	static const int md5_test_buflen[7] =
-	{
-		0, 1, 3, 14, 26, 62, 80
-	};
-
 	//tree = mxmlNewElement(MXML_NO_PARENT, "element");
 	xml = mxmlNewXML("1.0");
 	prop = mxmlNewElement(xml, "prop");
@@ -102,6 +98,7 @@ int make_prop_xml(secure_container **sc_arr, int arr_cnt, char* path, char* skey
 	fp = fopen(path, "wb");
 	mxmlSaveFile(xml, fp, whitespace_cb);
 	fclose(fp);
+	free(out);
 }
 
 prop_info_container parse_prop_xml(char *path)
